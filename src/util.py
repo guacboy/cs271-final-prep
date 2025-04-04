@@ -1,6 +1,7 @@
 from tkinter import *
 
 BG_COLOR = "#2b2b2c"
+INFORMATION_BG_COLOR = "#1e1e1e"
 OPTION_COLOR = "#404040"
 HOVER_COLOR = "#7c7c7c"
 FONT_COLOR = "#f5f5f5"
