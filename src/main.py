@@ -31,7 +31,7 @@ def create_exam() -> None:
     
     # creates a new window (for the exam)
     exam_window = Toplevel()  
-    exam_window.geometry("950x700")
+    exam_window.geometry("1075x800")
     exam_window.config(background=BG_COLOR)
     
     # question information frame
@@ -50,16 +50,26 @@ def create_exam() -> None:
     end_exam_button = Util.button(question_information_frame)
     end_exam_button.config(text="END",
                            padx=5,
-                           pady=0,)
+                           pady=0,
+                           command=lambda: print("exit"))
     end_exam_button.pack(side=RIGHT,
                          padx=(0, 15))
+    
+    flag_button = Util.button(question_information_frame)
+    flag_button.config(text="⚐",
+                       padx=5,
+                       pady=0,
+                       command=lambda: update_question_navigator_icon("flag",
+                                                                      question_navigator_dict))
+    flag_button.pack(side=RIGHT,
+                     padx=(0, 15))
     
     # displays the timer
     timer_label = Util.label(question_information_frame)
     timer_label.config(text="00:00",
                        bg=INFORMATION_BG_COLOR)
     timer_label.pack(side=RIGHT,
-                     padx=(0, 370))
+                     padx=(0, 375))
     
     question_information_frame.pack(side=TOP,
                                     fill=BOTH,)
@@ -96,14 +106,24 @@ def create_exam() -> None:
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
     
-    question_navigator = {}
+    #TODO: ⏺, ⨀
+    
+    question_navigator_dict = {}
     # creates "i" amount of question navigator buttons
     for i in range(1, 31):
-        # TODO: add indicator which question you are on
+        # populates the dictionary
+        # with each key representing the question number
+        # and its associated button widget and button's text
+        question_navigator_dict.update({
+            str(i): {
+                "button": None,
+                "text": None,
+            },
+        })
         
         # allows to navigate to different questions
         question_navigator_button = Util.button(question_navigator_frame)
-        question_navigator_button.config(text="○",
+        question_navigator_button.config(text="⭘",
                                          font=(FONT, 15, "normal"),
                                          bg=BG_COLOR,
                                          activebackground=BG_COLOR,
@@ -118,8 +138,10 @@ def create_exam() -> None:
         question_navigator_button.bind("<Leave>", lambda e, button=question_navigator_button: on_question_navigator_hover(button))
         question_navigator_button.pack(side=LEFT)
         
-        # creates a button hashmap for easier access
-        question_navigator["Q" + str(i)] = question_navigator_button
+        # button widget
+        question_navigator_dict[str(i)]["button"] = question_navigator_button
+        # the button's text
+        question_navigator_dict[str(i)]["text"] = question_navigator_button.cget("text")
         
     def on_question_navigator_hover(button) -> None:
         """
@@ -127,8 +149,13 @@ def create_exam() -> None:
         to mouse position vs button.
         """
         
-        button.bind("<Enter>", func=lambda e: button.config(text="◉"))
-        button.bind("<Leave>", func=lambda e: button.config(text="○"))
+        #FIXME: buttons not recognizing "⚐" text
+        if button.cget("text") == "⚐":
+            button.bind("<Enter>", func=lambda e: button.config(text="⚑"))
+            button.bind("<Leave>", func=lambda e: button.config(text="⚐"))
+        else:
+            button.bind("<Enter>", func=lambda e: button.config(text="⭗"))
+            button.bind("<Leave>", func=lambda e: button.config(text="⭘"))
         
     question_navigator_frame.pack(side=BOTTOM,
                                   pady=(0, 20),)
@@ -163,6 +190,22 @@ def display_current_question(action: str, question_number_label: Label) -> None:
         
     # updates display information
     question_number_label.config(text=f"Question {current_question_idx}")
+
+def update_question_navigator_icon(action: str, question_navigator_dict: dict=None) -> None:
+    """
+    Updates the question navigator icon
+    in accordance the current question state
+    (ex. current, complete, flagged)
+    """
+    
+    button = question_navigator_dict[str(current_question_idx)]["button"]
+    button_text = question_navigator_dict[str(current_question_idx)]["text"]
+    
+    if action == "flag":
+        if button.cget("text") != "⚐":
+            button.config(text="⚐")
+        else:
+            button.config(text=button_text)
 
 def on_option_hover(button) -> None:
     """
