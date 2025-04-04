@@ -15,8 +15,8 @@ def main_menu() -> None:
     create_button = Util.button(root)
     create_button.config(text="Create Exam",
                          command=lambda: create_exam())
-    create_button.bind("<Enter>", func=lambda e: on_option_hover(create_button))
-    create_button.bind("<Leave>", func=lambda e: on_option_hover(create_button))
+    create_button.bind("<Enter>", func=lambda e: on_enter_option(create_button))
+    create_button.bind("<Leave>", func=lambda e: on_leave_option(create_button))
     create_button.pack(side=BOTTOM,
                        pady=(0, 50))
 
@@ -52,6 +52,8 @@ def create_exam() -> None:
                            padx=5,
                            pady=0,
                            command=lambda: print("exit"))
+    end_exam_button.bind("<Enter>", func=lambda e: on_enter_option(end_exam_button))
+    end_exam_button.bind("<Leave>", func=lambda e: on_leave_option(end_exam_button))
     end_exam_button.pack(side=RIGHT,
                          padx=(0, 15))
     
@@ -61,6 +63,8 @@ def create_exam() -> None:
                        pady=0,
                        command=lambda: update_question_navigator_icon("flag",
                                                                       question_navigator_dict))
+    flag_button.bind("<Enter>", func=lambda e: on_enter_option(flag_button))
+    flag_button.bind("<Leave>", func=lambda e: on_leave_option(flag_button))
     flag_button.pack(side=RIGHT,
                      padx=(0, 15))
     
@@ -80,9 +84,10 @@ def create_exam() -> None:
                        padx=10,
                        pady=5,
                        command=lambda: display_current_question("prev",
-                                                                question_number_label))
-    prev_button.bind("<Enter>", func=lambda e: on_option_hover(prev_button))
-    prev_button.bind("<Leave>", func=lambda e: on_option_hover(prev_button))
+                                                                question_number_label,
+                                                                question_navigator_dict))
+    prev_button.bind("<Enter>", func=lambda e: on_enter_option(prev_button))
+    prev_button.bind("<Leave>", func=lambda e: on_leave_option(prev_button))
     prev_button.pack(side=LEFT,
                      padx=(15, 0))
     
@@ -92,9 +97,10 @@ def create_exam() -> None:
                        padx=10,
                        pady=5,
                        command=lambda: display_current_question("next",
-                                                                question_number_label))
-    next_button.bind("<Enter>", func=lambda e: on_option_hover(next_button))
-    next_button.bind("<Leave>", func=lambda e: on_option_hover(next_button))
+                                                                question_number_label,
+                                                                question_navigator_dict))
+    next_button.bind("<Enter>", func=lambda e: on_enter_option(next_button))
+    next_button.bind("<Leave>", func=lambda e: on_leave_option(next_button))
     next_button.pack(side=RIGHT,
                      padx=(0, 15))
     
@@ -132,10 +138,11 @@ def create_exam() -> None:
                                          relief=FLAT,
                                          bd=0,
                                          command=lambda i=i: display_current_question(str(i),
-                                                                                      question_number_label))
+                                                                                      question_number_label,
+                                                                                      question_navigator_dict))
         # binds each button to a hover effect
-        question_navigator_button.bind("<Enter>", lambda e, button=question_navigator_button: on_question_navigator_hover(button))
-        question_navigator_button.bind("<Leave>", lambda e, button=question_navigator_button: on_question_navigator_hover(button))
+        question_navigator_button.bind("<Enter>", lambda e, button=question_navigator_button: on_enter_question_navigator(button))
+        question_navigator_button.bind("<Leave>", lambda e, button=question_navigator_button: on_leave_question_navigator(button))
         question_navigator_button.pack(side=LEFT)
         
         # button widget
@@ -143,24 +150,34 @@ def create_exam() -> None:
         # the button's text
         question_navigator_dict[str(i)]["text"] = question_navigator_button.cget("text")
         
-    def on_question_navigator_hover(button) -> None:
+    def on_enter_question_navigator(button) -> None:
         """
-        Changes the button texture in accordance
-        to mouse position vs button.
+        Changes the button texture
+        when hovering over the button.
+        """
+
+        # saves the current text
+        current_text = button.cget("text")
+        button.original_text = current_text
+        
+        # FIXME: ⨀ changes when directly selecting a question
+        if current_text == "⭘":
+            button.config(text="⭗")
+        elif current_text == "⚐":
+            button.config(text="⚑")
+    
+    def on_leave_question_navigator(button) -> None:
+        """
+        Changes the button texture
+        when no longer hovering over the button.
         """
         
-        #FIXME: buttons not recognizing "⚐" text
-        if button.cget("text") == "⚐":
-            button.bind("<Enter>", func=lambda e: button.config(text="⚑"))
-            button.bind("<Leave>", func=lambda e: button.config(text="⚐"))
-        else:
-            button.bind("<Enter>", func=lambda e: button.config(text="⭗"))
-            button.bind("<Leave>", func=lambda e: button.config(text="⭘"))
+        button.config(text=button.original_text)
         
     question_navigator_frame.pack(side=BOTTOM,
                                   pady=(0, 20),)
 
-def display_current_question(action: str, question_number_label: Label) -> None:
+def display_current_question(action: str, question_number_label: Label, question_navigator_dict: dict) -> None:
     """
     Displays the current question
     and updates any relevant information.
@@ -178,6 +195,10 @@ def display_current_question(action: str, question_number_label: Label) -> None:
     # to action parameter (new question idx)
     else:
         current_question_idx = int(action)
+    
+    # updates current button's texture
+    question_navigator_dict[str(current_question_idx)]["button"].config(text="⨀")
+    # TODO: remove previous ⨀ texture when selecting a new question
     
     # if attempting to navigate past the maximum questions
     if current_question_idx > 30:
@@ -201,20 +222,33 @@ def update_question_navigator_icon(action: str, question_navigator_dict: dict=No
     button = question_navigator_dict[str(current_question_idx)]["button"]
     button_text = question_navigator_dict[str(current_question_idx)]["text"]
     
+    # if flagging a question
     if action == "flag":
+        # if it is not flagged yet
         if button.cget("text") != "⚐":
+            # change button's text to a flag
             button.config(text="⚐")
+        # if it is already flagged
+        # (user wants to unflag question)
         else:
+            # revert button's text to previous state
             button.config(text=button_text)
 
-def on_option_hover(button) -> None:
+def on_enter_option(button) -> None:
     """
-    Changes the button texture in accordance
-    to mouse position vs button.
-    """   
-    
-    button.bind("<Enter>", func=lambda e: button.config(bg=HOVER_COLOR))
-    button.bind("<Leave>", func=lambda e: button.config(bg=OPTION_COLOR))
+    Changes the button texture
+    when hovering over the button.
+    """
+
+    button.config(bg=HOVER_COLOR)
+
+def on_leave_option(button) -> None:
+    """
+    Changes the button texture
+    when no longer hovering over the button.
+    """
+
+    button.config(bg=OPTION_COLOR)
 
 if __name__ == "__main__":
     main_menu()
