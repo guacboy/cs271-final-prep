@@ -34,20 +34,20 @@ def create_exam() -> None:
     exam_window.geometry("1075x800")
     exam_window.config(background=BG_COLOR)
     
-    # question information frame
-    question_information_frame = Util.frame(exam_window)
-    question_information_frame.config(bg=INFORMATION_BG_COLOR,
+    # question details frame
+    question_details_frame = Util.frame(exam_window)
+    question_details_frame.config(bg=DETAILS_BG_COLOR,
                                       pady=10,)
     
     # displays the current question number
-    question_number_label = Util.label(question_information_frame)
+    question_number_label = Util.label(question_details_frame)
     question_number_label.config(text=f"Question {current_question_idx}",
-                                 bg=INFORMATION_BG_COLOR,)
+                                 bg=DETAILS_BG_COLOR,)
     question_number_label.pack(side=LEFT,
                                padx=(15, 0))
     
     # ends the exam
-    end_exam_button = Util.button(question_information_frame)
+    end_exam_button = Util.button(question_details_frame)
     end_exam_button.config(text="END",
                            padx=5,
                            pady=0,
@@ -57,7 +57,7 @@ def create_exam() -> None:
     end_exam_button.pack(side=RIGHT,
                          padx=(0, 15))
     
-    flag_button = Util.button(question_information_frame)
+    flag_button = Util.button(question_details_frame)
     flag_button.config(text="⚐",
                        padx=5,
                        pady=0,
@@ -69,13 +69,13 @@ def create_exam() -> None:
                      padx=(0, 15))
     
     # displays the timer
-    timer_label = Util.label(question_information_frame)
+    timer_label = Util.label(question_details_frame)
     timer_label.config(text="00:00",
-                       bg=INFORMATION_BG_COLOR)
+                       bg=DETAILS_BG_COLOR)
     timer_label.pack(side=RIGHT,
                      padx=(0, 375))
     
-    question_information_frame.pack(side=TOP,
+    question_details_frame.pack(side=TOP,
                                     fill=BOTH,)
     
     # goes to previous question
@@ -112,7 +112,7 @@ def create_exam() -> None:
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
     
-    #TODO: ⏺, ⨀
+    #TODO: ⏺
     
     question_navigator_dict = {}
     # creates "i" amount of question navigator buttons
@@ -124,6 +124,7 @@ def create_exam() -> None:
             str(i): {
                 "button": None,
                 "text": None,
+                "is_flagged": False,
             },
         })
         
@@ -140,6 +141,7 @@ def create_exam() -> None:
                                          command=lambda i=i: display_current_question(str(i),
                                                                                       question_number_label,
                                                                                       question_navigator_dict))
+            
         # binds each button to a hover effect
         question_navigator_button.bind("<Enter>", lambda e, button=question_navigator_button: on_enter_question_navigator(button))
         question_navigator_button.bind("<Leave>", lambda e, button=question_navigator_button: on_leave_question_navigator(button))
@@ -149,6 +151,11 @@ def create_exam() -> None:
         question_navigator_dict[str(i)]["button"] = question_navigator_button
         # the button's text
         question_navigator_dict[str(i)]["text"] = question_navigator_button.cget("text")
+        
+        # if it is the first idx
+        if i == 1:
+            # change the first button's texture to "⭗" (current)
+            question_navigator_button.config(text="⭗")
         
     def on_enter_question_navigator(button) -> None:
         """
@@ -160,7 +167,6 @@ def create_exam() -> None:
         current_text = button.cget("text")
         button.original_text = current_text
         
-        # FIXME: ⨀ changes when directly selecting a question
         if current_text == "⭘":
             button.config(text="⭗")
         elif current_text == "⚐":
@@ -172,7 +178,18 @@ def create_exam() -> None:
         when no longer hovering over the button.
         """
         
-        button.config(text=button.original_text)
+        # iterates through the question navigator dict
+        # to find the question number (key) and button (value)
+        for key, value in question_navigator_dict.items():
+            # if user is currently on the question of the button
+            if int(key) == current_question_idx:
+                # assign the button as the current button
+                current_button = value["button"]
+
+        # if the button does not equal to the current button
+        if button != current_button:
+            # restore it's original text
+            button.config(text=button.original_text)
         
     question_navigator_frame.pack(side=BOTTOM,
                                   pady=(0, 20),)
@@ -196,9 +213,23 @@ def display_current_question(action: str, question_number_label: Label, question
     else:
         current_question_idx = int(action)
     
-    # updates current button's texture
-    question_navigator_dict[str(current_question_idx)]["button"].config(text="⨀")
-    # TODO: remove previous ⨀ texture when selecting a new question
+    # resets all the question navigator buttons to its previous state
+    for value in question_navigator_dict.values():
+        # if the question is not flagged
+        if value["is_flagged"] == False:
+            value["button"].config(text=value["text"])
+        # otherwise
+        else:
+            value["button"].config(text="⚐")
+    
+    button = question_navigator_dict[str(current_question_idx)]["button"]
+    
+    # if the current button is flagged
+    if button.cget("text") == "⚐":
+        button.config(text="⚑")
+    # otherwise
+    else:
+        button.config(text="⭗")
     
     # if attempting to navigate past the maximum questions
     if current_question_idx > 30:
@@ -208,6 +239,8 @@ def display_current_question(action: str, question_number_label: Label, question
     elif current_question_idx < 1:
         # loop back to the last question
         current_question_idx = 30
+        
+    # TODO: display question and choices
         
     # updates display information
     question_number_label.config(text=f"Question {current_question_idx}")
@@ -220,19 +253,23 @@ def update_question_navigator_icon(action: str, question_navigator_dict: dict=No
     """
     
     button = question_navigator_dict[str(current_question_idx)]["button"]
-    button_text = question_navigator_dict[str(current_question_idx)]["text"]
+    text = question_navigator_dict[str(current_question_idx)]["text"]
     
     # if flagging a question
     if action == "flag":
         # if it is not flagged yet
-        if button.cget("text") != "⚐":
+        if button.cget("text") != "⚑":
             # change button's text to a flag
-            button.config(text="⚐")
+            button.config(text="⚑")
+            # sets flag status to true
+            question_navigator_dict[str(current_question_idx)]["is_flagged"] = True
         # if it is already flagged
         # (user wants to unflag question)
         else:
             # revert button's text to previous state
-            button.config(text=button_text)
+            button.config(text=text)
+            # sets flag status to false
+            question_navigator_dict[str(current_question_idx)]["is_flagged"] = False
 
 def on_enter_option(button) -> None:
     """
