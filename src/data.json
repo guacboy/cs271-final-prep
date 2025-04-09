@@ -1,0 +1,26 @@
+{
+    "bank": {
+        "Module 1": {
+            "some tag": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "another some tag": {
+                "questions": {
+                    "Q2": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 2": {
+            "another tag": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            }
+        }
+    }
+}

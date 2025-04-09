@@ -1,6 +1,9 @@
 from tkinter import *
+import json
+import random
 
 from util import *
+from bank import question_bank
 
 root = Tk()
 root.geometry("600x700")
@@ -86,6 +89,7 @@ def create_exam() -> None:
                        command=lambda: display_current_question("prev",
                                                                 question_number_label,
                                                                 current_question_label,
+                                                                current_choice_label,
                                                                 question_navigator_dict))
     prev_button.bind("<Enter>", func=lambda e: on_enter_option(prev_button))
     prev_button.bind("<Leave>", func=lambda e: on_leave_option(prev_button))
@@ -100,27 +104,34 @@ def create_exam() -> None:
                        command=lambda: display_current_question("next",
                                                                 question_number_label,
                                                                 current_question_label,
+                                                                current_choice_label,
                                                                 question_navigator_dict))
     next_button.bind("<Enter>", func=lambda e: on_enter_option(next_button))
     next_button.bind("<Leave>", func=lambda e: on_leave_option(next_button))
     next_button.pack(side=RIGHT,
                      padx=(0, 15))
     
+    # list of randomly selected questions
+    chosen_questions_list = create_questions()
+    
     # displays current question
     current_question_label = Util.label(exam_window)
-    current_question_label.config(text="first question")
+    # selects the first question
+    current_question_label.config(text=chosen_questions_list[0][0])
     current_question_label.pack(expand=True,
                                 fill="none")
     
+    # TODO: TEMP! EDIT ME LATER!
     current_choice_label = Util.label(exam_window)
-    current_choice_label.config(text="choice display here")
+    # selects the first question's associated answer
+    current_choice_label.config(text=chosen_questions_list[0][1])
     current_choice_label.pack(expand=True,
                               fill="none")
     
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
     
-    #TODO: ⏺
+    # TODO: ⏺
     
     question_navigator_dict = {}
     # creates "i" amount of question navigator buttons
@@ -151,6 +162,7 @@ def create_exam() -> None:
                                          command=lambda i=i: display_current_question(str(i),
                                                                                       question_number_label,
                                                                                       current_question_label,
+                                                                                      current_choice_label,
                                                                                       question_navigator_dict))
             
         # binds each button to a hover effect
@@ -163,7 +175,9 @@ def create_exam() -> None:
         # the button's text
         question_navigator_dict[str(i)]["text"] = question_navigator_button.cget("text")
         # question to show
-        question_navigator_dict[str(i)]["question"] = str(i)
+        question_navigator_dict[str(i)]["question"] = chosen_questions_list[i - 1][0]
+        # question to show's associated answer
+        question_navigator_dict[str(i)]["answer"] = chosen_questions_list[i - 1][1]
         
         # if it is the first idx
         if i == 1:
@@ -207,9 +221,37 @@ def create_exam() -> None:
     question_navigator_frame.pack(side=BOTTOM,
                                   pady=(0, 20),)
 
+def create_questions() -> list:
+    """
+    Creates a list of randomly selected questions
+    to be displayed in the exam.
+    """
+    
+    with open("data.json", "r") as file:
+        data = json.load(file)
+    
+    questions_to_be_chosen = []
+    # selects 30 random questions;
+    # questions not selected before will have a higher
+    # chance to be selected now
+    for i in range(30):
+        # selects a random question
+        module_chosen = random.choice(list(question_bank.keys()))
+        tag_chosen = random.choice(list(question_bank[module_chosen].keys()))
+        question_chosen = random.choice(list(data["bank"][module_chosen][tag_chosen]["questions"]))
+        
+        # adds the question to the list of questions to be chosen
+        result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
+        questions_to_be_chosen.append([result_chosen["question"], result_chosen["answer"]])
+        # shuffles the list
+        random.shuffle(questions_to_be_chosen)
+    
+    return questions_to_be_chosen
+
 def display_current_question(action: str,
                              question_number_label: Label,
                              current_question_label: Label,
+                             current_choice_label: Label,
                              question_navigator_dict: dict) -> None:
     """
     Displays the current question
@@ -256,9 +298,9 @@ def display_current_question(action: str,
     else:
         button.config(text="⭗")
         
-    # TODO: display question and choices
+    # updates to current question information
     current_question_label.config(text=question_navigator_dict[str(current_question_idx)]["question"])
-    # updates display information
+    current_choice_label.config(text=question_navigator_dict[str(current_question_idx)]["answer"])
     question_number_label.config(text=f"Question {current_question_idx}")
 
 def update_question_navigator_icon(action: str, question_navigator_dict: dict=None) -> None:
