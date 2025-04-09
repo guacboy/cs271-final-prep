@@ -32,3 +32,13 @@ class Util():
                      font=(FONT, 15, "bold"),
                      fg=FONT_COLOR,
                      bg=BG_COLOR,)
+        
+    def radiobutton(window) -> Radiobutton:
+        return Radiobutton(window,
+                           font=(FONT, 15, "normal"),
+                           fg=FONT_COLOR,
+                           bg=BG_COLOR,
+                           activeforeground=FONT_COLOR,
+                           activebackground=BG_COLOR,
+                           selectcolor=OPTION_COLOR,
+                           tristatevalue="None",)

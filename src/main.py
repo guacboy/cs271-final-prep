@@ -89,7 +89,7 @@ def create_exam() -> None:
                        command=lambda: display_current_question("prev",
                                                                 question_number_label,
                                                                 current_question_label,
-                                                                current_choice_label,
+                                                                current_choice_frame,
                                                                 question_navigator_dict))
     prev_button.bind("<Enter>", func=lambda e: on_enter_option(prev_button))
     prev_button.bind("<Leave>", func=lambda e: on_leave_option(prev_button))
@@ -104,7 +104,7 @@ def create_exam() -> None:
                        command=lambda: display_current_question("next",
                                                                 question_number_label,
                                                                 current_question_label,
-                                                                current_choice_label,
+                                                                current_choice_frame,
                                                                 question_navigator_dict))
     next_button.bind("<Enter>", func=lambda e: on_enter_option(next_button))
     next_button.bind("<Leave>", func=lambda e: on_leave_option(next_button))
@@ -113,20 +113,6 @@ def create_exam() -> None:
     
     # list of randomly selected questions
     chosen_questions_list = create_questions()
-    
-    # displays current question
-    current_question_label = Util.label(exam_window)
-    # selects the first question
-    current_question_label.config(text=chosen_questions_list[0][0])
-    current_question_label.pack(expand=True,
-                                fill="none")
-    
-    # TODO: TEMP! EDIT ME LATER!
-    current_choice_label = Util.label(exam_window)
-    # selects the first question's associated answer
-    current_choice_label.config(text=chosen_questions_list[0][1])
-    current_choice_label.pack(expand=True,
-                              fill="none")
     
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
@@ -146,6 +132,8 @@ def create_exam() -> None:
                 "is_flagged": False,
                 "question": None,
                 "answer": None,
+                "choices": ["long answer", "sho ans", "c", "d"], # FIXME: delete test
+                "format": None,
             },
         })
         
@@ -162,7 +150,7 @@ def create_exam() -> None:
                                          command=lambda i=i: display_current_question(str(i),
                                                                                       question_number_label,
                                                                                       current_question_label,
-                                                                                      current_choice_label,
+                                                                                      current_choice_frame,
                                                                                       question_navigator_dict))
             
         # binds each button to a hover effect
@@ -172,18 +160,34 @@ def create_exam() -> None:
         
         # button widget
         question_navigator_dict[str(i)]["button"] = question_navigator_button
-        # the button's text
+        # the button's text (or state)
         question_navigator_dict[str(i)]["text"] = question_navigator_button.cget("text")
         # question to show
         question_navigator_dict[str(i)]["question"] = chosen_questions_list[i - 1][0]
         # question to show's associated answer
         question_navigator_dict[str(i)]["answer"] = chosen_questions_list[i - 1][1]
+        # question to show's associated format
+        # (multiple choice, select one, etc.)
+        question_navigator_dict[str(i)]["format"] = chosen_questions_list[i - 1][2]
         
         # if it is the first idx
         if i == 1:
             # change the first button's texture to "⭗" (current)
             question_navigator_button.config(text="⭗")
-        
+    
+    # displays current question
+    current_question_label = Util.label(exam_window)
+    # selects the first question
+    current_question_label.config(text=question_navigator_dict["1"]["question"])
+    current_question_label.pack(expand=True,
+                                fill="none")
+    
+    # displays the current choices
+    current_choice_frame = Util.frame(exam_window)
+    create_choices(current_choice_frame, question_navigator_dict)
+    current_choice_frame.pack(expand=True,
+                              fill="none",)
+    
     def on_enter_question_navigator(button) -> None:
         """
         Changes the button texture
@@ -242,16 +246,51 @@ def create_questions() -> list:
         
         # adds the question to the list of questions to be chosen
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
-        questions_to_be_chosen.append([result_chosen["question"], result_chosen["answer"]])
+        questions_to_be_chosen.append([
+            result_chosen["question"],
+            result_chosen["answer"],
+            result_chosen["format"],
+        ])
         # shuffles the list
         random.shuffle(questions_to_be_chosen)
     
     return questions_to_be_chosen
 
+def create_choices(current_choice_frame: Frame,
+                   question_navigator_dict: dict) -> None:
+    current_question = question_navigator_dict[str(current_question_idx)]
+
+    choice_format = current_question["format"]
+    # if the current question's format is radiobutton
+    if choice_format == "radio":
+        # to display on the left side
+        radiobutton_left_frame = Util.frame(current_choice_frame)
+        # to display on the right side
+        radiobutton_right_frame = Util.frame(current_choice_frame)
+        
+        option = StringVar()
+        for idx, choice in enumerate(current_question["choices"]):
+            # if to be displayed on the left side
+            if idx <= 1:
+                radiobutton = Util.radiobutton(radiobutton_left_frame)
+            # if to be displayed on the right side
+            elif idx >= 2:
+                radiobutton = Util.radiobutton(radiobutton_right_frame)
+                
+            radiobutton.config(text=choice,
+                               value=choice,
+                               variable=option,)
+            radiobutton.pack(anchor=W)
+        
+        radiobutton_left_frame.pack(side=LEFT,
+                                    anchor=W,
+                                    padx=(0, 350),)
+        radiobutton_right_frame.pack(anchor=W,)
+
 def display_current_question(action: str,
                              question_number_label: Label,
                              current_question_label: Label,
-                             current_choice_label: Label,
+                             current_choice_frame: Label,
                              question_navigator_dict: dict) -> None:
     """
     Displays the current question
@@ -299,8 +338,8 @@ def display_current_question(action: str,
         button.config(text="⭗")
         
     # updates to current question information
+    # TODO: update choices
     current_question_label.config(text=question_navigator_dict[str(current_question_idx)]["question"])
-    current_choice_label.config(text=question_navigator_dict[str(current_question_idx)]["answer"])
     question_number_label.config(text=f"Question {current_question_idx}")
 
 def update_question_navigator_icon(action: str, question_navigator_dict: dict=None) -> None:

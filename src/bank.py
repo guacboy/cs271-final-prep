@@ -1,6 +1,7 @@
 import random
 
 def some_tag() -> None:
+    # TODO: randomize choices
     print("some tag")
 
 def another_tag() -> None:
@@ -13,7 +14,7 @@ question_bank = {
                 "question": "some question",
                 "answer": "some answer",
                 "function": lambda: some_tag(),
-                "format": None,
+                "format": "radio",
             },
         },
         "another some tag": {
@@ -21,7 +22,7 @@ question_bank = {
                 "question": "another some question",
                 "answer": "another some answer",
                 "function": lambda: some_tag(),
-                "format": None,
+                "format": "radio",
             },
         },
     },
@@ -31,7 +32,7 @@ question_bank = {
                 "question": "another question",
                 "answer": "another answer",
                 "function": lambda: another_tag(),
-                "format": None,
+                "format": "radio",
             },
         },
     },
