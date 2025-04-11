@@ -132,6 +132,7 @@ def create_exam() -> None:
                 "is_flagged": False,
                 "question": None,
                 "answer": None,
+                "selected_answer": None,
                 "choices": ["long answer", "sho ans", "c", "d"], # FIXME: delete test
                 "format": None,
             },
@@ -239,6 +240,8 @@ def create_questions() -> list:
     # questions not selected before will have a higher
     # chance to be selected now
     for i in range(30):
+        # TODO: what if question is blank
+        
         # selects a random question
         module_chosen = random.choice(list(question_bank.keys()))
         tag_chosen = random.choice(list(question_bank[module_chosen].keys()))
@@ -258,6 +261,11 @@ def create_questions() -> list:
 
 def create_choices(current_choice_frame: Frame,
                    question_navigator_dict: dict) -> None:
+    """
+    Creates the question's choices
+    in the respective format.
+    """
+    
     current_question = question_navigator_dict[str(current_question_idx)]
 
     choice_format = current_question["format"]
@@ -279,18 +287,33 @@ def create_choices(current_choice_frame: Frame,
                 
             radiobutton.config(text=choice,
                                value=choice,
-                               variable=option,)
+                               variable=option,
+                               command=lambda: on_update_selected_answer(option.get()))
             radiobutton.pack(anchor=W)
+        
+        # if an answer was selected before (and user selects a different question)
+        if current_question["selected_answer"] != None:
+            # preselect the saved answer (when user revisits the question)
+            option.set(current_question["selected_answer"])
         
         radiobutton_left_frame.pack(side=LEFT,
                                     anchor=W,
                                     padx=(0, 350),)
         radiobutton_right_frame.pack(anchor=W,)
+    
+    def on_update_selected_answer(answer) -> None:
+        """
+        Updates the question navigator dictionary's selected answer
+        to allow the user to save its work if they choose to
+        navigate to a different question.
+        """
+        
+        current_question["selected_answer"] = answer
 
 def display_current_question(action: str,
                              question_number_label: Label,
                              current_question_label: Label,
-                             current_choice_frame: Label,
+                             current_choice_frame: Frame,
                              question_navigator_dict: dict) -> None:
     """
     Displays the current question
@@ -328,7 +351,8 @@ def display_current_question(action: str,
         else:
             value["button"].config(text="⚐")
     
-    button = question_navigator_dict[str(current_question_idx)]["button"]
+    current_question = question_navigator_dict[str(current_question_idx)]
+    button = current_question["button"]
     
     # if the current button is flagged
     if button.cget("text") == "⚐":
@@ -336,10 +360,14 @@ def display_current_question(action: str,
     # otherwise
     else:
         button.config(text="⭗")
-        
+    
+    # removes any current choices displayed on screen
+    for choice in current_choice_frame.winfo_children():
+        choice.destroy()
+    
     # updates to current question information
-    # TODO: update choices
-    current_question_label.config(text=question_navigator_dict[str(current_question_idx)]["question"])
+    create_choices(current_choice_frame, question_navigator_dict)
+    current_question_label.config(text=current_question["question"])
     question_number_label.config(text=f"Question {current_question_idx}")
 
 def update_question_navigator_icon(action: str, question_navigator_dict: dict=None) -> None:
@@ -349,8 +377,9 @@ def update_question_navigator_icon(action: str, question_navigator_dict: dict=No
     (ex. current, complete, flagged)
     """
     
-    button = question_navigator_dict[str(current_question_idx)]["button"]
-    text = question_navigator_dict[str(current_question_idx)]["text"]
+    current_question = question_navigator_dict[str(current_question_idx)]
+    button = current_question["button"]
+    text = current_question["text"]
     
     # if flagging a question
     if action == "flag":
@@ -359,14 +388,14 @@ def update_question_navigator_icon(action: str, question_navigator_dict: dict=No
             # change button's text to a flag
             button.config(text="⚑")
             # sets flag status to true
-            question_navigator_dict[str(current_question_idx)]["is_flagged"] = True
+            current_question["is_flagged"] = True
         # if it is already flagged
         # (user wants to unflag question)
         else:
             # revert button's text to previous state
             button.config(text=text)
             # sets flag status to false
-            question_navigator_dict[str(current_question_idx)]["is_flagged"] = False
+            current_question["is_flagged"] = False
 
 def on_enter_option(button) -> None:
     """
