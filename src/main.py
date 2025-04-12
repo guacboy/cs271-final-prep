@@ -54,18 +54,38 @@ def create_exam() -> None:
     end_exam_button.config(text="END",
                            padx=5,
                            pady=0,
-                           command=lambda: print("exit"))
+                           command=lambda: end_exam(question_details_dict))
     end_exam_button.bind("<Enter>", func=lambda e: on_enter_option(end_exam_button))
     end_exam_button.bind("<Leave>", func=lambda e: on_leave_option(end_exam_button))
     end_exam_button.pack(side=RIGHT,
                          padx=(0, 15))
+    
+    def end_exam(question_details_dict: dict) -> None:
+        end_exam_button.config(text="EXIT",
+                               padx=3,
+                               command=lambda: exam_window.destroy())
+        """
+        Ends the exam and scans through the user's selected answers,
+        marking correct or incorrect.
+        """
+        
+        # iterates through the question details
+        for value in question_details_dict.values():
+            # if the user's selected answer is correct
+            if value["selected_answer"] == value["answer"]:
+                # change the button's color to green
+                value["button"].config(fg="#3cd470")
+            # if the user's selected answer is incorrect
+            else:
+                # change the button's color to red
+                value["button"].config(fg="#cd4545")     
     
     flag_button = Util.button(question_details_frame)
     flag_button.config(text="⚐",
                        padx=5,
                        pady=0,
                        command=lambda: update_question_navigator_icon("flag",
-                                                                      question_navigator_dict))
+                                                                      question_details_dict))
     flag_button.bind("<Enter>", func=lambda e: on_enter_option(flag_button))
     flag_button.bind("<Leave>", func=lambda e: on_leave_option(flag_button))
     flag_button.pack(side=RIGHT,
@@ -90,7 +110,7 @@ def create_exam() -> None:
                                                                 question_number_label,
                                                                 current_question_label,
                                                                 current_choice_frame,
-                                                                question_navigator_dict))
+                                                                question_details_dict))
     prev_button.bind("<Enter>", func=lambda e: on_enter_option(prev_button))
     prev_button.bind("<Leave>", func=lambda e: on_leave_option(prev_button))
     prev_button.pack(side=LEFT,
@@ -105,7 +125,7 @@ def create_exam() -> None:
                                                                 question_number_label,
                                                                 current_question_label,
                                                                 current_choice_frame,
-                                                                question_navigator_dict))
+                                                                question_details_dict))
     next_button.bind("<Enter>", func=lambda e: on_enter_option(next_button))
     next_button.bind("<Leave>", func=lambda e: on_leave_option(next_button))
     next_button.pack(side=RIGHT,
@@ -117,13 +137,13 @@ def create_exam() -> None:
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
     
-    question_navigator_dict = {}
+    question_details_dict = {}
     # creates "i" amount of question navigator buttons
     for i in range(1, 31):
         # populates the dictionary
         # with each key representing the question number
         # and its associated information
-        question_navigator_dict.update({
+        question_details_dict.update({
             str(i): {
                 "button": None,
                 "icon": None,
@@ -151,14 +171,14 @@ def create_exam() -> None:
                                                                                       question_number_label,
                                                                                       current_question_label,
                                                                                       current_choice_frame,
-                                                                                      question_navigator_dict))
+                                                                                      question_details_dict))
             
         # binds each button to a hover effect
         question_navigator_button.bind("<Enter>", lambda e, button=question_navigator_button: on_enter_question_navigator(button))
         question_navigator_button.bind("<Leave>", lambda e, button=question_navigator_button: on_leave_question_navigator(button))
         question_navigator_button.pack(side=LEFT)
         
-        question_navigator = question_navigator_dict[str(i)]
+        question_navigator = question_details_dict[str(i)]
         
         # button widget
         question_navigator["button"] = question_navigator_button
@@ -182,13 +202,13 @@ def create_exam() -> None:
     # displays current question
     current_question_label = Util.label(exam_window)
     # selects the first question
-    current_question_label.config(text=question_navigator_dict["1"]["question"])
+    current_question_label.config(text=question_details_dict["1"]["question"])
     current_question_label.pack(expand=True,
                                 fill="none")
     
     # displays the current choices
     current_choice_frame = Util.frame(exam_window)
-    create_choices(current_choice_frame, question_navigator_dict)
+    create_choices(current_choice_frame, question_details_dict)
     current_choice_frame.pack(expand=True,
                               fill="none",)
     
@@ -219,13 +239,14 @@ def create_exam() -> None:
         
         # iterates through the question navigator dict
         # to find the question number (key) and button (value)
-        for key, value in question_navigator_dict.items():
+        for key, value in question_details_dict.items():
             # if user is currently on the question of the button
             if int(key) == current_question_idx:
                 # assign the button as the current button
                 current_button = value["button"]
 
         # if the button does not equal to the current button
+        # (meaning if the user is currently not on **that** question)
         if button != current_button:
             # restore it's original text
             button.config(text=button.original_text)
@@ -274,13 +295,13 @@ def create_questions() -> list:
     return questions_to_be_chosen
 
 def create_choices(current_choice_frame: Frame,
-                   question_navigator_dict: dict) -> None:
+                   question_details_dict: dict) -> None:
     """
     Creates the question's choices
     in the respective format.
     """
     
-    current_question = question_navigator_dict[str(current_question_idx)]
+    current_question = question_details_dict[str(current_question_idx)]
 
     choice_format = current_question["format"]
     # if the current question's format is radiobutton
@@ -323,13 +344,13 @@ def create_choices(current_choice_frame: Frame,
         """
         
         current_question["selected_answer"] = answer
-        update_question_navigator_icon("complete", question_navigator_dict)
+        update_question_navigator_icon("complete", question_details_dict)
 
 def display_current_question(action: str,
                              question_number_label: Label,
                              current_question_label: Label,
                              current_choice_frame: Frame,
-                             question_navigator_dict: dict) -> None:
+                             question_details_dict: dict) -> None:
     """
     Displays the current question
     and updates any relevant information.
@@ -358,7 +379,7 @@ def display_current_question(action: str,
         current_question_idx = 30
     
     # resets all the question navigator buttons to its previous state
-    for value in question_navigator_dict.values():
+    for value in question_details_dict.values():
         # if the question is not flagged
         if value["is_flagged"] == False:
             value["button"].config(text=value["icon"])
@@ -366,16 +387,17 @@ def display_current_question(action: str,
         else:
             value["button"].config(text="⚐")
     
-    current_question = question_navigator_dict[str(current_question_idx)]
+    current_question = question_details_dict[str(current_question_idx)]
     button = current_question["button"]
+    icon = button.cget("text")
     
     # if the current text matches, configure to its
     # respective opposite symbol
-    if button.cget("text") == "⭘":
+    if icon == "⭘":
         button.config(text="⭗")
-    elif button.cget("text") == "⏺":
+    elif icon == "⏺":
         button.config(text="⦿")
-    elif button.cget("text") == "⚐":
+    elif icon == "⚐":
         button.config(text="⚑")
     
     # removes any current choices displayed on screen
@@ -383,18 +405,19 @@ def display_current_question(action: str,
         choice.destroy()
     
     # updates to current question information
-    create_choices(current_choice_frame, question_navigator_dict)
+    create_choices(current_choice_frame, question_details_dict)
     current_question_label.config(text=current_question["question"])
     question_number_label.config(text=f"Question {current_question_idx}")
 
-def update_question_navigator_icon(action: str, question_navigator_dict: dict=None) -> None:
+def update_question_navigator_icon(action: str,
+                                   question_details_dict: dict=None) -> None:
     """
     Updates the question navigator icon
     in accordance the current question state
     (ex. current, complete, flagged)
     """
     
-    current_question = question_navigator_dict[str(current_question_idx)]
+    current_question = question_details_dict[str(current_question_idx)]
     
     # if flagging a question
     if action == "flag":
