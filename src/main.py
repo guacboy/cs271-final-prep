@@ -79,7 +79,7 @@ def create_exam() -> None:
                      padx=(0, 358))
     
     question_details_frame.pack(side=TOP,
-                                    fill=BOTH,)
+                                fill=BOTH,)
     
     # goes to previous question
     prev_button = Util.button(exam_window)
@@ -254,12 +254,14 @@ def create_questions() -> list:
         tag_chosen = random.choice(list(question_bank[module_chosen].keys()))
         question_chosen = random.choice(list(data["bank"][module_chosen][tag_chosen]["questions"]))
         
-        # adds the question to the list of questions to be chosen
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
         
+        # if the question has a function
         if result_chosen.get("function"):
+            # randomize the choices
             result_choices = result_chosen["function"]()
         
+        # adds the question to the list of questions to be chosen
         questions_to_be_chosen.append([
             result_chosen["question"],
             result_chosen["answer"],
