@@ -117,14 +117,12 @@ def create_exam() -> None:
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
     
-    # TODO: ⏺
-    
     question_navigator_dict = {}
     # creates "i" amount of question navigator buttons
     for i in range(1, 31):
         # populates the dictionary
         # with each key representing the question number
-        # and its associated button widget and button's text
+        # and its associated information
         question_navigator_dict.update({
             str(i): {
                 "button": None,
@@ -159,17 +157,19 @@ def create_exam() -> None:
         question_navigator_button.bind("<Leave>", lambda e, button=question_navigator_button: on_leave_question_navigator(button))
         question_navigator_button.pack(side=LEFT)
         
+        question_navigator = question_navigator_dict[str(i)]
+        
         # button widget
-        question_navigator_dict[str(i)]["button"] = question_navigator_button
+        question_navigator["button"] = question_navigator_button
         # the button's text (or state)
-        question_navigator_dict[str(i)]["text"] = question_navigator_button.cget("text")
+        question_navigator["text"] = question_navigator_button.cget("text")
         # question to show
-        question_navigator_dict[str(i)]["question"] = chosen_questions_list[i - 1][0]
+        question_navigator["question"] = chosen_questions_list[i - 1][0]
         # question to show's associated answer
-        question_navigator_dict[str(i)]["answer"] = chosen_questions_list[i - 1][1]
+        question_navigator["answer"] = chosen_questions_list[i - 1][1]
         # question to show's associated format
         # (multiple choice, select one, etc.)
-        question_navigator_dict[str(i)]["format"] = chosen_questions_list[i - 1][2]
+        question_navigator["format"] = chosen_questions_list[i - 1][2]
         
         # if it is the first idx
         if i == 1:
@@ -199,8 +199,12 @@ def create_exam() -> None:
         current_text = button.cget("text")
         button.original_text = current_text
         
+        # if the current text matches, configure to its
+        # respective opposite symbol
         if current_text == "⭘":
             button.config(text="⭗")
+        elif current_text == "⏺":
+            button.config(text="⦿")
         elif current_text == "⚐":
             button.config(text="⚑")
     
@@ -309,6 +313,7 @@ def create_choices(current_choice_frame: Frame,
         """
         
         current_question["selected_answer"] = answer
+        update_question_navigator_icon("complete", question_navigator_dict)
 
 def display_current_question(action: str,
                              question_number_label: Label,
@@ -354,12 +359,14 @@ def display_current_question(action: str,
     current_question = question_navigator_dict[str(current_question_idx)]
     button = current_question["button"]
     
-    # if the current button is flagged
-    if button.cget("text") == "⚐":
-        button.config(text="⚑")
-    # otherwise
-    else:
+    # if the current text matches, configure to its
+    # respective opposite symbol
+    if button.cget("text") == "⭘":
         button.config(text="⭗")
+    elif button.cget("text") == "⏺":
+        button.config(text="⦿")
+    elif button.cget("text") == "⚐":
+        button.config(text="⚑")
     
     # removes any current choices displayed on screen
     for choice in current_choice_frame.winfo_children():
@@ -378,24 +385,36 @@ def update_question_navigator_icon(action: str, question_navigator_dict: dict=No
     """
     
     current_question = question_navigator_dict[str(current_question_idx)]
-    button = current_question["button"]
-    text = current_question["text"]
     
     # if flagging a question
     if action == "flag":
         # if it is not flagged yet
-        if button.cget("text") != "⚑":
+        if current_question["button"].cget("text") != "⚑":
             # change button's text to a flag
-            button.config(text="⚑")
+            current_question["button"].config(text="⚑")
             # sets flag status to true
             current_question["is_flagged"] = True
         # if it is already flagged
         # (user wants to unflag question)
         else:
             # revert button's text to previous state
-            button.config(text=text)
+            if current_question["text"] == "⏺":
+                current_question["button"].config(text="⦿")
+            elif current_question["text"] == "⭘":
+                current_question["button"].config(text="⭗")
+                
             # sets flag status to false
             current_question["is_flagged"] = False
+    # if a question has an answer selected
+    elif action == "complete":
+        # set the current button text to "complete"
+        current_question["text"] = "⏺"
+        
+        # if the current question is not flagged
+        if current_question["button"].cget("text") != "⚑":
+            # set the current question button's text
+            # to the "selected and completed" symbol
+            current_question["button"].config(text="⦿")
 
 def on_enter_option(button) -> None:
     """
