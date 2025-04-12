@@ -278,9 +278,13 @@ def create_questions() -> list:
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
         
         # if the question has a function
-        if result_chosen.get("function"):
+        if result_chosen["function"] != None:
             # randomize the choices
             result_choices = result_chosen["function"]()
+        # if the question does not have a function,
+        # then it must be a true or false question
+        else:
+            result_choices = ["True", "False"]
         
         # adds the question to the list of questions to be chosen
         questions_to_be_chosen.append([
@@ -301,23 +305,39 @@ def create_choices(current_choice_frame: Frame,
     in the respective format.
     """
     
+    # TODO: select choice, check that applies, free response input,
+    
     current_question = question_details_dict[str(current_question_idx)]
 
     choice_format = current_question["format"]
-    # if the current question's format is radiobutton
-    if choice_format == "radio":
+    # if the current question's format is multiple choice,
+    # or true or false
+    if choice_format == "multiple" or choice_format == "true/false":
         # to display on the left side
         radiobutton_left_frame = Util.frame(current_choice_frame)
         # to display on the right side
         radiobutton_right_frame = Util.frame(current_choice_frame)
         
+        # if it's a multiple choice question
+        if choice_format == "multiple":
+            # align the choices with two answers on the left
+            # and two answers on the right
+            left_frame_target_idx = 1
+            right_frame_target_idx = 2
+        # if it's a true or false question
+        elif choice_format == "true/false":
+            # align the choices with one answer on the left
+            # and one answer on the right
+            left_frame_target_idx = 0
+            right_frame_target_idx = 1
+        
         option = StringVar()
         for idx, choice in enumerate(current_question["choices"]):
             # if to be displayed on the left side
-            if idx <= 1:
+            if idx <= left_frame_target_idx:
                 radiobutton = Util.radiobutton(radiobutton_left_frame)
             # if to be displayed on the right side
-            elif idx >= 2:
+            elif idx >= right_frame_target_idx:
                 radiobutton = Util.radiobutton(radiobutton_right_frame)
                 
             radiobutton.config(text=choice,
@@ -326,15 +346,18 @@ def create_choices(current_choice_frame: Frame,
                                command=lambda: on_update_selected_answer(option.get()))
             radiobutton.pack(anchor=W)
         
-        # if an answer was selected before (and user selects a different question)
-        if current_question["selected_answer"] != None:
-            # preselect the saved answer (when user revisits the question)
-            option.set(current_question["selected_answer"])
-        
         radiobutton_left_frame.pack(side=LEFT,
                                     anchor=W,
                                     padx=(0, 350),)
         radiobutton_right_frame.pack(anchor=W,)
+    # if the current question's format is multiple choice
+    elif choice_format == "true/false":
+        pass
+    
+    # if an answer was selected before (and user selects a different question)
+    if current_question["selected_answer"] != None:
+        # preselect the saved answer (when user revisits the question)
+        option.set(current_question["selected_answer"])
     
     def on_update_selected_answer(answer) -> None:
         """
