@@ -9,19 +9,18 @@ question_bank = {
         "some tag": {
             "Q1": {
                 "question": "|",
-                "answer": "some answer",
+                "answer": "a",
                 "function": lambda: on_shuffle_choices([
-                    "a", "b", "c", "d"]),
-                "format": "radio",
+                    "a", "b", "c", "d",]),
+                "format": "multiple",
             },
         },
         "another some tag": {
             "Q2": {
                 "question": "|",
-                "answer": "another some answer",
-                "function": lambda: on_shuffle_choices([
-                    "a", "b", "c", "d"]),
-                "format": "radio",
+                "answer": "a",
+                "function": None,
+                "format": "true/false",
             },
         },
     },
@@ -29,10 +28,10 @@ question_bank = {
         "another tag": {
             "Q1": {
                 "question": "|",
-                "answer": "another answer",
+                "answer": "a",
                 "function": lambda: on_shuffle_choices([
-                    "a", "b", "c", "d"]),
-                "format": "radio",
+                    "a", "b", "c", "d",]),
+                "format": "multiple",
             },
         },
     },

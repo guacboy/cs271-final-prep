@@ -69,16 +69,43 @@ def create_exam() -> None:
         marking correct or incorrect.
         """
         
+        with open("data.json", "r") as file:
+            data = json.load(file)
+        
+        # if there are questions marked wrong
+        if len(data["questions_marked_wrong"]) > 0:
+            for question in data["questions_marked_wrong"]:
+                # decrement the count by one
+                if question[3] > 0:
+                    question[3] -= 1
+        
         # iterates through the question details
         for value in question_details_dict.values():
+            question_location = value["location"]
+            module = question_location[0]
+            tag = question_location[1]
+            question = question_location[2]
+            
             # if the user's selected answer is correct
             if value["selected_answer"] == value["answer"]:
                 # change the button's color to green
                 value["button"].config(fg="#3cd470")
+                
+                # increment the amount of times the question was answered correctly
+                # to decrease the chances of seeing the question again
+                data["bank"][module][tag]["questions"][question] += 1
             # if the user's selected answer is incorrect
             else:
                 # change the button's color to red
-                value["button"].config(fg="#cd4545")     
+                value["button"].config(fg="#cd4545")
+                
+                # add the question to a list of questions answered incorrectly
+                # with a random counter that will countdown on
+                # when the question will appear in the next exam
+                data["questions_marked_wrong"].append(question_location + [random.randint(1, 3)])
+        
+        with open("data.json", "w") as file:
+            file.write(json.dumps(data, indent=4)) 
     
     flag_button = Util.button(question_details_frame)
     flag_button.config(text="⚐",
@@ -148,6 +175,8 @@ def create_exam() -> None:
                 "button": None,
                 "icon": None,
                 "is_flagged": False,
+                
+                "location": None,
                 "question": None,
                 "answer": None,
                 "format": None,
@@ -178,21 +207,24 @@ def create_exam() -> None:
         question_navigator_button.bind("<Leave>", lambda e, button=question_navigator_button: on_leave_question_navigator(button))
         question_navigator_button.pack(side=LEFT)
         
-        question_navigator = question_details_dict[str(i)]
+        question_details = question_details_dict[str(i)]
         
         # button widget
-        question_navigator["button"] = question_navigator_button
+        question_details["button"] = question_navigator_button
         # the button's text (or state)
-        question_navigator["icon"] = question_navigator_button.cget("text")
+        question_details["icon"] = question_navigator_button.cget("text")
+        
+        # question's location (for easier access)
+        question_details["location"] = chosen_questions_list[i - 1][0]
         # question
-        question_navigator["question"] = chosen_questions_list[i - 1][0]
+        question_details["question"] = chosen_questions_list[i - 1][1]
         # question's answer
-        question_navigator["answer"] = chosen_questions_list[i - 1][1]
+        question_details["answer"] = chosen_questions_list[i - 1][2]
         # question's format
         # (multiple choice, select one, etc.)
-        question_navigator["format"] = chosen_questions_list[i - 1][2]
+        question_details["format"] = chosen_questions_list[i - 1][3]
         # question's choices
-        question_navigator["choices"] = chosen_questions_list[i - 1][3]
+        question_details["choices"] = chosen_questions_list[i - 1][4]
         
         # if it is the first idx
         if i == 1:
@@ -269,12 +301,14 @@ def create_questions() -> list:
     # chance to be selected now
     for i in range(30):
         # TODO: what if question is blank
+        # TODO: add questions marked wrong first
         
         # selects a random question
         module_chosen = random.choice(list(question_bank.keys()))
         tag_chosen = random.choice(list(question_bank[module_chosen].keys()))
         question_chosen = random.choice(list(data["bank"][module_chosen][tag_chosen]["questions"]))
         
+        question_location = [module_chosen, tag_chosen, question_chosen]
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
         
         # if the question has a function
@@ -288,6 +322,8 @@ def create_questions() -> list:
         
         # adds the question to the list of questions to be chosen
         questions_to_be_chosen.append([
+            question_location,
+            
             result_chosen["question"],
             result_chosen["answer"],
             result_chosen["format"],
@@ -350,9 +386,6 @@ def create_choices(current_choice_frame: Frame,
                                     anchor=W,
                                     padx=(0, 350),)
         radiobutton_right_frame.pack(anchor=W,)
-    # if the current question's format is multiple choice
-    elif choice_format == "true/false":
-        pass
     
     # if an answer was selected before (and user selects a different question)
     if current_question["selected_answer"] != None:
@@ -491,3 +524,12 @@ def on_leave_option(button) -> None:
 if __name__ == "__main__":
     main_menu()
     root.mainloop()
+    
+    # resets file
+    with open("data.json", "r") as file:
+        data = json.load(file)
+    
+    data["questions_marked_wrong"].clear()
+    
+    with open("data.json", "w") as file:
+            file.write(json.dumps(data, indent=4))

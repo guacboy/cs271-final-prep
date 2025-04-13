@@ -17,10 +17,11 @@
         "Module 2": {
             "another tag": {
                 "questions": {
-                    "Q1": 0
+                    "Q1": 1
                 },
                 "count": 0
             }
         }
-    }
+    },
+    "questions_marked_wrong": []
 }
