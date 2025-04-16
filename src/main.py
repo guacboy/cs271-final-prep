@@ -3,7 +3,7 @@ import json
 import random
 
 from util import *
-from bank import question_bank
+from bank import question_bank, MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE
 
 root = Tk()
 root.geometry("600x700")
@@ -310,15 +310,18 @@ def create_questions() -> list:
         
         question_location = [module_chosen, tag_chosen, question_chosen]
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
+        choice_format = result_chosen["format"]
         
-        # if the question has a function
-        if result_chosen["function"] != None:
+        # if the question is a multiple choice
+        if choice_format == MULTIPLE_CHOICE:
             # randomize the choices
             result_choices = result_chosen["function"]()
-        # if the question does not have a function,
-        # then it must be a true or false question
-        else:
+        # if the question is a true or false
+        elif choice_format == TRUE_OR_FALSE:
             result_choices = ["True", "False"]
+        # if the question is a free reponse
+        elif choice_format == FREE_RESPONSE:
+            result_choices = None
         
         # adds the question to the list of questions to be chosen
         questions_to_be_chosen.append([
@@ -341,27 +344,47 @@ def create_choices(current_choice_frame: Frame,
     in the respective format.
     """
     
+    def on_update_selected_answer(answer: str) -> None:
+        """
+        Updates the question navigator dictionary's selected answer
+        to allow the user to save its work if they choose to
+        navigate to a different question.
+        """
+
+        # saves answer
+        current_question["selected_answer"] = answer
+        
+        # if the answer is empty
+        # (because user may have deselected/deleted their previous answer)
+        if answer == "":
+            # update the question navigator to "incomplete" icon
+            update_question_navigator_icon("incomplete", question_details_dict)
+        # if there is an answer
+        else:
+            # update the question navifator to "complete" icon
+            update_question_navigator_icon("complete", question_details_dict)
+    
     # TODO: select choice, check that applies, free response input,
     
     current_question = question_details_dict[str(current_question_idx)]
 
     choice_format = current_question["format"]
-    # if the current question's format is multiple choice,
+    # if the question is multiple choice,
     # or true or false
-    if choice_format == "multiple" or choice_format == "true/false":
+    if choice_format == MULTIPLE_CHOICE or choice_format == TRUE_OR_FALSE:
         # to display on the left side
         radiobutton_left_frame = Util.frame(current_choice_frame)
         # to display on the right side
         radiobutton_right_frame = Util.frame(current_choice_frame)
         
         # if it's a multiple choice question
-        if choice_format == "multiple":
+        if choice_format == MULTIPLE_CHOICE:
             # align the choices with two answers on the left
             # and two answers on the right
             left_frame_target_idx = 1
             right_frame_target_idx = 2
         # if it's a true or false question
-        elif choice_format == "true/false":
+        elif choice_format == TRUE_OR_FALSE:
             # align the choices with one answer on the left
             # and one answer on the right
             left_frame_target_idx = 0
@@ -386,21 +409,21 @@ def create_choices(current_choice_frame: Frame,
                                     anchor=W,
                                     padx=(0, 350),)
         radiobutton_right_frame.pack(anchor=W,)
+    # if the question is free response
+    elif choice_format == FREE_RESPONSE:
+        option = StringVar()
+        
+        entrybox = Util.entry(current_choice_frame)
+        entrybox.config(textvariable=option)
+        # calls the function (passing the current entrybox text)
+        # every time the user enters a text in the entrybox
+        option.trace_add("write", lambda *args: on_update_selected_answer(option.get()))
+        entrybox.pack()
     
     # if an answer was selected before (and user selects a different question)
     if current_question["selected_answer"] != None:
         # preselect the saved answer (when user revisits the question)
         option.set(current_question["selected_answer"])
-    
-    def on_update_selected_answer(answer) -> None:
-        """
-        Updates the question navigator dictionary's selected answer
-        to allow the user to save its work if they choose to
-        navigate to a different question.
-        """
-        
-        current_question["selected_answer"] = answer
-        update_question_navigator_icon("complete", question_details_dict)
 
 def display_current_question(action: str,
                              question_number_label: Label,
@@ -504,6 +527,17 @@ def update_question_navigator_icon(action: str,
             # set the current question button's text
             # to the "selected and completed" symbol
             current_question["button"].config(text="⦿")
+    # if a question has not been selected
+    # (user may have deselected/deleted the answer)
+    elif action == "incomplete":
+        # set the current button text to "incomplete"
+        current_question["icon"] = "⭘"
+        
+        # if the current question is not flagged
+        if current_question["button"].cget("text") != "⚑":
+            # set the current question button's text
+            # to the "selected and incompleted" symbol
+            current_question["button"].config(text="⭗")
 
 def on_enter_option(button) -> None:
     """

@@ -42,3 +42,10 @@ class Util():
                            activebackground=BG_COLOR,
                            selectcolor=OPTION_COLOR,
                            tristatevalue="None",)
+        
+    def entry(window) -> Entry:
+        return Entry(window,
+                     font=(FONT, 15, "normal"),
+                     width=20,
+                     fg=FONT_COLOR,
+                     bg=OPTION_COLOR,)

@@ -1,5 +1,9 @@
 import random
 
+MULTIPLE_CHOICE = "multiple choice"
+TRUE_OR_FALSE = "true or false"
+FREE_RESPONSE = "free response"
+
 def on_shuffle_choices(choices: list) -> list:
     random.shuffle(choices)
     return choices
@@ -12,7 +16,7 @@ question_bank = {
                 "answer": "a",
                 "function": lambda: on_shuffle_choices([
                     "a", "b", "c", "d",]),
-                "format": "multiple",
+                "format": MULTIPLE_CHOICE,
             },
         },
         "another some tag": {
@@ -20,7 +24,7 @@ question_bank = {
                 "question": "|",
                 "answer": "a",
                 "function": None,
-                "format": "true/false",
+                "format": FREE_RESPONSE,
             },
         },
     },
@@ -29,9 +33,8 @@ question_bank = {
             "Q1": {
                 "question": "|",
                 "answer": "a",
-                "function": lambda: on_shuffle_choices([
-                    "a", "b", "c", "d",]),
-                "format": "multiple",
+                "function": None,
+                "format": TRUE_OR_FALSE,
             },
         },
     },
