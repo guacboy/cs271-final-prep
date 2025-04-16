@@ -41,6 +41,7 @@ class Util():
                            activeforeground=FONT_COLOR,
                            activebackground=BG_COLOR,
                            selectcolor=OPTION_COLOR,
+                           justify=LEFT,
                            tristatevalue="None",)
         
     def entry(window) -> Entry:
@@ -49,3 +50,15 @@ class Util():
                      width=20,
                      fg=FONT_COLOR,
                      bg=OPTION_COLOR,)
+        
+    def checkbox(window) -> Checkbutton:
+        return Checkbutton(window,
+                           font=(FONT, 15, "normal"),
+                           fg=FONT_COLOR,
+                           bg=BG_COLOR,
+                           activeforeground=FONT_COLOR,
+                           activebackground=BG_COLOR,
+                           selectcolor=OPTION_COLOR,
+                           justify=LEFT,
+                           wraplength=750,
+                           padx=5,)

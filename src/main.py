@@ -3,7 +3,8 @@ import json
 import random
 
 from util import *
-from bank import question_bank, MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE
+from bank import question_bank, \
+    MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE, SELECT_THAT_APPLY
 
 root = Tk()
 root.geometry("600x700")
@@ -78,6 +79,8 @@ def create_exam() -> None:
                 # decrement the count by one
                 if question[3] > 0:
                     question[3] -= 1
+        
+        # TODO: highlight correct answer and incorrect answers
         
         # iterates through the question details
         for value in question_details_dict.values():
@@ -226,6 +229,11 @@ def create_exam() -> None:
         # question's choices
         question_details["choices"] = chosen_questions_list[i - 1][4]
         
+        # if a question format is "select that apply"
+        if question_details["format"] == SELECT_THAT_APPLY:
+            # initialize a set
+            question_details["selected_answer"] = set()
+        
         # if it is the first idx
         if i == 1:
             # change the first button's icon to "⭗" (current)
@@ -300,7 +308,7 @@ def create_questions() -> list:
     # questions not selected before will have a higher
     # chance to be selected now
     for i in range(30):
-        # TODO: what if question is blank
+        # TODO: what if question/answer is blank
         # TODO: add questions marked wrong first
         
         # selects a random question
@@ -310,17 +318,17 @@ def create_questions() -> list:
         
         question_location = [module_chosen, tag_chosen, question_chosen]
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
-        choice_format = result_chosen["format"]
+        format_chosen = result_chosen["format"]
         
-        # if the question is a multiple choice
-        if choice_format == MULTIPLE_CHOICE:
+        # if the question is a multiple choice or select that apply
+        if format_chosen == MULTIPLE_CHOICE or format_chosen == SELECT_THAT_APPLY:
             # randomize the choices
             result_choices = result_chosen["function"]()
         # if the question is a true or false
-        elif choice_format == TRUE_OR_FALSE:
+        elif format_chosen == TRUE_OR_FALSE:
             result_choices = ["True", "False"]
         # if the question is a free reponse
-        elif choice_format == FREE_RESPONSE:
+        elif format_chosen == FREE_RESPONSE:
             result_choices = None
         
         # adds the question to the list of questions to be chosen
@@ -329,7 +337,7 @@ def create_questions() -> list:
             
             result_chosen["question"],
             result_chosen["answer"],
-            result_chosen["format"],
+            format_chosen,
             result_choices,
         ])
         # shuffles the list
@@ -344,19 +352,19 @@ def create_choices(current_choice_frame: Frame,
     in the respective format.
     """
     
-    def on_update_selected_answer(answer: str) -> None:
+    def on_update_selected_answer(answer) -> None:
         """
         Updates the question navigator dictionary's selected answer
         to allow the user to save its work if they choose to
         navigate to a different question.
         """
 
-        # saves answer
+        # saves the answer
         current_question["selected_answer"] = answer
         
         # if the answer is empty
         # (because user may have deselected/deleted their previous answer)
-        if answer == "":
+        if answer == "" or len(answer) <= 0:
             # update the question navigator to "incomplete" icon
             update_question_navigator_icon("incomplete", question_details_dict)
         # if there is an answer
@@ -364,7 +372,7 @@ def create_choices(current_choice_frame: Frame,
             # update the question navifator to "complete" icon
             update_question_navigator_icon("complete", question_details_dict)
     
-    # TODO: select choice, check that applies, free response input,
+    # TODO: select choice
     
     current_question = question_details_dict[str(current_question_idx)]
 
@@ -419,9 +427,48 @@ def create_choices(current_choice_frame: Frame,
         # every time the user enters a text in the entrybox
         option.trace_add("write", lambda *args: on_update_selected_answer(option.get()))
         entrybox.pack()
+    # if the question is a select that apply
+    elif choice_format == SELECT_THAT_APPLY:
+        # any previous answers selected before are reselected
+        selected_checkbox = current_question["selected_answer"]
+        
+        # iterates through the randomize choices
+        for choice in current_question["choices"]:
+            option = StringVar(value=f"-{choice}")
+
+            checkbox = Util.checkbox(current_choice_frame)
+            checkbox.config(text=f"{choice}{" " * (115 - len(choice))}", # " " for better alignment
+                            onvalue=choice,
+                            offvalue=f"-{choice}",
+                            variable=option,
+                            command=lambda o=option: on_update_selected_checkbox(o.get()))
+            checkbox.pack(anchor=W)
+            
+            # if an answer has been previously selected, then reselect the checkbox
+            # (for if user leaves the question and comes back later)
+            if choice in selected_checkbox:
+                checkbox.select()
+        
+        def on_update_selected_checkbox(selected_answer: str) -> None:
+            """
+            Updates the list of currently selected checkboxes
+            and saves the answer.
+            """
+            
+            # if starts with a "-" (user wants to deselect their answer)
+            if selected_answer.startswith("-"):
+                # remove the answer
+                selected_checkbox.remove(selected_answer[1:])
+            # otherwise
+            else:
+                # add the answer
+                selected_checkbox.add(selected_answer)
+                
+            on_update_selected_answer(selected_checkbox)
     
     # if an answer was selected before (and user selects a different question)
-    if current_question["selected_answer"] != None:
+    # and the choice format is not "select that apply" format
+    if current_question["selected_answer"] and choice_format != SELECT_THAT_APPLY:
         # preselect the saved answer (when user revisits the question)
         option.set(current_question["selected_answer"])
 
