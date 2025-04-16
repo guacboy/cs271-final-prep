@@ -4,46 +4,51 @@ MULTIPLE_CHOICE = "multiple choice"
 TRUE_OR_FALSE = "true or false"
 FREE_RESPONSE = "free response"
 SELECT_THAT_APPLY = "select that apply"
-
-def on_shuffle_choices(choices: list) -> list:
-    random.shuffle(choices)
-    return choices
+MATCH_TO_ANSWER = "match to answer"
 
 question_bank = {
     "Module 1": {
         "some tag": {
             "Q1": {
-                "question": "some tag q1",
-                "answer": {"a"},
-                "function": lambda: on_shuffle_choices([
-                    "a", "test answer", "c", "d",]),
-                "format": SELECT_THAT_APPLY,
+                "details": {
+                    "some question": {
+                        "step 1": "answer1",
+                        "step 2": "answer2",
+                        "step 3": "answer3",
+                        "step 4": "answer4",
+                    }
+                },
+                "format": MATCH_TO_ANSWER,
             },
         },
         "another some tag": {
-            "Q2": {
-                "question": "another some tag q2",
-                "answer": "a",
-                "function": None,
-                "format": FREE_RESPONSE,
+            "Q1": {
+                "details": {
+                    "some question": [
+                        [
+                            "this is correct",
+                            "this is also correct",
+                            "pick this one",
+                        ],
+                        [
+                            "this is incorrect",
+                            "this is also incorrect",
+                            "do not pick this one",
+                        ]
+                    ]
+                },
+                "format": SELECT_THAT_APPLY,
             },
         },
-    },
-    "Module 2": {
         "another tag": {
             "Q1": {
-                "question": "another tag q1",
-                "answer": "a",
-                "function": None,
-                "format": TRUE_OR_FALSE,
-            },
-            "Q2": {
-                "question": "another tag q2",
-                "answer": {
-                    "a", "d"},
-                "function": lambda: on_shuffle_choices([
-                    "a", "what not to do at a stop light", "c", "d", "e", "f"]),
-                "format": SELECT_THAT_APPLY,
+                "details": {
+                    "some question": "reponse1",
+                    "another question": "reponse2",
+                    "no question": "reponse3",
+                    "yes question": "reponse4",
+                },
+                "format": MULTIPLE_CHOICE,
             },
         },
     },

@@ -42,6 +42,7 @@ class Util():
                            activebackground=BG_COLOR,
                            selectcolor=OPTION_COLOR,
                            justify=LEFT,
+                           wraplength=250,
                            tristatevalue="None",)
         
     def entry(window) -> Entry:
@@ -49,7 +50,9 @@ class Util():
                      font=(FONT, 15, "normal"),
                      width=20,
                      fg=FONT_COLOR,
-                     bg=OPTION_COLOR,)
+                     bg=OPTION_COLOR,
+                     relief=RAISED,
+                     bd=2,)
         
     def checkbox(window) -> Checkbutton:
         return Checkbutton(window,
@@ -62,3 +65,18 @@ class Util():
                            justify=LEFT,
                            wraplength=750,
                            padx=5,)
+        
+    def optionmenu(window,
+                   variable,
+                   *value) -> OptionMenu:
+        optionmenu = OptionMenu(window,
+                                variable,
+                                *value,)
+        optionmenu.config(font=(FONT, 15, "normal"),
+                          fg=FONT_COLOR,
+                          bg=OPTION_COLOR,
+                          activeforeground=FONT_COLOR,
+                          activebackground=HOVER_COLOR,
+                          highlightbackground=BG_COLOR,
+                          width=10,)
+        return optionmenu

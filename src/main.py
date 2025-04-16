@@ -4,7 +4,7 @@ import random
 
 from util import *
 from bank import question_bank, \
-    MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE, SELECT_THAT_APPLY
+    MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE, SELECT_THAT_APPLY, MATCH_TO_ANSWER
 
 root = Tk()
 root.geometry("600x700")
@@ -314,34 +314,82 @@ def create_questions() -> list:
         # selects a random question
         module_chosen = random.choice(list(question_bank.keys()))
         tag_chosen = random.choice(list(question_bank[module_chosen].keys()))
+        # TODO: prioritize questions that have not been chosen frequently
         question_chosen = random.choice(list(data["bank"][module_chosen][tag_chosen]["questions"]))
         
         question_location = [module_chosen, tag_chosen, question_chosen]
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
+        details_chosen = result_chosen["details"]
         format_chosen = result_chosen["format"]
         
-        # if the question is a multiple choice or select that apply
-        if format_chosen == MULTIPLE_CHOICE or format_chosen == SELECT_THAT_APPLY:
-            # randomize the choices
-            result_choices = result_chosen["function"]()
-        # if the question is a true or false
+        details_to_be_chosen = [
+            key for key in details_chosen.keys()
+        ]
+        question_chosen = random.choice(details_to_be_chosen)
+        correct_answer = details_chosen[question_chosen]
+        
+        # if the question format is multiple choice
+        if format_chosen == MULTIPLE_CHOICE:
+            # creates a list of incorrect choices to be chosen
+            # excluding the correct answer
+            choices_to_be_chosen = [
+                choice for choice in details_chosen.values()
+                if choice != correct_answer
+            ]
+            random.shuffle(choices_to_be_chosen)
+            
+            # creates a list of (3) incorrect choices
+            # from the list of choices to be chosen
+            choices_chosen = [
+                choices_to_be_chosen[i] for i in range(3)
+            ]
+            # includes the correct answer as one of the choices
+            choices_chosen.append(correct_answer)
+        # if the question format is a select that apply
+        elif format_chosen == SELECT_THAT_APPLY:
+            # reassigns the single correct answer to multiple correct answers
+            correct_answer = details_chosen[question_chosen][0]
+            
+            # creates a list of incorrect choices
+            choices_chosen = [
+                choice for choice in details_chosen[question_chosen][1]
+            ]
+            # combines the correct answer with the incorrect choices
+            choices_chosen = correct_answer + choices_chosen
+            random.shuffle(choices_chosen)
+            
+            # converts list into set (for exam grading purpose)
+            correct_answer = set(correct_answer)
+            choices_chosen = set(choices_chosen)
+        # if the question format is a match to answer
+        elif format_chosen == MATCH_TO_ANSWER:
+            # TODO: reassign correct answer to dictionary
+            # maybe turn dictionary into a list and check if answers are in order?
+            
+            # creates a list of choices
+            choices_chosen = [
+                choice for choice in details_chosen[question_chosen].values()
+            ]
+            random.shuffle(choices_chosen)
+        # if the question format is true or false
         elif format_chosen == TRUE_OR_FALSE:
-            result_choices = ["True", "False"]
-        # if the question is a free reponse
+            choices_chosen = ["True", "False"]
+        # if the question format is free response
         elif format_chosen == FREE_RESPONSE:
-            result_choices = None
+            choices_chosen = None
         
         # adds the question to the list of questions to be chosen
         questions_to_be_chosen.append([
             question_location,
             
-            result_chosen["question"],
-            result_chosen["answer"],
+            question_chosen,
+            correct_answer,
             format_chosen,
-            result_choices,
+            choices_chosen,
         ])
-        # shuffles the list
-        random.shuffle(questions_to_be_chosen)
+        
+    # shuffles the list
+    random.shuffle(questions_to_be_chosen)
     
     return questions_to_be_chosen
 
@@ -371,8 +419,6 @@ def create_choices(current_choice_frame: Frame,
         else:
             # update the question navifator to "complete" icon
             update_question_navigator_icon("complete", question_details_dict)
-    
-    # TODO: select choice
     
     current_question = question_details_dict[str(current_question_idx)]
 
@@ -417,16 +463,6 @@ def create_choices(current_choice_frame: Frame,
                                     anchor=W,
                                     padx=(0, 350),)
         radiobutton_right_frame.pack(anchor=W,)
-    # if the question is free response
-    elif choice_format == FREE_RESPONSE:
-        option = StringVar()
-        
-        entrybox = Util.entry(current_choice_frame)
-        entrybox.config(textvariable=option)
-        # calls the function (passing the current entrybox text)
-        # every time the user enters a text in the entrybox
-        option.trace_add("write", lambda *args: on_update_selected_answer(option.get()))
-        entrybox.pack()
     # if the question is a select that apply
     elif choice_format == SELECT_THAT_APPLY:
         # any previous answers selected before are reselected
@@ -465,6 +501,25 @@ def create_choices(current_choice_frame: Frame,
                 selected_checkbox.add(selected_answer)
                 
             on_update_selected_answer(selected_checkbox)
+    
+    elif choice_format == MATCH_TO_ANSWER:
+        # TODO: add things to match on left and answers on right
+        
+        option = StringVar(value="")
+        optionmenu = Util.optionmenu(current_choice_frame,
+                                     option,
+                                     *current_question["choices"])
+        optionmenu.pack()
+    # if the question is free response
+    elif choice_format == FREE_RESPONSE:
+        option = StringVar()
+        
+        entrybox = Util.entry(current_choice_frame)
+        entrybox.config(textvariable=option)
+        # calls the function (passing the current entrybox text)
+        # every time the user enters a text in the entrybox
+        option.trace_add("write", lambda *args: on_update_selected_answer(option.get()))
+        entrybox.pack()
     
     # if an answer was selected before (and user selects a different question)
     # and the choice format is not "select that apply" format
