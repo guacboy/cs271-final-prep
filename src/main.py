@@ -76,9 +76,11 @@ def create_exam() -> None:
         # if there are questions marked wrong
         if len(data["questions_marked_wrong"]) > 0:
             for question in data["questions_marked_wrong"]:
+                count = question[3]
+                
                 # decrement the count by one
-                if question[3] > 0:
-                    question[3] -= 1
+                if count > 0:
+                    count -= 1
         
         # TODO: highlight correct answer and incorrect answers
         
@@ -229,10 +231,14 @@ def create_exam() -> None:
         # question's choices
         question_details["choices"] = chosen_questions_list[i - 1][4]
         
-        # if a question format is "select that apply"
+        # if the question format is "select that apply"
         if question_details["format"] == SELECT_THAT_APPLY:
             # initialize a set
             question_details["selected_answer"] = set()
+        # if the question format is "match to answer"
+        elif question_details["format"] == MATCH_TO_ANSWER:
+            # initialize a list
+            question_details["selected_answer"] = list()
         
         # if it is the first idx
         if i == 1:
@@ -241,16 +247,20 @@ def create_exam() -> None:
     
     # displays current question
     current_question_label = Util.label(exam_window)
-    # selects the first question
-    current_question_label.config(text=question_details_dict["1"]["question"])
     current_question_label.pack(expand=True,
                                 fill="none")
     
     # displays the current choices
     current_choice_frame = Util.frame(exam_window)
-    create_choices(current_choice_frame, question_details_dict)
     current_choice_frame.pack(expand=True,
                               fill="none",)
+    
+    # displays the first question and choices
+    display_current_question(str(1),
+                             question_number_label,
+                             current_question_label,
+                             current_choice_frame,
+                             question_details_dict)
     
     def on_enter_question_navigator(button) -> None:
         """
@@ -360,16 +370,27 @@ def create_questions() -> list:
             
             # converts list into set (for exam grading purpose)
             correct_answer = set(correct_answer)
-            choices_chosen = set(choices_chosen)
         # if the question format is a match to answer
         elif format_chosen == MATCH_TO_ANSWER:
-            # TODO: reassign correct answer to dictionary
-            # maybe turn dictionary into a list and check if answers are in order?
+            question_chosen_list = []
+            correct_answer = [] # reassign the single correct answer to a list of correct answers
+            choices_chosen = []
             
-            # creates a list of choices
-            choices_chosen = [
-                choice for choice in details_chosen[question_chosen].values()
-            ]
+            # TODO: option to randomize subquestions
+            
+            # iterate the amount of sub-questions/answer
+            for i in range(len(details_chosen[question_chosen])):
+                subquestion = details_chosen[question_chosen][i][0]
+                answer = details_chosen[question_chosen][i][1]
+                
+                # adds the subquestion
+                question_chosen_list.append(subquestion)
+                # adds the correct answer (in order)
+                correct_answer.append(answer)
+                # adds the choice (to later be shuffled)
+                choices_chosen.append(answer)
+            
+            question_chosen = [question_chosen] + question_chosen_list
             random.shuffle(choices_chosen)
         # if the question format is true or false
         elif format_chosen == TRUE_OR_FALSE:
@@ -412,7 +433,9 @@ def create_choices(current_choice_frame: Frame,
         
         # if the answer is empty
         # (because user may have deselected/deleted their previous answer)
-        if answer == "" or len(answer) <= 0:
+        if (answer == ""
+            or len(answer) <= 0
+            or "" in answer):
             # update the question navigator to "incomplete" icon
             update_question_navigator_icon("incomplete", question_details_dict)
         # if there is an answer
@@ -501,15 +524,62 @@ def create_choices(current_choice_frame: Frame,
                 selected_checkbox.add(selected_answer)
                 
             on_update_selected_answer(selected_checkbox)
-    
+    # if the question is a match to answer
     elif choice_format == MATCH_TO_ANSWER:
-        # TODO: add things to match on left and answers on right
+        # reassigns any previous answer that user may have saved
+        selected_optionmenu = current_question["selected_answer"]
         
+        # if the list is empty
+        if len(selected_optionmenu) <= 0:
+            # populate the list with placeholders (to later be indexed)
+            selected_optionmenu = [""] * len(current_question["choices"])
+        
+        # iterates through the list of questions, skipping the first idx
+        # (first idx contains the main question, and every idx afterwards
+        # is the subquestion)
+        for i in range(1, len(current_question["question"])):
+            optionmenu_frame = Util.frame(current_choice_frame)
+            optionmenu_frame.pack()
+            
+            # displays the subquestion
+            subquestion_label = Util.label(optionmenu_frame)
+            subquestion_label.config(text=current_question["question"][i],
+                                     width=50,
+                                     wraplength=600,
+                                     anchor=W,
+                                     justify=LEFT,)
+            subquestion_label.pack(side=LEFT,)
+            
+            # displays the optionmenu
+            option = StringVar(value=selected_optionmenu[i - 1])
+            optionmenu = Util.optionmenu(optionmenu_frame,
+                                         option,
+                                         *current_question["choices"],
+                                         func=lambda e, idx=i: on_update_selected_optionmenu(e, idx - 1))
+            optionmenu.pack(pady=(0,25))
+        
+        # fixes visual bug;
+        # creates the last optionmenu (to allow for the bugged text to print),
+        # then destroys itself
         option = StringVar(value="")
-        optionmenu = Util.optionmenu(current_choice_frame,
-                                     option,
-                                     *current_question["choices"])
-        optionmenu.pack()
+        last_optionmenu = Util.optionmenu(optionmenu_frame,
+                                          option,
+                                          *current_question["choices"],)
+        last_optionmenu.pack()
+        last_optionmenu.destroy()
+            
+        def on_update_selected_optionmenu(selected_answer: str,
+                                          idx: int,) -> None:
+            """
+            Updates the list of currently selected optionmenu
+            and saves the answer.
+            """
+            
+            # replaces with an answer at specified idx
+            # (this allows the answer to remain in order for exam grading)
+            selected_optionmenu[idx] = selected_answer
+
+            on_update_selected_answer(selected_optionmenu)
     # if the question is free response
     elif choice_format == FREE_RESPONSE:
         option = StringVar()
@@ -587,7 +657,16 @@ def display_current_question(action: str,
     
     # updates to current question information
     create_choices(current_choice_frame, question_details_dict)
-    current_question_label.config(text=current_question["question"])
+    
+    # if the question format is match to answer,
+    # then the value is a list
+    if current_question["format"] == MATCH_TO_ANSWER:
+        # takes the first idx of the list (which is the actual question)
+        current_question_label.config(text=current_question["question"][0])
+    # otherwise, then the value is not a list (it's a string)
+    else:
+        current_question_label.config(text=current_question["question"])
+        
     question_number_label.config(text=f"Question {current_question_idx}")
 
 def update_question_navigator_icon(action: str,

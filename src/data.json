@@ -3,19 +3,19 @@
         "Module 1": {
             "some tag": {
                 "questions": {
-                    "Q1": 4
+                    "Q1": 9
                 },
                 "count": 0
             },
             "another some tag": {
                 "questions": {
-                    "Q1": 2
+                    "Q1": 5
                 },
                 "count": 0
             },
             "another tag": {
                 "questions": {
-                    "Q1": 2
+                    "Q1": 3
                 },
                 "count": 0
             }

@@ -11,12 +11,12 @@ question_bank = {
         "some tag": {
             "Q1": {
                 "details": {
-                    "some question": {
-                        "step 1": "answer1",
-                        "step 2": "answer2",
-                        "step 3": "answer3",
-                        "step 4": "answer4",
-                    }
+                    "some question": [
+                        ["step 1", "answer1"],
+                        ["step 2", "answer2"],
+                        ["step 3", "answer3"],
+                        ["step 4", "answer4"],
+                    ]
                 },
                 "format": MATCH_TO_ANSWER,
             },
@@ -43,12 +43,12 @@ question_bank = {
         "another tag": {
             "Q1": {
                 "details": {
-                    "some question": "reponse1",
-                    "another question": "reponse2",
-                    "no question": "reponse3",
-                    "yes question": "reponse4",
+                    "some question": "response1",
+                    "another question": "response2",
+                    "no question": "response3",
+                    "yes question": "response4",
                 },
-                "format": MULTIPLE_CHOICE,
+                "format": FREE_RESPONSE,
             },
         },
     },

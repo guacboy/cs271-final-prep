@@ -67,11 +67,13 @@ class Util():
                            padx=5,)
         
     def optionmenu(window,
-                   variable,
-                   *value) -> OptionMenu:
+                   option,
+                   *choices,
+                   func=None,) -> OptionMenu:
         optionmenu = OptionMenu(window,
-                                variable,
-                                *value,)
+                                option,
+                                *choices,
+                                command=func,)
         optionmenu.config(font=(FONT, 15, "normal"),
                           fg=FONT_COLOR,
                           bg=OPTION_COLOR,
