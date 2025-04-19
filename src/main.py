@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import font
 import json
 import random
 
@@ -82,14 +83,15 @@ def create_exam() -> None:
                 if count > 0:
                     count -= 1
         
-        # TODO: highlight correct answer and incorrect answers
-        
         # iterates through the question details
         for value in question_details_dict.values():
             question_location = value["location"]
             module = question_location[0]
             tag = question_location[1]
             question = question_location[2]
+            
+            # displays the correct answer for post-exam viewing
+            value["is_end"] = True
             
             # if the user's selected answer is correct
             if value["selected_answer"] == value["answer"]:
@@ -110,7 +112,15 @@ def create_exam() -> None:
                 data["questions_marked_wrong"].append(question_location + [random.randint(1, 3)])
         
         with open("data.json", "w") as file:
-            file.write(json.dumps(data, indent=4)) 
+            file.write(json.dumps(data, indent=4))
+        
+        # reloads the current question display
+        display_current_question(current_question_idx,
+                                 question_number_label,
+                                 current_question_label,
+                                 current_choice_frame,
+                                 current_answer_label,
+                                 question_details_dict,)
     
     flag_button = Util.button(question_details_frame)
     flag_button.config(text="⚐",
@@ -142,6 +152,7 @@ def create_exam() -> None:
                                                                 question_number_label,
                                                                 current_question_label,
                                                                 current_choice_frame,
+                                                                current_answer_label,
                                                                 question_details_dict))
     prev_button.bind("<Enter>", func=lambda e: on_enter_option(prev_button))
     prev_button.bind("<Leave>", func=lambda e: on_leave_option(prev_button))
@@ -157,6 +168,7 @@ def create_exam() -> None:
                                                                 question_number_label,
                                                                 current_question_label,
                                                                 current_choice_frame,
+                                                                current_answer_label,
                                                                 question_details_dict))
     next_button.bind("<Enter>", func=lambda e: on_enter_option(next_button))
     next_button.bind("<Leave>", func=lambda e: on_leave_option(next_button))
@@ -188,6 +200,7 @@ def create_exam() -> None:
                 "choices": [],
                 
                 "selected_answer": None,
+                "is_end": False,
             },
         })
         
@@ -205,6 +218,7 @@ def create_exam() -> None:
                                                                                       question_number_label,
                                                                                       current_question_label,
                                                                                       current_choice_frame,
+                                                                                      current_answer_label,
                                                                                       question_details_dict))
             
         # binds each button to a hover effect
@@ -255,11 +269,20 @@ def create_exam() -> None:
     current_choice_frame.pack(expand=True,
                               fill="none",)
     
+    # displays the current answer (initially hidden until post-exam)
+    italic_font = font.Font(family="Arial", size=15, slant="italic")
+    current_answer_label = Util.label(exam_window)
+    current_answer_label.config(text="",
+                                font=italic_font,
+                                wraplength=900,)
+    current_answer_label.pack(pady=5)
+    
     # displays the first question and choices
     display_current_question(str(1),
                              question_number_label,
                              current_question_label,
                              current_choice_frame,
+                             current_answer_label,
                              question_details_dict)
     
     def on_enter_question_navigator(button) -> None:
@@ -342,19 +365,10 @@ def create_questions() -> list:
         if format_chosen == MULTIPLE_CHOICE:
             # creates a list of incorrect choices to be chosen
             # excluding the correct answer
-            choices_to_be_chosen = [
-                choice for choice in details_chosen.values()
-                if choice != correct_answer
-            ]
-            random.shuffle(choices_to_be_chosen)
-            
-            # creates a list of (3) incorrect choices
-            # from the list of choices to be chosen
             choices_chosen = [
-                choices_to_be_chosen[i] for i in range(3)
+                choice for choice in details_chosen.values()
             ]
-            # includes the correct answer as one of the choices
-            choices_chosen.append(correct_answer)
+            random.shuffle(choices_chosen)
         # if the question format is a select that apply
         elif format_chosen == SELECT_THAT_APPLY:
             # reassigns the single correct answer to multiple correct answers
@@ -421,33 +435,32 @@ def create_choices(current_choice_frame: Frame,
     in the respective format.
     """
     
-    def on_update_selected_answer(answer) -> None:
+    current_question = question_details_dict[str(current_question_idx)]
+    
+    def on_update_selected_answer(selected_answer) -> None:
         """
         Updates the question navigator dictionary's selected answer
         to allow the user to save its work if they choose to
         navigate to a different question.
         """
 
-        # saves the answer
-        current_question["selected_answer"] = answer
+        # saves the selected answer
+        current_question["selected_answer"] = selected_answer
         
-        # if the answer is empty
-        # (because user may have deselected/deleted their previous answer)
-        if (answer == ""
-            or len(answer) <= 0
-            or "" in answer):
+        # if the selected answer is empty
+        # (because user may have deselected/deleted their previous selected answer)
+        if (selected_answer == ""
+            or len(selected_answer) <= 0
+            or (isinstance(selected_answer, list) and "" in selected_answer)):
             # update the question navigator to "incomplete" icon
             update_question_navigator_icon("incomplete", question_details_dict)
-        # if there is an answer
+        # if there is a selected answer
         else:
             # update the question navifator to "complete" icon
             update_question_navigator_icon("complete", question_details_dict)
-    
-    current_question = question_details_dict[str(current_question_idx)]
 
     choice_format = current_question["format"]
-    # if the question is multiple choice,
-    # or true or false
+    # if the question is multiple choice, or true or false
     if choice_format == MULTIPLE_CHOICE or choice_format == TRUE_OR_FALSE:
         # to display on the left side
         radiobutton_left_frame = Util.frame(current_choice_frame)
@@ -556,7 +569,13 @@ def create_choices(current_choice_frame: Frame,
                                          option,
                                          *current_question["choices"],
                                          func=lambda e, idx=i: on_update_selected_optionmenu(e, idx - 1))
-            optionmenu.pack(pady=(0,25))
+            
+            # if this is the last optionmenu
+            if i == (len(current_question["question"]) - 1):
+                # do not add padding
+                optionmenu.pack()
+            else:
+                optionmenu.pack(pady=(0,25))
         
         # fixes visual bug;
         # creates the last optionmenu (to allow for the bugged text to print),
@@ -601,6 +620,7 @@ def display_current_question(action: str,
                              question_number_label: Label,
                              current_question_label: Label,
                              current_choice_frame: Frame,
+                             current_answer_label: Label,
                              question_details_dict: dict) -> None:
     """
     Displays the current question
@@ -658,10 +678,28 @@ def display_current_question(action: str,
     # updates to current question information
     create_choices(current_choice_frame, question_details_dict)
     
+    # if user is currently in post-exam viewing
+    if current_question["is_end"] == True:
+        current_answer = current_question["answer"]
+        
+        # if the current answer is a list or a set
+        if (isinstance(current_answer, list)
+            or isinstance(current_answer, set)):
+            current_answer_to_iterate = current_answer
+            current_answer = "" # reassign the current answer (to later be displayed)
+
+            # labels a number for each answer
+            # (ex. [1] some answer)
+            for idx, answer in enumerate(current_answer_to_iterate):
+                current_answer += "[" + str(idx + 1) + "] " + answer + " "
+        
+        # display the correct answer
+        current_answer_label.config(text=current_answer)
+    
     # if the question format is match to answer,
     # then the value is a list
     if current_question["format"] == MATCH_TO_ANSWER:
-        # takes the first idx of the list (which is the actual question)
+        # displays the first idx of the list (which is the actual question)
         current_question_label.config(text=current_question["question"][0])
     # otherwise, then the value is not a list (it's a string)
     else:
