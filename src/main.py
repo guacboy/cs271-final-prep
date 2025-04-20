@@ -24,6 +24,44 @@ def main_menu() -> None:
     create_button.bind("<Leave>", func=lambda e: on_leave_option(create_button))
     create_button.pack(side=BOTTOM,
                        pady=(0, 50))
+    
+    # TODO: option to reset file
+    
+def create_json() -> None:
+    """
+    Populates the JSON file, updating any new changes.
+    """
+    
+    with open("data.json", "r") as file:
+        data = json.load(file)
+    
+    for module in question_bank:
+        # if the module has not been added
+        if module not in data["bank"]:
+            # addx the module into the file
+            data["bank"].update({
+                module: {},
+            })
+        for tag in question_bank[module]:
+            # if the tag has not been added
+            if tag not in data["bank"][module]:
+                # addx the tag into the file
+                data["bank"][module].update({
+                    tag: {
+                        "questions": {},
+                        "count": 0,
+                    }
+                })
+            for question in question_bank[module][tag]:
+                # if the question has not been added
+                if question not in data["bank"][module][tag]:
+                    # adds the question into the file
+                    data["bank"][module][tag]["questions"].update({
+                        question: 0,
+                    })
+        
+    with open("data.json", "w") as file:
+        file.write(json.dumps(data, indent=4))
 
 def create_exam() -> None:
     """
@@ -776,12 +814,14 @@ def on_leave_option(button) -> None:
 
 if __name__ == "__main__":
     main_menu()
+    create_json() # creates/updates the json file
     root.mainloop()
     
     # resets file
     with open("data.json", "r") as file:
         data = json.load(file)
     
+    data["bank"].clear()
     data["questions_marked_wrong"].clear()
     
     with open("data.json", "w") as file:
