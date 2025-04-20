@@ -1,25 +1,4 @@
 {
-    "bank": {
-        "Module 1": {
-            "some tag": {
-                "questions": {
-                    "Q1": 9
-                },
-                "count": 0
-            },
-            "another some tag": {
-                "questions": {
-                    "Q1": 5
-                },
-                "count": 0
-            },
-            "another tag": {
-                "questions": {
-                    "Q1": 3
-                },
-                "count": 0
-            }
-        }
-    },
+    "bank": {},
     "questions_marked_wrong": []
 }
