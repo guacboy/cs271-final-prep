@@ -16,16 +16,82 @@ def main_menu() -> None:
     Displays main menu GUI.
     """
     
+    # TODO: select/deselect tags
+    
+    # erases the data in data.json
+    erase_data_label = Util.label(root)
+    erase_data_label.config(text="ERASE DATA",
+                            font=(FONT, 10, "bold"),) # 
+    erase_data_label.bind("<Enter>", func=lambda e: on_enter_erase_data(erase_data_label))
+    erase_data_label.bind("<Leave>", func=lambda e: on_leave_erase_data(erase_data_label))
+    erase_data_label.bind("<Button-1>", func=lambda e: on_click_erase_data(erase_data_label))
+    erase_data_label.pack(side=BOTTOM,
+                          pady=(10, 50))
+    
+    def on_enter_erase_data(label: Label) -> None:
+        """
+        Changes the button texture
+        when hovering over the button.
+        """
+        
+        label.config(text="ERASE DATA",
+                     font=(FONT, 10, "bold underline"),
+                     fg="#cd4545",)
+        
+    def on_leave_erase_data(label: Label) -> None:
+        """
+        Changes the button texture
+        when no longer hovering over the button.
+        """
+        
+        label.config(font=(FONT, 10, "bold"),
+                     fg=FONT_COLOR,)
+        
+    def on_click_erase_data(label: Label) -> None:
+        """
+        Erases any data and reloads the data.json file.
+        """
+        
+        global erase_data_counter
+        
+        with open("data.json", "r") as file:
+            data = json.load(file)
+        
+        data["bank"].clear()
+        data["questions_marked_wrong"].clear()
+        
+        with open("data.json", "w") as file:
+            file.write(json.dumps(data, indent=4))
+        
+        label.config(text="POOF!",
+                     font=(FONT, 10, "bold"),
+                     fg=FONT_COLOR,)
+        
+        def revert_to_original_text_timer() -> None:
+            """
+            Countdown until changed text reverts back to
+            original text.
+            """
+            
+            global erase_data_counter
+            
+            if erase_data_counter > 0:
+                erase_data_counter -= 1
+                root.after(1000, revert_to_original_text_timer)
+            else:
+                label.config(text="ERASE DATA")
+        
+        erase_data_counter = 3
+        revert_to_original_text_timer()
+        create_json() # creates/updates the json file
+    
     # creates the exam
     create_button = Util.button(root)
     create_button.config(text="Create Exam",
                          command=lambda: create_exam())
     create_button.bind("<Enter>", func=lambda e: on_enter_option(create_button))
     create_button.bind("<Leave>", func=lambda e: on_leave_option(create_button))
-    create_button.pack(side=BOTTOM,
-                       pady=(0, 50))
-    
-    # TODO: option to reset file
+    create_button.pack(side=BOTTOM)
     
 def create_json() -> None:
     """
@@ -323,7 +389,7 @@ def create_exam() -> None:
                              current_answer_label,
                              question_details_dict)
     
-    def on_enter_question_navigator(button) -> None:
+    def on_enter_question_navigator(button: Button) -> None:
         """
         Changes the button texture
         when hovering over the button.
@@ -342,7 +408,7 @@ def create_exam() -> None:
         elif current_text == "⚐":
             button.config(text="⚑")
     
-    def on_leave_question_navigator(button) -> None:
+    def on_leave_question_navigator(button: Button) -> None:
         """
         Changes the button texture
         when no longer hovering over the button.
@@ -796,7 +862,7 @@ def update_question_navigator_icon(action: str,
             # to the "selected and incompleted" symbol
             current_question["button"].config(text="⭗")
 
-def on_enter_option(button) -> None:
+def on_enter_option(button: Button) -> None:
     """
     Changes the button texture
     when hovering over the button.
@@ -804,7 +870,7 @@ def on_enter_option(button) -> None:
 
     button.config(bg=HOVER_COLOR)
 
-def on_leave_option(button) -> None:
+def on_leave_option(button: Button) -> None:
     """
     Changes the button texture
     when no longer hovering over the button.
@@ -817,12 +883,3 @@ if __name__ == "__main__":
     create_json() # creates/updates the json file
     root.mainloop()
     
-    # resets file
-    with open("data.json", "r") as file:
-        data = json.load(file)
-    
-    data["bank"].clear()
-    data["questions_marked_wrong"].clear()
-    
-    with open("data.json", "w") as file:
-            file.write(json.dumps(data, indent=4))
