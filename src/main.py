@@ -120,7 +120,7 @@ def create_json() -> None:
                 })
             for question in question_bank[module][tag]:
                 # if the question has not been added
-                if question not in data["bank"][module][tag]:
+                if question not in data["bank"][module][tag]["questions"]:
                     # adds the question into the file
                     data["bank"][module][tag]["questions"].update({
                         question: 0,
@@ -448,11 +448,35 @@ def create_questions() -> list:
         # TODO: what if question/answer is blank
         # TODO: add questions marked wrong first
         
-        # selects a random question
+        with open("data.json", "r") as file:
+            data = json.load(file)
+        
+        # selects a random module
         module_chosen = random.choice(list(question_bank.keys()))
-        tag_chosen = random.choice(list(question_bank[module_chosen].keys()))
-        # TODO: prioritize questions that have not been chosen frequently
-        question_chosen = random.choice(list(data["bank"][module_chosen][tag_chosen]["questions"]))
+        
+        # counts the number of times each tag was marked as correct
+        tag_count_list = [
+            tag_count["count"] for tag_count in data["bank"][module_chosen].values()
+        ]
+        # selects tags that are <= to the minimum number of the above list
+        tag_to_be_chosen = [
+            tag for tag, tag_count in data["bank"][module_chosen].items()
+            if tag_count["count"] <= min(tag_count_list)
+        ]
+        # selects tags that are <= to the minimum number of the above list
+        tag_chosen = random.choice(tag_to_be_chosen)
+        
+        # counts the number of times each question was marked as correct
+        question_count_list = [
+            question_count for question_count in data["bank"][module_chosen][tag_chosen]["questions"].values()
+        ]
+        # selects questions that are <= to the minimum number of the above list
+        question_to_be_chosen = [
+            question for question, question_count in data["bank"][module_chosen][tag_chosen]["questions"].items()
+            if question_count <= min(question_count_list)
+        ]
+        # selects questions that are <= to the minimum number of the above list
+        question_chosen = random.choice(question_to_be_chosen)
         
         question_location = [module_chosen, tag_chosen, question_chosen]
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
