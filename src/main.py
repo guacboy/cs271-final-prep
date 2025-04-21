@@ -21,7 +21,7 @@ def main_menu() -> None:
     # erases the data in data.json
     erase_data_label = Util.label(root)
     erase_data_label.config(text="ERASE DATA",
-                            font=(FONT, 10, "bold"),) # 
+                            font=(FONT, 10, "bold"),)
     erase_data_label.bind("<Enter>", func=lambda e: on_enter_erase_data(erase_data_label))
     erase_data_label.bind("<Leave>", func=lambda e: on_leave_erase_data(erase_data_label))
     erase_data_label.bind("<Button-1>", func=lambda e: on_click_erase_data(erase_data_label))
@@ -58,6 +58,7 @@ def main_menu() -> None:
             data = json.load(file)
         
         data["bank"].clear()
+        data["redemption_questions"].clear()
         data["questions_marked_wrong"].clear()
         
         with open("data.json", "w") as file:
@@ -181,11 +182,18 @@ def create_exam() -> None:
         # if there are questions marked wrong
         if len(data["questions_marked_wrong"]) > 0:
             for question in data["questions_marked_wrong"]:
-                count = question[3]
                 
                 # decrement the count by one
-                if count > 0:
-                    count -= 1
+                question[3] -= 1
+                
+                # if the count is <= 0
+                if question[3] <= 0:
+                    redemption_question_idx = data["questions_marked_wrong"].index(question)
+                    # remove the question from the list
+                    redemption_question = data["questions_marked_wrong"].pop(redemption_question_idx)
+                    # and add it into the 'redemption questions' list
+                    # where the question will now be prioritize to be chosen first
+                    data["redemption_questions"].append(redemption_question)
         
         # iterates through the question details
         for value in question_details_dict.values():
@@ -440,43 +448,54 @@ def create_questions() -> list:
     with open("data.json", "r") as file:
         data = json.load(file)
     
-    questions_to_be_chosen = []
-    # selects 30 random questions;
-    # questions not selected before will have a higher
-    # chance to be selected now
-    for i in range(30):
+    questions_to_be_chosen_final = []
+    # repeats until 30 questions are selected
+    while len(questions_to_be_chosen_final) < 30:
         # TODO: what if question/answer is blank
         # TODO: add questions marked wrong first
         
         with open("data.json", "r") as file:
             data = json.load(file)
         
-        # selects a random module
-        module_chosen = random.choice(list(question_bank.keys()))
-        
-        # counts the number of times each tag was marked as correct
-        tag_count_list = [
-            tag_count["count"] for tag_count in data["bank"][module_chosen].values()
-        ]
-        # selects tags that are <= to the minimum number of the above list
-        tag_to_be_chosen = [
-            tag for tag, tag_count in data["bank"][module_chosen].items()
-            if tag_count["count"] <= min(tag_count_list)
-        ]
-        # selects tags that are <= to the minimum number of the above list
-        tag_chosen = random.choice(tag_to_be_chosen)
-        
-        # counts the number of times each question was marked as correct
-        question_count_list = [
-            question_count for question_count in data["bank"][module_chosen][tag_chosen]["questions"].values()
-        ]
-        # selects questions that are <= to the minimum number of the above list
-        question_to_be_chosen = [
-            question for question, question_count in data["bank"][module_chosen][tag_chosen]["questions"].items()
-            if question_count <= min(question_count_list)
-        ]
-        # selects questions that are <= to the minimum number of the above list
-        question_chosen = random.choice(question_to_be_chosen)
+        # if there are no redemption questions,
+        # then start picking questions from the bank
+        if len(data["redemption_questions"]) <= 0:
+            # selects a random module
+            module_chosen = random.choice(list(question_bank.keys()))
+            
+            # counts the number of times each tag was marked as correct
+            tag_count_list = [
+                tag_count["count"] for tag_count in data["bank"][module_chosen].values()
+            ]
+            # selects tags that are <= to the minimum number of the above list
+            tags_to_be_chosen = [
+                tag for tag, tag_count in data["bank"][module_chosen].items()
+                if tag_count["count"] <= min(tag_count_list)
+            ]
+            # selects tags that are <= to the minimum number of the above list
+            tag_chosen = random.choice(tags_to_be_chosen)
+            
+            # counts the number of times each question was marked as correct
+            question_count_list = [
+                question_count for question_count in data["bank"][module_chosen][tag_chosen]["questions"].values()
+            ]
+            # selects questions that are <= to the minimum number of the above list
+            questions_to_be_chosen = [
+                question for question, question_count in data["bank"][module_chosen][tag_chosen]["questions"].items()
+                if question_count <= min(question_count_list)
+            ]
+            # selects questions that are <= to the minimum number of the above list
+            question_chosen = random.choice(questions_to_be_chosen)
+        # if there are redemption questions,
+        # then start picking questions from the redemption questions list
+        else:
+            redemption_question = data["redemption_questions"].pop()
+            module_chosen = redemption_question[0]
+            tag_chosen = redemption_question[1]
+            question_chosen = redemption_question[2]
+            
+            with open("data.json", "w") as file:
+                file.write(json.dumps(data, indent=4))
         
         question_location = [module_chosen, tag_chosen, question_chosen]
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
@@ -542,7 +561,7 @@ def create_questions() -> list:
             choices_chosen = None
         
         # adds the question to the list of questions to be chosen
-        questions_to_be_chosen.append([
+        questions_to_be_chosen_final.append([
             question_location,
             
             question_chosen,
@@ -552,9 +571,9 @@ def create_questions() -> list:
         ])
         
     # shuffles the list
-    random.shuffle(questions_to_be_chosen)
+    random.shuffle(questions_to_be_chosen_final)
     
-    return questions_to_be_chosen
+    return questions_to_be_chosen_final
 
 def create_choices(current_choice_frame: Frame,
                    question_details_dict: dict) -> None:
