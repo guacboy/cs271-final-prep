@@ -22,37 +22,37 @@ def main_menu() -> None:
     erase_data_label = Util.label(root)
     erase_data_label.config(text="ERASE DATA",
                             font=(FONT, 10, "bold"),)
-    erase_data_label.bind("<Enter>", func=lambda e: on_enter_erase_data(erase_data_label))
-    erase_data_label.bind("<Leave>", func=lambda e: on_leave_erase_data(erase_data_label))
-    erase_data_label.bind("<Button-1>", func=lambda e: on_click_erase_data(erase_data_label))
+    erase_data_label.bind("<Enter>", func=lambda e: on_enter_erase_data())
+    erase_data_label.bind("<Leave>", func=lambda e: on_leave_erase_data())
+    erase_data_label.bind("<Button-1>", func=lambda e: on_click_erase_data())
     erase_data_label.pack(side=BOTTOM,
                           pady=(10, 50))
     
-    def on_enter_erase_data(label: Label) -> None:
+    def on_enter_erase_data() -> None:
         """
         Changes the button texture
         when hovering over the button.
         """
         
-        label.config(text="ERASE DATA",
-                     font=(FONT, 10, "bold underline"),
-                     fg="#cd4545",)
+        # if the data has recently (within 3 seconds) been reset
+        if erase_data_label.cget("text") != "POOF!":
+            erase_data_label.config(text="ERASE DATA",
+                                    font=(FONT, 10, "bold underline"),
+                                    fg="#cd4545",)
         
-    def on_leave_erase_data(label: Label) -> None:
+    def on_leave_erase_data() -> None:
         """
         Changes the button texture
         when no longer hovering over the button.
         """
         
-        label.config(font=(FONT, 10, "bold"),
-                     fg=FONT_COLOR,)
+        erase_data_label.config(font=(FONT, 10, "bold"),
+                                fg=FONT_COLOR,)
         
-    def on_click_erase_data(label: Label) -> None:
+    def on_click_erase_data() -> None:
         """
         Erases any data and reloads the data.json file.
         """
-        
-        global erase_data_counter
         
         with open("data.json", "r") as file:
             data = json.load(file)
@@ -64,26 +64,20 @@ def main_menu() -> None:
         with open("data.json", "w") as file:
             file.write(json.dumps(data, indent=4))
         
-        label.config(text="POOF!",
-                     font=(FONT, 10, "bold"),
-                     fg=FONT_COLOR,)
+        erase_data_label.config(text="POOF!",
+                                font=(FONT, 10, "bold"),
+                                fg=FONT_COLOR,)
+        erase_data_label.unbind("<Button-1>")
         
-        def revert_to_original_text_timer() -> None:
+        def reset_erase_data_button() -> None:
             """
-            Countdown until changed text reverts back to
-            original text.
+            Reverts back to original state.
             """
             
-            global erase_data_counter
-            
-            if erase_data_counter > 0:
-                erase_data_counter -= 1
-                root.after(1000, revert_to_original_text_timer)
-            else:
-                label.config(text="ERASE DATA")
+            erase_data_label.config(text="ERASE DATA")
+            erase_data_label.bind("<Button-1>", func=lambda e: on_click_erase_data())
         
-        erase_data_counter = 3
-        revert_to_original_text_timer()
+        root.after(3000, reset_erase_data_button)
         create_json() # creates/updates the json file
     
     # creates the exam
@@ -251,6 +245,10 @@ def create_exam() -> None:
                        bg=DETAILS_BG_COLOR)
     timer_label.pack(side=RIGHT,
                      padx=(0, 358))
+    
+    # TODO: update the timer
+    def exam_timer() -> None:
+        pass
     
     question_details_frame.pack(side=TOP,
                                 fill=BOTH,)
