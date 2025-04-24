@@ -245,10 +245,49 @@ def create_exam() -> None:
                        bg=DETAILS_BG_COLOR)
     timer_label.pack(side=RIGHT,
                      padx=(0, 358))
+
+    def exam_timer(hour: int, minute: int, second: int,) -> None:
+        """
+        Exam timer that increments every second.
+        """
+        
+        second += 1
+        
+        # if 60 seconds has passed
+        if second >= 60:
+            # add a minute and reset the seconds
+            minute += 1
+            second = 0
+        # if 60 minutes has passed
+        if minute >= 60:
+            # add an hour and reset the minutes
+            hour += 1
+            minute = 0
+        
+        # if the value is a single digit
+        if second <= 9:
+            # add zero-padding
+            second_label = "0" + str(second)
+        # otherwise,
+        elif second >= 10:
+            # display the value
+            second_label = str(second)
+        if minute <= 9:
+            minute_label = "0" + str(minute)
+        elif minute >= 10:
+            minute_label = str(minute)
+        if hour <= 9:
+            hour_label = "0" + str(hour)
+        elif hour >= 10:
+            hour_label = str(hour)
+            
+        # if it is under the maximum time limit
+        if hour <= 59 and minute <= 59 and second <= 59:
+            timer_label.config(text=f"{hour_label}:{minute_label}:{second_label}")
+            root.after(1000, exam_timer, hour, minute, second)
     
-    # TODO: update the timer
-    def exam_timer() -> None:
-        pass
+    # start timer at specified time (hour, minute, second)
+    exam_timer(0, 0, 0)
     
     question_details_frame.pack(side=TOP,
                                 fill=BOTH,)
