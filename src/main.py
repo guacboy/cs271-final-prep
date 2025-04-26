@@ -487,7 +487,7 @@ def create_questions() -> list:
     
     with open("data.json", "r") as file:
         data = json.load(file)
-    
+
     questions_to_be_chosen_final = []
     # repeats until 30 questions are selected
     while len(questions_to_be_chosen_final) < 30:
@@ -537,7 +537,7 @@ def create_questions() -> list:
         
         # FIXME: debugger tool
         module_chosen = "Module 1"
-        tag_chosen = "Central Processing Unit (CPU)"
+        tag_chosen = "General Purpose Registers - Sub-register Access Method"
         question_chosen = "Q1"
         
         question_location = [module_chosen, tag_chosen, question_chosen]
@@ -545,11 +545,11 @@ def create_questions() -> list:
         details_chosen = result_chosen["details"]
         format_chosen = result_chosen["format"]
         
-        # if the details are empty
+        # if the details are empty (meaning the questions need to be created)
         if details_chosen == None:
             # creates a random question and its associated answer
-            question_chosen, correct_answer = result_chosen["variant"]
-        # if the details are not empty
+            question_chosen, correct_answer = result_chosen["variant"]()
+        # if the details are not empty (meaning the questions are already typed)
         else:
             # selects a list of possible questions
             details_to_be_chosen = [
@@ -563,8 +563,9 @@ def create_questions() -> list:
             # assigns with its associated answer
             correct_answer = details_chosen[question_chosen]
         
-        # if there are different variants of the question
-        # and details are not empty
+        # if there are different variants of the question and details are not empty
+        # (meaning the question can be formed differently with other type of questions;
+        # ex. What is the multiplier for _?)
         if result_chosen.get("variant") and details_chosen != None:
             # create a variant question
             question_chosen = Bank.get_variant_question(result_chosen["variant"],
@@ -583,22 +584,30 @@ def create_questions() -> list:
             choices_chosen = []
             # adds 3 (incorrect) choices from the above randomized list
             for i in range(3):
-                choices_chosen.append(random.choice(choices_to_be_chosen))
+                choices_chosen.append(choices_to_be_chosen[i])
             # then adds the correct answer as one of the choices
             choices_chosen.append(correct_answer)
             
             random.shuffle(choices_chosen)
         # if the question format is a select that apply
         elif format_chosen == SELECT_THAT_APPLY:
-            # reassigns the single correct answer to multiple correct answers
-            correct_answer = details_chosen[question_chosen][0]
-            
-            # creates a list of incorrect choices
-            choices_chosen = [
-                choice for choice in details_chosen[question_chosen][1]
-            ]
+            # if the correct answer is already a list,
+            # then question variant function was used
+            if isinstance(correct_answer, list):
+                variant_details = correct_answer
+                
+                # reassigns the single correct answer to multiple correct answers
+                correct_answer = variant_details[0]
+                # and choices to be chosen to multiple incorrect answers
+                choices_to_be_chosen = variant_details[1]
+            # otherwise, correct answer has not been reassigned
+            # and there are no other variants to the question that exist
+            else:
+                correct_answer = details_chosen[question_chosen][0]
+                choices_to_be_chosen = details_chosen[question_chosen][1]
+                
             # combines the correct answer with the incorrect choices
-            choices_chosen = correct_answer + choices_chosen
+            choices_chosen = correct_answer + choices_to_be_chosen
             random.shuffle(choices_chosen)
             
             # converts list into set (for exam grading purpose)
