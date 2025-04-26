@@ -4,7 +4,7 @@ import json
 import random
 
 from util import *
-from bank import question_bank, \
+from bank import Bank, question_bank, \
     MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE, SELECT_THAT_APPLY, MATCH_TO_ANSWER
 
 root = Tk()
@@ -282,7 +282,9 @@ def create_exam() -> None:
             hour_label = str(hour)
             
         # if it is under the maximum time limit
-        if hour <= 59 and minute <= 59 and second <= 59:
+        # and the exam window is still opened
+        if (hour <= 59 and minute <= 59 and second <= 59
+            and exam_window.winfo_exists()):
             timer_label.config(text=f"{hour_label}:{minute_label}:{second_label}")
             root.after(1000, exam_timer, hour, minute, second)
     
@@ -489,14 +491,24 @@ def create_questions() -> list:
     # repeats until 30 questions are selected
     while len(questions_to_be_chosen_final) < 30:
         # TODO: what if question/answer is blank
-        # TODO: add questions marked wrong first
         
         with open("data.json", "r") as file:
             data = json.load(file)
         
+        # if there are redemption questions,
+        # then start picking questions from the redemption questions list
+        if len(data["redemption_questions"]) > 0:
+            redemption_question = data["redemption_questions"].pop()
+            module_chosen = redemption_question[0]
+            tag_chosen = redemption_question[1]
+            question_chosen = redemption_question[2]
+            
+            with open("data.json", "w") as file:
+                file.write(json.dumps(data, indent=4))
+            
         # if there are no redemption questions,
         # then start picking questions from the bank
-        if len(data["redemption_questions"]) <= 0:
+        else:
             # selects a random module
             module_chosen = random.choice(list(question_bank.keys()))
             
@@ -509,49 +521,73 @@ def create_questions() -> list:
                 tag for tag, tag_count in data["bank"][module_chosen].items()
                 if tag_count["count"] <= min(tag_count_list)
             ]
-            # selects tags that are <= to the minimum number of the above list
+            # selects a random tag from the above list
             tag_chosen = random.choice(tags_to_be_chosen)
             
             # counts the number of times each question was marked as correct
             question_count_list = [
                 question_count for question_count in data["bank"][module_chosen][tag_chosen]["questions"].values()
             ]
-            # selects questions that are <= to the minimum number of the above list
+            # selects questions that are <= to the minimum number of the above list and are not empty ("")
             questions_to_be_chosen = [
                 question for question, question_count in data["bank"][module_chosen][tag_chosen]["questions"].items()
                 if question_count <= min(question_count_list)
             ]
-            # selects questions that are <= to the minimum number of the above list
+            # selects a random question from the above list
             question_chosen = random.choice(questions_to_be_chosen)
-        # if there are redemption questions,
-        # then start picking questions from the redemption questions list
-        else:
-            redemption_question = data["redemption_questions"].pop()
-            module_chosen = redemption_question[0]
-            tag_chosen = redemption_question[1]
-            question_chosen = redemption_question[2]
-            
-            with open("data.json", "w") as file:
-                file.write(json.dumps(data, indent=4))
+        
+        # FIXME: debugger tool
+        # module_chosen = "Module 1"
+        # tag_chosen = "Central Processing Unit (CPU)"
+        # question_chosen = "Q1"
         
         question_location = [module_chosen, tag_chosen, question_chosen]
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
         details_chosen = result_chosen["details"]
         format_chosen = result_chosen["format"]
         
-        details_to_be_chosen = [
-            key for key in details_chosen.keys()
-        ]
-        question_chosen = random.choice(details_to_be_chosen)
-        correct_answer = details_chosen[question_chosen]
+        # if the details are empty
+        if details_chosen == None:
+            # creates a random question and its associated answer
+            question_chosen, correct_answer = result_chosen["variant"]
+        # if the details are not empty
+        else:
+            # selects a list of possible questions
+            details_to_be_chosen = [
+                key for key in details_chosen.keys()
+                # if questions starts with rpt, do not add into the list
+                # (only includes the first question)
+                if not key.startswith("rpt")
+            ]
+            # chooses a random question from the list
+            question_chosen = random.choice(details_to_be_chosen)
+            # assigns with its associated answer
+            correct_answer = details_chosen[question_chosen]
+        
+        # if there are different variants of the question
+        # and deatils are not empty
+        if result_chosen.get("variant") and details_chosen != None:
+            # create a variant question
+            question_chosen = Bank.get_variant_question(result_chosen["variant"],
+                                                        question_chosen)
         
         # if the question format is multiple choice
         if format_chosen == MULTIPLE_CHOICE:
             # creates a list of incorrect choices to be chosen
             # excluding the correct answer
-            choices_chosen = [
+            choices_to_be_chosen = [
                 choice for choice in details_chosen.values()
+                if choice != correct_answer
             ]
+            random.shuffle(choices_to_be_chosen)
+            
+            choices_chosen = []
+            # adds 3 (incorrect) choices from the above randomized list
+            for i in range(3):
+                choices_chosen.append(random.choice(choices_to_be_chosen))
+            # then adds the correct answer as one of the choices
+            choices_chosen.append(correct_answer)
+            
             random.shuffle(choices_chosen)
         # if the question format is a select that apply
         elif format_chosen == SELECT_THAT_APPLY:
@@ -628,6 +664,11 @@ def create_choices(current_choice_frame: Frame,
         navigate to a different question.
         """
 
+        # if the selected answer is a string
+        if isinstance(selected_answer, str):
+            # remove any white space
+            selected_answer = selected_answer.strip()
+            
         # saves the selected answer
         current_question["selected_answer"] = selected_answer
         
