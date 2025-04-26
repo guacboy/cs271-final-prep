@@ -5,7 +5,7 @@ import random
 
 from util import *
 from bank import Bank, question_bank, \
-    MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE, SELECT_THAT_APPLY, MATCH_TO_ANSWER
+    MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE, SELECT_THAT_APPLY, MATCH_TO_ANSWER, MATCH_TO_ANSWER_RANDOMIZED
 
 root = Tk()
 root.geometry("600x700")
@@ -400,8 +400,8 @@ def create_exam() -> None:
         if question_details["format"] == SELECT_THAT_APPLY:
             # initialize a set
             question_details["selected_answer"] = set()
-        # if the question format is "match to answer"
-        elif question_details["format"] == MATCH_TO_ANSWER:
+        # if the question format is "match to answer" or "match to answer randomized"
+        elif question_details["format"] == MATCH_TO_ANSWER or question_details["format"] == MATCH_TO_ANSWER_RANDOMIZED:
             # initialize a list
             question_details["selected_answer"] = list()
         
@@ -412,6 +412,7 @@ def create_exam() -> None:
     
     # displays current question
     current_question_label = Util.label(exam_window)
+    current_question_label.config(wraplength=900,)
     current_question_label.pack(expand=True,
                                 fill="none")
     
@@ -490,8 +491,6 @@ def create_questions() -> list:
     questions_to_be_chosen_final = []
     # repeats until 30 questions are selected
     while len(questions_to_be_chosen_final) < 30:
-        # TODO: what if question/answer is blank
-        
         with open("data.json", "r") as file:
             data = json.load(file)
         
@@ -537,9 +536,9 @@ def create_questions() -> list:
             question_chosen = random.choice(questions_to_be_chosen)
         
         # FIXME: debugger tool
-        # module_chosen = "Module 1"
-        # tag_chosen = "Central Processing Unit (CPU)"
-        # question_chosen = "Q1"
+        module_chosen = "Module 1"
+        tag_chosen = "Central Processing Unit (CPU)"
+        question_chosen = "Q1"
         
         question_location = [module_chosen, tag_chosen, question_chosen]
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
@@ -565,7 +564,7 @@ def create_questions() -> list:
             correct_answer = details_chosen[question_chosen]
         
         # if there are different variants of the question
-        # and deatils are not empty
+        # and details are not empty
         if result_chosen.get("variant") and details_chosen != None:
             # create a variant question
             question_chosen = Bank.get_variant_question(result_chosen["variant"],
@@ -605,12 +604,14 @@ def create_questions() -> list:
             # converts list into set (for exam grading purpose)
             correct_answer = set(correct_answer)
         # if the question format is a match to answer
-        elif format_chosen == MATCH_TO_ANSWER:
-            question_chosen_list = []
+        elif format_chosen == MATCH_TO_ANSWER or format_chosen == MATCH_TO_ANSWER_RANDOMIZED:
+            subquestion_chosen_list = []
             correct_answer = [] # reassign the single correct answer to a list of correct answers
             choices_chosen = []
             
-            # TODO: option to randomize subquestions
+            # if subquestion ordering can be randomized
+            if format_chosen == MATCH_TO_ANSWER_RANDOMIZED:
+                random.shuffle(details_chosen[question_chosen])
             
             # iterate the amount of sub-questions/answer
             for i in range(len(details_chosen[question_chosen])):
@@ -618,13 +619,14 @@ def create_questions() -> list:
                 answer = details_chosen[question_chosen][i][1]
                 
                 # adds the subquestion
-                question_chosen_list.append(subquestion)
+                subquestion_chosen_list.append(subquestion)
                 # adds the correct answer (in order)
                 correct_answer.append(answer)
                 # adds the choice (to later be shuffled)
                 choices_chosen.append(answer)
-            
-            question_chosen = [question_chosen] + question_chosen_list
+                
+            question_chosen = [question_chosen] + subquestion_chosen_list
+
             random.shuffle(choices_chosen)
         # if the question format is true or false
         elif format_chosen == TRUE_OR_FALSE:
@@ -685,7 +687,7 @@ def create_choices(current_choice_frame: Frame,
             update_question_navigator_icon("complete", question_details_dict)
 
     choice_format = current_question["format"]
-    # if the question is multiple choice, or true or false
+    # if the question is "multiple choice", or "true or false"
     if choice_format == MULTIPLE_CHOICE or choice_format == TRUE_OR_FALSE:
         # to display on the left side
         radiobutton_left_frame = Util.frame(current_choice_frame)
@@ -724,7 +726,7 @@ def create_choices(current_choice_frame: Frame,
                                     anchor=W,
                                     padx=(0, 350),)
         radiobutton_right_frame.pack(anchor=W,)
-    # if the question is a select that apply
+    # if the question is a "select that apply"
     elif choice_format == SELECT_THAT_APPLY:
         # any previous answers selected before are reselected
         selected_checkbox = current_question["selected_answer"]
@@ -762,8 +764,8 @@ def create_choices(current_choice_frame: Frame,
                 selected_checkbox.add(selected_answer)
                 
             on_update_selected_answer(selected_checkbox)
-    # if the question is a match to answer
-    elif choice_format == MATCH_TO_ANSWER:
+    # if the question is a "match to answer" or "match to answer randomized"
+    elif choice_format == MATCH_TO_ANSWER or choice_format == MATCH_TO_ANSWER_RANDOMIZED:
         # reassigns any previous answer that user may have saved
         selected_optionmenu = current_question["selected_answer"]
         
@@ -824,7 +826,7 @@ def create_choices(current_choice_frame: Frame,
             selected_optionmenu[idx] = selected_answer
 
             on_update_selected_answer(selected_optionmenu)
-    # if the question is free response
+    # if the question is "free response"
     elif choice_format == FREE_RESPONSE:
         option = StringVar()
         
@@ -921,9 +923,9 @@ def display_current_question(action: str,
         # display the correct answer
         current_answer_label.config(text=current_answer)
     
-    # if the question format is match to answer,
+    # if the question format is "match to answer" or "match to answer randomized",
     # then the value is a list
-    if current_question["format"] == MATCH_TO_ANSWER:
+    if current_question["format"] == MATCH_TO_ANSWER or current_question["format"] == MATCH_TO_ANSWER_RANDOMIZED:
         # displays the first idx of the list (which is the actual question)
         current_question_label.config(text=current_question["question"][0])
     # otherwise, then the value is not a list (it's a string)
