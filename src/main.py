@@ -534,13 +534,27 @@ def create_questions() -> list:
             ]
             # selects a random question from the above list
             question_chosen = random.choice(questions_to_be_chosen)
-        
-        # FIXME: debugger tool
-        module_chosen = "Module 1"
-        tag_chosen = "General Purpose Registers - Sub-register Access Method"
-        question_chosen = "Q1"
+
+        # NOTE: debugger tool
+        is_debug_view = True
+        # module_chosen = "Module 1"
+        # tag_chosen = "Binary, Octal, Decimal, and Hexadecimal"
+        # question_chosen = "Q2"
         
         question_location = [module_chosen, tag_chosen, question_chosen]
+        
+        if not is_debug_view:
+            is_duplicate_question = False
+            for question in questions_to_be_chosen_final:
+                # if the question is already in the final list,
+                if question_location in question:
+                    # then flag the question as a duplicate
+                    is_duplicate_question = True
+                    break
+            # and repeat the loop until a unique question has been selected
+            if is_duplicate_question:
+                continue
+        
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
         details_chosen = result_chosen["details"]
         format_chosen = result_chosen["format"]
