@@ -1,70 +1,58 @@
 import random
 import string
 
+def on_randomize_true_false_question(details_dict: dict) -> str:
+    """
+    Creates a random true or false question given the question details.
+    """
+    
+    # selects a random question
+    question_to_be_chosen = [
+        question for question in details_dict.keys()
+    ]
+    question_chosen = random.choice(question_to_be_chosen)
+    
+    # selects a random answer
+    answer_to_be_chosen = [
+        answer for answer in details_dict.values()
+    ]
+    answer_chosen = random.choice(answer_to_be_chosen)
+    
+    # if the question matches with the answer
+    if details_dict[question_chosen] == answer_chosen:
+        # then the statement is true
+        return question_chosen, answer_chosen, "True"
+    # otherwise,
+    else:
+        # then the statement is false
+        return question_chosen, answer_chosen, "False"
+
 class Question():
     # TRUE OR FALSE
     def mod1_binary_octal_decimal_hexadecimal_q1() -> str:
-        sign_bit_dict = {
+        question_dict = {
             "0": "positive",
             "1": "negative",
         }
         
-        # selects a random bit
-        bit_to_be_chosen = [
-            bit for bit in sign_bit_dict.keys()
-        ]
-        bit_chosen = random.choice(bit_to_be_chosen)
-        
-        # selects a random sign
-        sign_to_be_chosen = [
-            sign for sign in sign_bit_dict.values()
-        ]
-        sign_chosen = random.choice(sign_to_be_chosen)
-        
-        # if the bit matches with the sign
-        if sign_bit_dict[bit_chosen] == sign_chosen:
-            # then the statement is true
-            answer = "True"
-        # otherwise,
-        else:
-            # then the statement is false
-            answer = "False"
+        question_chosen, answer_chosen, answer = on_randomize_true_false_question(question_dict)
             
         # include the random selection into the question
-        question = f"If an integer's sign bit is {bit_chosen}, the integer is {sign_chosen}."
+        question = f"If an integer's sign bit is {question_chosen}, the integer is {answer_chosen}."
         
         return question, answer
     
     # TRUE OR FALSE
     def mod1_binary_octal_decimal_hexadecimal_q2() -> str:
-        bit_dict = {
+        question_dict = {
             "rightmost": "Least Significant Bit (LSB)",
             "leftmost": "Most Significant Bit (MSB)",
         }
         
-        # selects a random side
-        side_to_be_chosen = [
-            side for side in bit_dict.keys()
-        ]
-        side_chosen = random.choice(side_to_be_chosen)
-        
-        # selects a random bit
-        bit_to_be_chosen = [
-            sign for sign in bit_dict.values()
-        ]
-        bit_chosen = random.choice(bit_to_be_chosen)
-        
-        # if the bit matches with the side
-        if bit_dict[side_chosen] == bit_chosen:
-            # then the statement is true
-            answer = "True"
-        # otherwise,
-        else:
-            # then the statement is false
-            answer = "False"
+        question_chosen, answer_chosen, answer = on_randomize_true_false_question(question_dict)
             
         # include the random selection into the question
-        question = f"The {side_chosen} bit is the {bit_chosen}."
+        question = f"The {question_chosen} bit is the {answer_chosen}."
         
         return question, answer
     
@@ -115,6 +103,7 @@ class Question():
         
         return question, answer
     
+    # SELECT THAT APPLY
     def mod1_central_processing_unit_q4():
         correct_answers = [
             "Instruction Pointer",
@@ -211,3 +200,4 @@ class Question():
         answer = [correct_choices, incorrect_choices] # formatted as a 2D list
 
         return question, answer
+    
