@@ -178,10 +178,10 @@ def create_exam() -> None:
             for question in data["questions_marked_wrong"]:
                 
                 # decrement the count by one
-                question[3] -= 1
+                question[1] -= 1
                 
                 # if the count is <= 0
-                if question[3] <= 0:
+                if question[1] <= 0:
                     redemption_question_idx = data["questions_marked_wrong"].index(question)
                     # remove the question from the list
                     redemption_question = data["questions_marked_wrong"].pop(redemption_question_idx)
@@ -215,7 +215,7 @@ def create_exam() -> None:
                 # add the question to a list of questions answered incorrectly
                 # with a random counter that will countdown on
                 # when the question will appear in the next exam
-                data["questions_marked_wrong"].append(question_location + [random.randint(1, 3)])
+                data["questions_marked_wrong"].append([question_location] + [random.randint(1, 3)])
         
         with open("data.json", "w") as file:
             file.write(json.dumps(data, indent=4))
@@ -327,14 +327,14 @@ def create_exam() -> None:
                      padx=(0, 15))
     
     # list of randomly selected questions
-    chosen_questions_list = create_questions()
+    chosen_questions_list, maximum_number_of_questions = create_questions()
     
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
     
     question_details_dict = {}
     # creates "i" amount of question navigator buttons
-    for i in range(1, 31):
+    for i in range(1, maximum_number_of_questions + 1):
         # populates the dictionary
         # with each key representing the question number
         # and its associated information
@@ -479,7 +479,7 @@ def create_exam() -> None:
     question_navigator_frame.pack(side=BOTTOM,
                                   pady=(0, 20),)
 
-def create_questions() -> list:
+def create_questions():
     """
     Creates a list of randomly selected questions
     to be displayed in the exam.
@@ -487,10 +487,27 @@ def create_questions() -> list:
     
     with open("data.json", "r") as file:
         data = json.load(file)
+    
+    # TODO: update to vary on tag selections
+    
+    number_of_questions_to_count = []
+    # iterate to get the count of total questions
+    for module in question_bank:
+        for tag in question_bank[module]:
+            for question in question_bank[module][tag]:
+                number_of_questions_to_count.append(question)
+    
+    # the size of number of questions - the size of number of questions marked wrong
+    maximum_number_of_questions = len(number_of_questions_to_count) - len(data["questions_marked_wrong"])
+    
+    # if the maximum number is greater than 30
+    if maximum_number_of_questions >= 30:
+        # set to 30
+        maximum_number_of_questions = 30
 
     questions_to_be_chosen_final = []
-    # repeats until 30 questions are selected
-    while len(questions_to_be_chosen_final) < 30:
+    # repeats until the maximum_number_of_questions are selected
+    while len(questions_to_be_chosen_final) < maximum_number_of_questions:
         with open("data.json", "r") as file:
             data = json.load(file)
         
@@ -498,9 +515,9 @@ def create_questions() -> list:
         # then start picking questions from the redemption questions list
         if len(data["redemption_questions"]) > 0:
             redemption_question = data["redemption_questions"].pop()
-            module_chosen = redemption_question[0]
-            tag_chosen = redemption_question[1]
-            question_chosen = redemption_question[2]
+            module_chosen = redemption_question[0][0]
+            tag_chosen = redemption_question[0][1]
+            question_chosen = redemption_question[0][2]
             
             with open("data.json", "w") as file:
                 file.write(json.dumps(data, indent=4))
@@ -536,18 +553,18 @@ def create_questions() -> list:
             question_chosen = random.choice(questions_to_be_chosen)
 
         # NOTE: debugger tool
-        is_debug_view = True
+        is_debug_view = False
         # module_chosen = "Module 1"
         # tag_chosen = "Binary, Octal, Decimal, and Hexadecimal"
-        # question_chosen = "Q2"
+        # question_chosen = "Q1"
         
         question_location = [module_chosen, tag_chosen, question_chosen]
         
         if not is_debug_view:
             is_duplicate_question = False
-            for question in questions_to_be_chosen_final:
-                # if the question is already in the final list,
-                if question_location in question:
+            for question, marked_wrong_question in zip(questions_to_be_chosen_final, data["questions_marked_wrong"]):
+                # if the question is already in the final list or was marked wrong,
+                if question_location in question or question_location in marked_wrong_question:
                     # then flag the question as a duplicate
                     is_duplicate_question = True
                     break
@@ -671,7 +688,7 @@ def create_questions() -> list:
     # shuffles the list
     random.shuffle(questions_to_be_chosen_final)
     
-    return questions_to_be_chosen_final
+    return questions_to_be_chosen_final, maximum_number_of_questions
 
 def create_choices(current_choice_frame: Frame,
                    question_details_dict: dict) -> None:
