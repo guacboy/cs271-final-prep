@@ -1,4 +1,125 @@
 {
-    "bank": {},
+    "bank": {
+        "Module 1": {
+            "Language Hierarchy": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0,
+                    "Q8": 0,
+                    "Q9": 0
+                },
+                "count": 0
+            },
+            "Instruction Set Architecture (ISA)": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Binary, Octal, Decimal, and Hexadecimal": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "Numerical Data Types": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "Large Value Prefixes": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "Character Data Type": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "Central Processing Unit (CPU)": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0,
+                    "Q8": 0,
+                    "Q9": 0,
+                    "Q10": 0
+                },
+                "count": 0
+            },
+            "Main Memory (RAM)": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "Instruction Execution Cycle": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "IA-32 Architecture": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Modes of Operation and Memory Management": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "General Purpose Registers - Special Purposes": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "General Purpose Registers - Sub-register Access Method": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Status Flags": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0
+                },
+                "count": 0
+            },
+            "Segment Registers": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            }
+        }
+    },
+    "redemption_questions": [],
     "questions_marked_wrong": []
 }
