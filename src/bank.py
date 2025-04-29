@@ -166,6 +166,9 @@ question_bank = {
                     "SQWORD": "64",
                     "OWORD": "128",
                     "SOWORD": "128",
+                    "REAL4": "32",
+                    "REAL8": "64",
+                    "REAL10": "80",
                 },
                 "variant": "How many bits long is a _ on x86 systems?",
                 "format": FREE_RESPONSE,
@@ -462,6 +465,116 @@ question_bank = {
                         ["DS", "Points to the location where data is stored"],
                         ["ES/FS/GS", "Points to additional segments for data storage"],
                         ["SS", "Points to the read/write data"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+    },
+    # NEW ==========================================================
+    "Module 2": {
+        "Directives": {
+            "Q1": {
+                "details": {
+                    "Match the definition to its directive.": [
+                        [".data", "Marks beginning of the data segment"],
+                        [".code", "Marks beginning of the code segment"],
+                        [".stack", "Specifies the size of the runtime stack"],
+                        ["INCLUDE", "Inserts source code from specified file"],
+                        ["PROC", "Defines the start of a procedure"],
+                        ["ENDP", "Defines the end of a procedure"],
+                        ["MACRO", "Defines the start of a macro"],
+                        ["ENDM", "Defines the end of a macro"],
+                        ["END", "Marks the end of module"],
+                        ["INVOKE", "Calls a procedure at address given by the expression"],
+                        ["BYTE, WORD, DWORD, etc.", "Allocates memory space for 'variable' storage"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+        "Identifiers": {
+            "Q1": {
+                "details": None,
+                "variant": ..., # TODO: M2, E1
+                "format": SELECT_THAT_APPLY,
+            },
+        },
+        "Memory Locations": {
+            "Q1": {
+                "details": {
+                    "Groups of bytes in memory can only be interpreted a single way.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+        },
+        "Composition of an Instruction": {
+            "Q1": {
+                "details": {
+                    "Which is the correct composition of an instruction?": "[code_label:] mnemonic [operands] [;comment]",
+                    "rpt1": "[mnemonic:] code_label [operands] [;comment]",
+                    "rpt2": "[code_label:] operands [mnemonic] [;comment]",
+                    "rpt3": "[comment:] mnemonic [operands] [;code_label]",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q2": {
+                "details": {
+                    "All instructions have operands.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+        },
+        "Instruction Mnemonics": {
+            "Q1": {
+                "details": {
+                    "ADD": "True",
+                    "SUB": "True",
+                    "MOV": "True",
+                    "JMP": "True",
+                    "CLD": "True",
+                },
+                "variant": "_ is an example of an instruction mnemonic.",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q2": {
+                "details": {
+                    "Match the definition to its instruction mnemonic.": [
+                        ["ADD", "Adds two values"],
+                        ["SUB", "Subtracts one value from another"],
+                        ["MOV", "Copies a value to another location"],
+                        ["JMP", "Transfers program execution to a different memory address signified by a code label"],
+                        ["CLD", "Clears the Direction Flag"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+        "Operands": {
+            "Q1": {
+                "details": ..., # TODO: Q2, A1, Q5
+                "format": SELECT_THAT_APPLY,
+            },
+        },
+        "Data and Memory Offsets": {
+            "Q1": {
+                "details": None,
+                "variant": ..., # TODO: M2, E3
+                "format": FREE_RESPONSE,
+            },
+        },
+        "Irvine Procedures": {
+            "Q2": {
+                "details": {
+                    "Match the definition to its Irvine procedures.": [
+                        ["ClrScr", "Clears the console window"],
+                        ["CrLf", "Sets cursor to new line"],
+                        ["ReadInt", "Reads a signed integer from keyboard"],
+                        ["ReadDec", "Reads an unsigned integer from keyboard"],
+                        ["ReadString", "Reads a string from keyboard"],
+                        ["WriteInt", "Writes a signed integer to the console window"],
+                        ["WriteDec", "Writes an unsigned integer to the console window"],
+                        ["WriteString", "Writes a string to the console window"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
