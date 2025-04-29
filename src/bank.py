@@ -21,6 +21,8 @@ class Bank():
         
         return question_variant.replace("_", question_chosen)    
 
+# TODO: sort question bank
+
 question_bank = {
     "Module 1": {
         "Language Hierarchy": {
@@ -113,7 +115,7 @@ question_bank = {
                 "format": SELECT_THAT_APPLY,
             },
         },
-        "Instruction Set Architecture (ISA)": {
+        "Instruction Set Architecture": {
             "Q1": {
                 "details": {
                     "Match the definition to its instruction set architecture (ISA).": [
@@ -125,15 +127,15 @@ question_bank = {
                 "format": MATCH_TO_ANSWER,
             },
         },
-        "Binary, Octal, Decimal, and Hexadecimal": {
+        "Data Representation": {
             "Q1": {
                 "details": None,
-                "variant": Question.mod1_binary_octal_decimal_hexadecimal_q1,
+                "variant": Question.mod1_data_representation_q1,
                 "format": TRUE_OR_FALSE,
             },
             "Q2": {
                 "details": None,
-                "variant": Question.mod1_binary_octal_decimal_hexadecimal_q2,
+                "variant": Question.mod1_data_representation_q2,
                 "format": TRUE_OR_FALSE,
             },
         },
@@ -210,7 +212,7 @@ question_bank = {
                 "format": TRUE_OR_FALSE,
             },
         },
-        "Central Processing Unit (CPU)": {
+        "Central Processing Unit": {
             "Q1": {
                 "details": {
                     "Match the definition to its central processing unit (CPU).": [
@@ -298,7 +300,7 @@ question_bank = {
                 "format": TRUE_OR_FALSE,
             },
         },
-        "Main Memory (RAM)": {
+        "Main Memory": {
             "Q1": {
                 "details": {
                     "In a specific architecture, created by _, programs are stored in memory and executed according to an instruction execution cycle": "John von Neumann",
@@ -363,7 +365,7 @@ question_bank = {
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
             },
         },
-		"Modes of Operation and Memory Management": {
+		"Memory Management": {
             "Q1": {
                 "details": {
                     "How much memory can be addressed in Real-address mode?": "1 MB",
@@ -373,7 +375,9 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q2": {
+        },
+		"Modes of Operation": {
+            "Q1": {
                 "details": {
                     "Which Operation Mode provides compatibility for legacy 8086 programs?": "Real-Address Mode",
                     "rpt1": "System Management Mode",
@@ -383,7 +387,7 @@ question_bank = {
                 "format": MULTIPLE_CHOICE,
             },
         },
-        "General Purpose Registers - Special Purposes": {
+        "Registers: Special Purposes": {
             "Q1": {
                 "details": {
                     "Match the definition to its register.": [
@@ -400,7 +404,7 @@ question_bank = {
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
             },
         },
-        "General Purpose Registers - Sub-register Access Method": {
+        "Sub-registers: Access Method": {
             "Q1": {
                 "details": None,
                 "variant": Question.mod1_sub_register_access_method_q1,

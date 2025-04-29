@@ -29,7 +29,7 @@ def on_randomize_true_false_question(details_dict: dict) -> str:
 
 class Question():
     # TRUE OR FALSE
-    def mod1_binary_octal_decimal_hexadecimal_q1() -> str:
+    def mod1_data_representation_q1() -> str:
         question_dict = {
             "0": "positive",
             "1": "negative",
@@ -43,7 +43,7 @@ class Question():
         return question, answer
     
     # TRUE OR FALSE
-    def mod1_binary_octal_decimal_hexadecimal_q2() -> str:
+    def mod1_data_representation_q2() -> str:
         question_dict = {
             "rightmost": "Least Significant Bit (LSB)",
             "leftmost": "Most Significant Bit (MSB)",

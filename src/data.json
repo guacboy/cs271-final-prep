@@ -15,13 +15,13 @@
                 },
                 "count": 0
             },
-            "Instruction Set Architecture (ISA)": {
+            "Instruction Set Architecture": {
                 "questions": {
                     "Q1": 0
                 },
                 "count": 0
             },
-            "Binary, Octal, Decimal, and Hexadecimal": {
+            "Data Representation": {
                 "questions": {
                     "Q1": 0,
                     "Q2": 0
@@ -49,7 +49,7 @@
                 },
                 "count": 0
             },
-            "Central Processing Unit (CPU)": {
+            "Central Processing Unit": {
                 "questions": {
                     "Q1": 0,
                     "Q2": 0,
@@ -64,7 +64,7 @@
                 },
                 "count": 0
             },
-            "Main Memory (RAM)": {
+            "Main Memory": {
                 "questions": {
                     "Q1": 0,
                     "Q2": 0
@@ -84,20 +84,25 @@
                 },
                 "count": 0
             },
-            "Modes of Operation and Memory Management": {
-                "questions": {
-                    "Q1": 0,
-                    "Q2": 0
-                },
-                "count": 0
-            },
-            "General Purpose Registers - Special Purposes": {
+            "Memory Management": {
                 "questions": {
                     "Q1": 0
                 },
                 "count": 0
             },
-            "General Purpose Registers - Sub-register Access Method": {
+            "Modes of Operation": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Registers: Special Purposes": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Sub-registers: Access Method": {
                 "questions": {
                     "Q1": 0
                 },
@@ -115,6 +120,58 @@
             "Segment Registers": {
                 "questions": {
                     "Q1": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 2": {
+            "Directives": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Identifiers": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Memory Locations": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Composition of an Instruction": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "Instruction Mnemonics": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "Operands": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Data and Memory Offsets": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Irvine Procedures": {
+                "questions": {
+                    "Q2": 0
                 },
                 "count": 0
             }
