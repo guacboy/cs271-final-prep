@@ -8,7 +8,7 @@ from bank import Bank, question_bank, \
     MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE, SELECT_THAT_APPLY, MATCH_TO_ANSWER, MATCH_TO_ANSWER_RANDOMIZED
 
 root = Tk()
-root.geometry("600x700")
+root.geometry("1500x800")
 root.config(background=BG_COLOR)
 
 def main_menu() -> None:
@@ -19,7 +19,43 @@ def main_menu() -> None:
     with open("data.json", "r") as file:
         data = json.load(file)
     
-    # TODO: select/deselect tag
+    subject_frame = Util.frame(root)
+    subject_frame.pack(side=TOP,
+                       pady=(10,0))
+    
+    for module in question_bank.keys():
+        subject_inner_frame = Util.frame(subject_frame)
+        subject_inner_frame.pack(side=LEFT,
+                                 anchor=N,)
+        
+        # FIXME: options not being preselected
+        option = IntVar(value=1)
+        module_checkbox = Util.checkbox(subject_inner_frame)
+        module_checkbox.config(text=module,
+                               variable=option,)
+        module_checkbox.pack(side=TOP,
+                             anchor=W,)
+        
+        for tag in question_bank[module].keys():
+            tag_frame = Util.frame(subject_inner_frame)
+            tag_frame.pack(side=TOP,
+                           anchor=W,)
+            
+            left_padding = Util.label(tag_frame)
+            left_padding.config(text=" ")
+            left_padding.pack(side=LEFT)
+            
+            option = IntVar(value=1)
+            tag_checkbox = Util.checkbox(tag_frame)
+            tag_checkbox.config(text=tag,
+                                font=(FONT, 10, "normal"),
+                                variable=option,)
+            tag_checkbox.pack(side=LEFT)
+            
+            question_count_label = Util.label(tag_frame)
+            question_count_label.config(text=f"{len(question_bank[module][tag])} Qs",
+                                        font=(FONT, 8, "bold"))
+            question_count_label.pack(side=LEFT)
     
     # erases the data in data.json
     erase_data_label = Util.label(root)
@@ -29,7 +65,7 @@ def main_menu() -> None:
     erase_data_label.bind("<Leave>", func=lambda e: on_leave_erase_data())
     erase_data_label.bind("<Button-1>", func=lambda e: on_click_erase_data())
     erase_data_label.pack(side=BOTTOM,
-                          pady=(10, 50))
+                          pady=(10, 25))
     
     def on_enter_erase_data() -> None:
         """
@@ -126,7 +162,7 @@ def main_menu() -> None:
         """
         
         data["debug_question"] = [""] * 3
-        option.set("")
+        module_option.set("")
         
         with open("data.json", "w") as file:
             file.write(json.dumps(data, indent=4))
@@ -140,7 +176,7 @@ def main_menu() -> None:
         # for every option except the first option (the module option)
         for debug in debug_optionmenu[1::]:
             # delete the widget
-            debug.destroy()  
+            debug.destroy()
         
         # makes the 'clear debugger' button invisible
         clear_debugger_label.config(fg=BG_COLOR)
@@ -158,16 +194,15 @@ def main_menu() -> None:
     tag = data["debug_question"][1]
     question = data["debug_question"][2]
     
-    option = StringVar(value=module)
+    module_option = StringVar(value=module)
     # selects the current modules available
     module_available = [
         module for module in question_bank.keys()
     ]
     debug_module_optionmenu = Util.optionmenu(debug_frame,
-                                              option,
+                                              module_option,
                                               *module_available,
                                               func=lambda e: on_update_debug_tag_optionmenu(e),)
-    debug_module_optionmenu.config(width=7,)
     debug_module_optionmenu.pack(side=LEFT)
     
     def on_update_debug_tag_optionmenu(module: str) -> None:
@@ -188,17 +223,17 @@ def main_menu() -> None:
                 # delete the widget
                 debug.destroy()     
         
-        option = StringVar(value=tag)
+        tag_option = StringVar(value=tag)
         # selects the current tags available
         tag_available = [
             tag for tag in question_bank[module].keys()
         ]
         tag_available.sort() # sorts into alphabetical order
         debug_tag_optionmenu = Util.optionmenu(debug_frame,
-                                            option,
-                                            *tag_available,
-                                            func=lambda e: on_update_debug_question_optionmenu(module,
-                                                                                               e),)
+                                               tag_option,
+                                               *tag_available,
+                                               func=lambda e: on_update_debug_question_optionmenu(module,
+                                                                                                  e),)
         debug_tag_optionmenu.config(width=30,)
         debug_tag_optionmenu.pack(side=LEFT)
         
@@ -225,18 +260,17 @@ def main_menu() -> None:
                 # delete the widget
                 debug.destroy()
         
-        option = StringVar(value=question)
+        question_option = StringVar(value=question)
         # selects the current questions available
         question_available = [
             question for question in question_bank[module][tag].keys()
         ]
         debug_question_optionmenu = Util.optionmenu(debug_frame,
-                                                    option,
+                                                    question_option,
                                                     *question_available,
                                                     func=lambda e: on_update_question_location(module,
                                                                                                tag,
                                                                                                e),)
-        debug_question_optionmenu.config(width=2,)
         debug_question_optionmenu.pack(side=LEFT)
             
     def on_update_question_location(module: str,
