@@ -23,35 +23,42 @@ def main_menu() -> None:
     subject_frame.pack(side=TOP,
                        pady=(10,0))
     
+    # iterates through all the modules
     for module in question_bank.keys():
+        # creates a frame to help organize the modules with their tags
         subject_inner_frame = Util.frame(subject_frame)
         subject_inner_frame.pack(side=LEFT,
                                  anchor=N,)
         
         # FIXME: options not being preselected
         option = IntVar(value=1)
+        # creates the module checkbox
         module_checkbox = Util.checkbox(subject_inner_frame)
         module_checkbox.config(text=module,
                                variable=option,)
         module_checkbox.pack(side=TOP,
                              anchor=W,)
         
+        # iterates through all the tags
         for tag in question_bank[module].keys():
             tag_frame = Util.frame(subject_inner_frame)
             tag_frame.pack(side=TOP,
                            anchor=W,)
             
+            # creates a padding to the left
             left_padding = Util.label(tag_frame)
             left_padding.config(text=" ")
             left_padding.pack(side=LEFT)
             
             option = IntVar(value=1)
+            # creates the tag checkbox
             tag_checkbox = Util.checkbox(tag_frame)
             tag_checkbox.config(text=tag,
                                 font=(FONT, 10, "normal"),
                                 variable=option,)
             tag_checkbox.pack(side=LEFT)
             
+            # creates the number of questions within that tag
             question_count_label = Util.label(tag_frame)
             question_count_label.config(text=f"{len(question_bank[module][tag])} Qs",
                                         font=(FONT, 8, "bold"))
@@ -124,11 +131,26 @@ def main_menu() -> None:
     create_button.bind("<Leave>", func=lambda e: on_leave_option(create_button))
     create_button.pack(side=BOTTOM)
     
+    # if a question has not been selected,
+    if "" in data["debug_question"]:
+        # then make the clear debugger button visible
+        clear_debugger_fg = BG_COLOR
+        
+        # ensures any previous (incomplete) selections are removed
+        data["debug_question"] = [""] * 3
+        
+        with open("data.json", "w") as file:
+            file.write(json.dumps(data, indent=4))
+    # otherwise,
+    else:
+        # make the clear debugger button invisible
+        clear_debugger_fg = FONT_COLOR
+    
     # clears the debugger tool
     clear_debugger_label = Util.label(root)
     clear_debugger_label.config(text="CLEAR",
                                 font=(FONT, 10, "bold"),
-                                fg=BG_COLOR,) # makes the 'clear debugger' button invisible
+                                fg=clear_debugger_fg,) # makes the 'clear debugger' button invisible
     clear_debugger_label.bind("<Enter>", func=lambda e: on_enter_clear_debugger())
     clear_debugger_label.bind("<Leave>", func=lambda e: on_leave_clear_debugger())
     clear_debugger_label.bind("<Button-1>", func=lambda e: on_click_clear_debugger())
@@ -162,21 +184,18 @@ def main_menu() -> None:
         """
         
         data["debug_question"] = [""] * 3
-        module_option.set("")
         
         with open("data.json", "w") as file:
             file.write(json.dumps(data, indent=4))
-            
-        # create the list of options
-        debug_optionmenu = [
-            debug for debug in debug_frame.winfo_children()
-            if isinstance(debug, OptionMenu)
-        ]
         
-        # for every option except the first option (the module option)
-        for debug in debug_optionmenu[1::]:
-            # delete the widget
-            debug.destroy()
+        # iterates through the widgets in the debug frame
+        for optionmenu in debug_frame.winfo_children():
+            # if it's an optionmenu,
+            if isinstance(optionmenu, OptionMenu):
+                # then destroy the optionmenu
+                optionmenu.destroy()
+        
+        on_create_debug_optionmenu()
         
         # makes the 'clear debugger' button invisible
         clear_debugger_label.config(fg=BG_COLOR)
@@ -190,104 +209,144 @@ def main_menu() -> None:
                        font=(FONT, 10, "bold"),)
     debug_label.pack(side=TOP)
     
-    module = data["debug_question"][0]
-    tag = data["debug_question"][1]
-    question = data["debug_question"][2]
-    
-    module_option = StringVar(value=module)
-    # selects the current modules available
-    module_available = [
-        module for module in question_bank.keys()
-    ]
-    debug_module_optionmenu = Util.optionmenu(debug_frame,
-                                              module_option,
-                                              *module_available,
-                                              func=lambda e: on_update_debug_tag_optionmenu(e),)
-    debug_module_optionmenu.pack(side=LEFT)
-    
-    def on_update_debug_tag_optionmenu(module: str) -> None:
+    def on_create_debug_optionmenu() -> None:
         """
-        Displays the available tags in response to the selected module.
+        Creates the debugger options.
         """
         
-        # if the frame contains 3 >= widgets
-        if len(debug_frame.winfo_children()) >= 3:
-            # create the list of options
-            debug_optionmenu = [
-                debug for debug in debug_frame.winfo_children()
-                if isinstance(debug, OptionMenu)
+        module = data["debug_question"][0]
+        tag = data["debug_question"][1]
+        question = data["debug_question"][2]
+        
+        # if there is a debug question (checks if the last idx is empty),
+        if "" in data["debug_question"]:
+            # creates placeholder variables
+            tag_choices = [""]
+            question_choices = [""]
+            # and disables the optionmenu
+            current_state = DISABLED
+        # otherwise,
+        else:
+            # select the current choices available
+            tag_choices = [
+                tag for tag in question_bank[module].keys()
             ]
-            
-            # for every option except the first option (the module option)
-            for debug in debug_optionmenu[1::]:
-                # delete the widget
-                debug.destroy()     
+            question_choices = [
+                question for question in question_bank[module][tag].keys()
+            ]
+            # and enables the optionmenu
+            current_state = ACTIVE
+        
+        module_option = StringVar(value=module)
+        # selects the current modules available
+        module_choices = [
+            module for module in question_bank.keys()
+        ]
+        # creates the module optionmenu
+        debug_module_optionmenu = Util.optionmenu(debug_frame,
+                                                  module_option,
+                                                  *module_choices,
+                                                  func=lambda e: on_update_debug_optionmenu(e),)
+        debug_module_optionmenu.pack(side=LEFT)
+        
+        tag_option = StringVar(value=tag)
+        # creates the tag optionmenu
+        debug_tag_optionmenu = Util.optionmenu(debug_frame,
+                                               tag_option,
+                                               *tag_choices,
+                                               func=lambda e: on_update_debug_optionmenu(module,
+                                                                                         e),)
+        debug_tag_optionmenu.config(width=30,
+                                    state=current_state,)
+        debug_tag_optionmenu.pack(side=LEFT)
+        
+        question_option = StringVar(value=question)
+        # creates the question optionmenu
+        debug_question_optionmenu = Util.optionmenu(debug_frame,
+                                                    question_option,
+                                                    *question_choices,
+                                                    func=lambda e: on_update_debug_optionmenu(module,
+                                                                                              tag,
+                                                                                              e,),)
+        debug_question_optionmenu.config(state=current_state)
+        debug_question_optionmenu.pack(side=LEFT)
+        
+    on_create_debug_optionmenu()
+    
+    def on_update_debug_optionmenu(module: str="",
+                                   tag: str="",
+                                   question: str="",):
+        """
+        Updates both the tag's optionmenu and question's optionmenu
+        with new settings.
+        """
+        
+        # create the list of optionmenus
+        debug_optionmenu = [
+            debug for debug in debug_frame.winfo_children()
+            if isinstance(debug, OptionMenu)
+        ]
+        
+        # for every option except the first option
+        # (the module option)
+        for debug in debug_optionmenu[1::]:
+            # delete the widget (to later be recreated with new choices)
+            debug.destroy()
         
         tag_option = StringVar(value=tag)
         # selects the current tags available
-        tag_available = [
+        tag_choices = [
             tag for tag in question_bank[module].keys()
         ]
-        tag_available.sort() # sorts into alphabetical order
         debug_tag_optionmenu = Util.optionmenu(debug_frame,
                                                tag_option,
-                                               *tag_available,
-                                               func=lambda e: on_update_debug_question_optionmenu(module,
-                                                                                                  e),)
+                                               *tag_choices,
+                                               func=lambda e: on_update_debug_optionmenu(module,
+                                                                                         e),)
         debug_tag_optionmenu.config(width=30,)
         debug_tag_optionmenu.pack(side=LEFT)
+        
+        question_option = StringVar(value=question)
+        
+        # if a tag has not been selected
+        if tag == "":
+            # creates a placehold variable
+            question_choices = [""]
+            # and disables the optionmenu
+            current_state = DISABLED
+        # if a tag has been selected
+        else:
+            # selects the current questions available
+            question_choices = [
+                question for question in question_bank[module][tag].keys()
+            ]
+            # and enables the optionmenu
+            current_state = ACTIVE
+        
+        debug_question_optionmenu = Util.optionmenu(debug_frame,
+                                                    question_option,
+                                                    *question_choices,
+                                                    func=lambda e: on_update_debug_optionmenu(module,
+                                                                                              tag,
+                                                                                              e),)
+        debug_question_optionmenu.config(state=current_state)
+        debug_question_optionmenu.pack(side=LEFT)
         
         # makes the 'clear debugger' button visible
         clear_debugger_label.config(fg=FONT_COLOR)
         
-    def on_update_debug_question_optionmenu(module: str,
-                                            tag: str) -> None:
-        """
-        Displays the available questions in response to the selected tag.
-        """
-        
-        # if the frame contains 3 >= widgets
-        if len(debug_frame.winfo_children()) >= 3:
-            # create the list of options
-            debug_optionmenu = [
-                debug for debug in debug_frame.winfo_children()
-                if isinstance(debug, OptionMenu)
-            ]
+        def on_update_question_location(module: str,
+                                        tag: str,
+                                        question: str) -> None:
+            """
+            Updates the debug question to its preselected values.
+            """
             
-            # for every option except the first two options
-            # (the module option and the tag option)
-            for debug in debug_optionmenu[2::]:
-                # delete the widget
-                debug.destroy()
-        
-        question_option = StringVar(value=question)
-        # selects the current questions available
-        question_available = [
-            question for question in question_bank[module][tag].keys()
-        ]
-        debug_question_optionmenu = Util.optionmenu(debug_frame,
-                                                    question_option,
-                                                    *question_available,
-                                                    func=lambda e: on_update_question_location(module,
-                                                                                               tag,
-                                                                                               e),)
-        debug_question_optionmenu.pack(side=LEFT)
+            data["debug_question"] = [module, tag, question]
             
-    def on_update_question_location(module: str,
-                                    tag: str,
-                                    question: str) -> None:
-        """
-        Updates the question location to be pre-selected.
-        """
-        
-        data["debug_question"] = [module, tag, question]
-        
-        with open("data.json", "w") as file:
-            file.write(json.dumps(data, indent=4))
-            
-    if data["debug_question"][2] != "":    
-        on_update_debug_tag_optionmenu(module)
-        on_update_debug_question_optionmenu(module, tag)
+            with open("data.json", "w") as file:
+                file.write(json.dumps(data, indent=4))
+                
         on_update_question_location(module, tag, question)
     
 def create_json() -> None:
@@ -703,7 +762,7 @@ def create_questions():
     maximum_number_of_questions = len(number_of_questions_to_count) - len(data["questions_marked_wrong"])
     
     # if the maximum number is greater than 30, or there is a question already preselected
-    if maximum_number_of_questions >= 30 or data["debug_question"][2] != "":
+    if maximum_number_of_questions >= 30 or "" in data["debug_question"]:
         # set to 30
         maximum_number_of_questions = 30
 
@@ -715,7 +774,7 @@ def create_questions():
         
         # if there is a question already preselected,
         # then select that question (used for debugging purposes)
-        if data["debug_question"][2] != "":
+        if "" not in data["debug_question"]:
             module_chosen = data["debug_question"][0]
             tag_chosen = data["debug_question"][1]
             question_chosen = data["debug_question"][2]
@@ -763,7 +822,7 @@ def create_questions():
         
         # if there is no question that was preselected,
         # check for duplicate questions
-        if data["debug_question"][2] == "":
+        if "" in data["debug_question"]:
             is_duplicate_question = False
             for question, marked_wrong_question in zip(questions_to_be_chosen_final, data["questions_marked_wrong"]):
                 # if the question is already in the final list or was recently marked wrong,
