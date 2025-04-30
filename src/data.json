@@ -177,6 +177,11 @@
             }
         }
     },
+    "debug_question": [
+        "",
+        "",
+        ""
+    ],
     "redemption_questions": [],
     "questions_marked_wrong": []
 }
