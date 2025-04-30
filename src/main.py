@@ -16,9 +16,10 @@ def main_menu() -> None:
     Displays main menu GUI.
     """
     
-    global preselected_question_location
+    with open("data.json", "r") as file:
+        data = json.load(file)
     
-    # TODO: select/deselect tags
+    # TODO: select/deselect tag
     
     # erases the data in data.json
     erase_data_label = Util.label(root)
@@ -56,9 +57,6 @@ def main_menu() -> None:
         Erases any data and reloads the data.json file.
         """
         
-        with open("data.json", "r") as file:
-            data = json.load(file)
-        
         data["bank"].clear()
         data["redemption_questions"].clear()
         data["questions_marked_wrong"].clear()
@@ -82,14 +80,10 @@ def main_menu() -> None:
         root.after(3000, reset_erase_data_button)
         create_json() # creates/updates the json file
     
-    # contains the question's location to preselect when creating the questions;
-    # used for debugging purpose
-    preselected_question_location = []
-    
     # creates the exam
     create_button = Util.button(root)
     create_button.config(text="Create Exam",
-                         command=lambda: create_exam(preselected_question_location))
+                         command=lambda: create_exam())
     create_button.bind("<Enter>", func=lambda e: on_enter_option(create_button))
     create_button.bind("<Leave>", func=lambda e: on_leave_option(create_button))
     create_button.pack(side=BOTTOM)
@@ -131,11 +125,12 @@ def main_menu() -> None:
         Clears the debugger selections.
         """
         
-        global preselected_question_location
-        
-        preselected_question_location.clear()
+        data["debug_question"] = [""] * 3
         option.set("")
         
+        with open("data.json", "w") as file:
+            file.write(json.dumps(data, indent=4))
+            
         # create the list of options
         debug_optionmenu = [
             debug for debug in debug_frame.winfo_children()
@@ -159,7 +154,11 @@ def main_menu() -> None:
                        font=(FONT, 10, "bold"),)
     debug_label.pack(side=TOP)
     
-    option = StringVar(value="")
+    module = data["debug_question"][0]
+    tag = data["debug_question"][1]
+    question = data["debug_question"][2]
+    
+    option = StringVar(value=module)
     # selects the current modules available
     module_available = [
         module for module in question_bank.keys()
@@ -173,7 +172,7 @@ def main_menu() -> None:
     
     def on_update_debug_tag_optionmenu(module: str) -> None:
         """
-        Displays the available tags in reponse to the selected module.
+        Displays the available tags in response to the selected module.
         """
         
         # if the frame contains 3 >= widgets
@@ -189,7 +188,7 @@ def main_menu() -> None:
                 # delete the widget
                 debug.destroy()     
         
-        option = StringVar(value="")
+        option = StringVar(value=tag)
         # selects the current tags available
         tag_available = [
             tag for tag in question_bank[module].keys()
@@ -198,52 +197,64 @@ def main_menu() -> None:
         debug_tag_optionmenu = Util.optionmenu(debug_frame,
                                             option,
                                             *tag_available,
-                                            func=lambda e: on_update_debug_question_optionmenu(e),)
+                                            func=lambda e: on_update_debug_question_optionmenu(module,
+                                                                                               e),)
         debug_tag_optionmenu.config(width=30,)
         debug_tag_optionmenu.pack(side=LEFT)
         
         # makes the 'clear debugger' button visible
         clear_debugger_label.config(fg=FONT_COLOR)
         
-        def on_update_debug_question_optionmenu(tag: str) -> None:
-            """
-            Displays the available questions in reponse to the selected tag.
-            """
-            
-            # if the frame contains 3 >= widgets
-            if len(debug_frame.winfo_children()) >= 3:
-                # create the list of options
-                debug_optionmenu = [
-                    debug for debug in debug_frame.winfo_children()
-                    if isinstance(debug, OptionMenu)
-                ]
-                
-                # for every option except the first two options
-                # (the module option and the tag option)
-                for debug in debug_optionmenu[2::]:
-                    # delete the widget
-                    debug.destroy()
-            
-            option = StringVar(value="")
-            # selects the current questions available
-            question_available = [
-                question for question in question_bank[module][tag].keys()
+    def on_update_debug_question_optionmenu(module: str,
+                                            tag: str) -> None:
+        """
+        Displays the available questions in response to the selected tag.
+        """
+        
+        # if the frame contains 3 >= widgets
+        if len(debug_frame.winfo_children()) >= 3:
+            # create the list of options
+            debug_optionmenu = [
+                debug for debug in debug_frame.winfo_children()
+                if isinstance(debug, OptionMenu)
             ]
-            debug_question_optionmenu = Util.optionmenu(debug_frame,
-                                                        option,
-                                                        *question_available,
-                                                        func=lambda e: on_update_question_location(e),)
-            debug_question_optionmenu.config(width=2,)
-            debug_question_optionmenu.pack(side=LEFT)
             
-            def on_update_question_location(question: str) -> None:
-                """
-                Updates the question location to be pre-selected.
-                """
-                
-                global preselected_question_location
-                
-                preselected_question_location = [module, tag, question]
+            # for every option except the first two options
+            # (the module option and the tag option)
+            for debug in debug_optionmenu[2::]:
+                # delete the widget
+                debug.destroy()
+        
+        option = StringVar(value=question)
+        # selects the current questions available
+        question_available = [
+            question for question in question_bank[module][tag].keys()
+        ]
+        debug_question_optionmenu = Util.optionmenu(debug_frame,
+                                                    option,
+                                                    *question_available,
+                                                    func=lambda e: on_update_question_location(module,
+                                                                                               tag,
+                                                                                               e),)
+        debug_question_optionmenu.config(width=2,)
+        debug_question_optionmenu.pack(side=LEFT)
+            
+    def on_update_question_location(module: str,
+                                    tag: str,
+                                    question: str) -> None:
+        """
+        Updates the question location to be pre-selected.
+        """
+        
+        data["debug_question"] = [module, tag, question]
+        
+        with open("data.json", "w") as file:
+            file.write(json.dumps(data, indent=4))
+            
+    if data["debug_question"][2] != "":    
+        on_update_debug_tag_optionmenu(module)
+        on_update_debug_question_optionmenu(module, tag)
+        on_update_question_location(module, tag, question)
     
 def create_json() -> None:
     """
@@ -281,7 +292,7 @@ def create_json() -> None:
     with open("data.json", "w") as file:
         file.write(json.dumps(data, indent=4))
 
-def create_exam(preselected_question_location: list) -> None:
+def create_exam() -> None:
     """
     Displays exam GUI.
     """
@@ -484,7 +495,7 @@ def create_exam(preselected_question_location: list) -> None:
                      padx=(0, 15))
     
     # list of randomly selected questions
-    chosen_questions_list, maximum_number_of_questions = create_questions(preselected_question_location)
+    chosen_questions_list, maximum_number_of_questions = create_questions()
     
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
@@ -636,7 +647,7 @@ def create_exam(preselected_question_location: list) -> None:
     question_navigator_frame.pack(side=BOTTOM,
                                   pady=(0, 20),)
 
-def create_questions(preselected_question_location: list):
+def create_questions():
     """
     Creates a list of randomly selected questions
     to be displayed in the exam.
@@ -658,7 +669,7 @@ def create_questions(preselected_question_location: list):
     maximum_number_of_questions = len(number_of_questions_to_count) - len(data["questions_marked_wrong"])
     
     # if the maximum number is greater than 30, or there is a question already preselected
-    if maximum_number_of_questions >= 30 or len(preselected_question_location) > 0:
+    if maximum_number_of_questions >= 30 or data["debug_question"][2] != "":
         # set to 30
         maximum_number_of_questions = 30
 
@@ -670,10 +681,10 @@ def create_questions(preselected_question_location: list):
         
         # if there is a question already preselected,
         # then select that question (used for debugging purposes)
-        if len(preselected_question_location) > 0:
-            module_chosen = preselected_question_location[0]
-            tag_chosen = preselected_question_location[1]
-            question_chosen = preselected_question_location[2]
+        if data["debug_question"][2] != "":
+            module_chosen = data["debug_question"][0]
+            tag_chosen = data["debug_question"][1]
+            question_chosen = data["debug_question"][2]
         # if there are redemption questions,
         # then start picking questions from the redemption questions list
         elif len(data["redemption_questions"]) > 0:
@@ -718,7 +729,7 @@ def create_questions(preselected_question_location: list):
         
         # if there is no question that was preselected,
         # check for duplicate questions
-        if len(preselected_question_location) <= 0:
+        if data["debug_question"][2] == "":
             is_duplicate_question = False
             for question, marked_wrong_question in zip(questions_to_be_chosen_final, data["questions_marked_wrong"]):
                 # if the question is already in the final list or was recently marked wrong,
