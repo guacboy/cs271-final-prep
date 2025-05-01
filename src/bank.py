@@ -625,6 +625,10 @@ question_bank = {
                         ["MOV", "Copies a value to another location"],
                         ["JMP", "Transfers program execution to a different memory address signified by a code label"],
                         ["CLD", "Clears the Direction Flag"],
+                        ["CMP", "Compares two values"],
+                        ["INC", "Increments the value by one"],
+                        ["DEC", "Decrements the value by one"],
+                        ["LOOP", "Decrements ECX and repeats the code label until ECX is equal to zero"]
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
@@ -692,14 +696,56 @@ question_bank = {
         },
     },
     "Module 3": {
-        "Directives": {
+        "Jumps": {
             "Q1": {
+                "details": None,
+                "variant": Question.mod3_jumps_q1,
+                "format": TRUE_OR_FALSE,
+            },
+            "Q2": {
                 "details": {
-                    "Match the definition to its directive.": [
-                        [".data", "Marks beginning of the data segment"],
+                    "Match the definition to its Jcond instruction.": [
+                        ["JCXZ", "jumps if CX = 0"],
+                        ["JECXZ", "jumps if ECX = 0"],
+                        ["JC", "jumps if CF = 1"],
+                        ["JNC", "jumps if CF = 0"],
+                        ["JO", "jumps if OF = 1"],
+                        ["JNO", "jumps if OF = 0"],
+                        ["JP", "jumps if PF = 1"],
+                        ["JNP", "jumps if PF = 0"],
+                        ["JS", "jumps if SF = 1"],
+                        ["JNS", "jumps if SF = 0"],
+                        ["JZ", "jumps if ZF = 1"],
+                        ["JNZ", "jumps if ZF = 0"],
+                        ["JGE", "jumps if op1 >= op2"],
+                        ["JG", "jumps if op1 > op2"],
+                        ["JLE", "jumps if op1 <= op2"],
+                        ["JL", "jumps if op1 < op2"],
+                        ["JAE", "jumps if op1 is above or equal to op2"],
+                        ["JA", "jumps if op1 is above op2"],
+                        ["JBE", "jumps if op1 is below or equal to op2"],
+                        ["JB", "jumps if op1 is below op2"],
+                        ["JE", "jumps if op1 equals to op2"],
+                        ["JNE", "jumps if op1 is not equal to op2"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+        "Loops": {
+            "Q1": {
+                "details": None,
+                "variant": Question.mod3_loops_q1,
+                "format": TRUE_OR_FALSE,
+            },
+            "Q2": {
+                "details": {
+                    "The jump destination associated with LOOP must be within _ bytes.": "[-128,+127]",
+                    "rpt1": "[-255,+255]",
+                    "rpt2": "[-inf,+inf]",
+                    "rpt3": "[-99,+99]",
+                },
+                "format": MULTIPLE_CHOICE,
             },
         },
     },
