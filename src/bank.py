@@ -172,7 +172,26 @@ question_bank = {
                     "REAL8": "64",
                     "REAL10": "80",
                 },
-                "variant": "How many bits long is a _ on x86 systems?",
+                "variant": "How many bits long is a(n) _ on x86 systems?",
+                "format": FREE_RESPONSE,
+            },
+            "Q3": {
+                "details": {
+                    "BYTE": "1",
+                    "SBYTE": "1",
+                    "WORD": "2",
+                    "SWORD": "2",
+                    "DWORD": "4",
+                    "SDWORD": "4",
+                    "QWORD": "8",
+                    "SQWORD": "8",
+                    "OWORD": "16",
+                    "SOWORD": "16",
+                    "REAL4": "4",
+                    "REAL8": "8",
+                    "REAL10": "10",
+                },
+                "variant": "How many bytes long is a(n) _ on x86 systems?",
                 "format": FREE_RESPONSE,
             },
         },
@@ -188,7 +207,7 @@ question_bank = {
                     "zetta (Zi)": "2^70",
                     "yotta (Yi)": "2^80",
                 },
-                "variant": "What is the multiplier for _?\n\nNOTE: Use caret (^) to represent as power. For example, 2^5 will be read as '2 to the power of 5'",
+                "variant": "What is the multiplier for _?\n\nNOTE: Use caret (^) to represent as power. For example: 2^5 will be read as '2 to the power of 5'.",
                 "format": FREE_RESPONSE,
             },
             "Q2": {
@@ -475,7 +494,6 @@ question_bank = {
             },
         },
     },
-    # NEW ==========================================================
     "Module 2": {
         "Directives": {
             "Q1": {
@@ -500,16 +518,27 @@ question_bank = {
         "Identifiers": {
             "Q1": {
                 "details": None,
-                "variant": ..., # TODO: M2, E1
+                "variant": Question.mod2_identifiers_q1,
                 "format": SELECT_THAT_APPLY,
             },
+            "Q2": {
+                "details": {
+                    "MASM is case-sensitive.": "False"
+                },
+                "format": TRUE_OR_FALSE,
+            },
         },
-        "Memory Locations": {
+        "Memory Addresses": {
             "Q1": {
                 "details": {
                     "Groups of bytes in memory can only be interpreted a single way.": "False",
                 },
                 "format": TRUE_OR_FALSE,
+            },
+            "Q2": {
+                "details": None,
+                "variant": Question.mod2_memory_addresses_q2,
+                "format": FREE_RESPONSE,
             },
         },
         "Composition of an Instruction": {
@@ -525,6 +554,53 @@ question_bank = {
             "Q2": {
                 "details": {
                     "All instructions have operands.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q3": {
+                "details": {
+                    "By default, code labels are visible only within the procedure in which they are assigned (created).": "True"
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q4": {
+                "details": {
+                    "In MASM all text following a semicolon (on the same line) is treated as a comment and ignored when the program is converted to machine code.": "True"
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q5": {
+                "details": None,
+                "variant": Question.mod2_composition_of_an_instruction_q5,
+                "format": SELECT_THAT_APPLY,
+            },
+            "Q6": {
+                "details": {
+                    "ADD": "True",
+                    "MUL": "False",
+                },
+                "variant": "The _ instruction must have an explicit destination operand",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q7": {
+                "details": {
+                    "Operands may be any of the following.": [
+                        [
+                            "register name",
+                            "variable name (memory)",
+                            "constant or constant expression"
+                            
+                        ],
+                        [
+                            "non-register reserved word",
+                        ]
+                    ]
+                },
+                "format": SELECT_THAT_APPLY,
+            },
+            "Q8": {
+                "details": {
+                    "Code labels may only appear on lines with no instructions.": "False"
                 },
                 "format": TRUE_OR_FALSE,
             },
@@ -553,22 +629,52 @@ question_bank = {
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
             },
-        },
-        "Operands": {
-            "Q1": {
-                "details": ..., # TODO: Q2, A1, Q5
-                "format": SELECT_THAT_APPLY,
-            },
-        },
-        "Data and Memory Offsets": {
-            "Q1": {
+            "Q3": {
                 "details": None,
-                "variant": ..., # TODO: M2, E3
+                "variant": Question.mod2_instruction_mnemonics_q3,
+                "format": FREE_RESPONSE,
+            },
+            "Q4": {
+                "details": {
+                    "eax = -dword1 + (edx - ecx) + 1": "mov eax,dword1\
+                                                        neg eax\
+                                                        mov ebx,edx\
+                                                        sub ebx,ecx\
+                                                        add eax,ebx\
+                                                        inc eax",
+                    "eax = dword1 + (edx - ecx) + 1": "mov eax,dword1\
+                                                        mov ebx,edx\
+                                                        sub ebx,ecx\
+                                                        add eax,ebx\
+                                                        inc eax",
+                    "eax = -dword1 + (edx + ecx) + 1": "mov eax,dword1\
+                                                        neg eax\
+                                                        mov ebx,edx\
+                                                        add ebx,ecx\
+                                                        add eax,ebx\
+                                                        inc eax",
+                    "eax = dword1 + (edx + ecx) + 1": "mov eax,dword1\
+                                                        mov ebx,edx\
+                                                        add ebx,ecx\
+                                                        add eax,ebx\
+                                                        inc eax",
+                },
+                "variant": "Select the answer choice that best implements the following expression. Do not permit dword1, ECX, or EDX to be modified.\n\n_",
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q5": {
+                "details": None,
+                "variant": Question.mod2_instruction_mnemonics_q5,
+                "format": FREE_RESPONSE,
+            },
+            "Q6": {
+                "details": None,
+                "variant": Question.mod2_instruction_mnemonics_q6,
                 "format": FREE_RESPONSE,
             },
         },
         "Irvine Procedures": {
-            "Q2": {
+            "Q1": {
                 "details": {
                     "Match the definition to its Irvine procedures.": [
                         ["ClrScr", "Clears the console window"],
@@ -579,6 +685,18 @@ question_bank = {
                         ["WriteInt", "Writes a signed integer to the console window"],
                         ["WriteDec", "Writes an unsigned integer to the console window"],
                         ["WriteString", "Writes a string to the console window"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+    },
+    "Module 3": {
+        "Directives": {
+            "Q1": {
+                "details": {
+                    "Match the definition to its directive.": [
+                        [".data", "Marks beginning of the data segment"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
