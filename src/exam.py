@@ -82,8 +82,12 @@ def create_exam() -> None:
             # displays the correct answer for post-exam viewing
             value["is_end"] = True
             
+            # TODO: free response not case sensitive
+            
             # if the user's selected answer is correct
-            if value["selected_answer"] == value["answer"]:
+            if (value["selected_answer"] == value["answer"]
+                or (isinstance(value["selected_answer"], str)
+                and value["selected_answer"].lower() == value["answer"].lower())):
                 # change the button's color to green
                 value["button"].config(fg="#3cd470")
                 
@@ -533,12 +537,22 @@ def create_questions():
             correct_answer = [] # reassign the single correct answer to a list of correct answers
             choices_chosen = []
             
+            # if there are more than 8 questions,
+            if len(details_chosen[question_chosen]) > 8:
+                # then set the maximum number of questions to 8
+                maximum_number_of_match_to_answer = 8
+            # otherwise,
+            else:
+                # set the maximum number of questions to the
+                # number of available questions
+                maximum_number_of_match_to_answer = len(details_chosen[question_chosen])
+            
             # if subquestion ordering can be randomized
             if format_chosen == MATCH_TO_ANSWER_RANDOMIZED:
                 random.shuffle(details_chosen[question_chosen])
             
             # iterate the amount of sub-questions/answer
-            for i in range(len(details_chosen[question_chosen])):
+            for i in range(maximum_number_of_match_to_answer):
                 subquestion = details_chosen[question_chosen][i][0]
                 answer = details_chosen[question_chosen][i][1]
                 
