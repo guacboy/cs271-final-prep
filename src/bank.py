@@ -510,6 +510,9 @@ question_bank = {
                         ["END", "Marks the end of module"],
                         ["INVOKE", "Calls a procedure at address given by the expression"],
                         ["BYTE, WORD, DWORD, etc.", "Allocates memory space for 'variable' storage"],
+                        ["=", "Defines a constant"],
+                        ["EQU", "Allows full expressions and lines of assembly code to be copied inline"],
+                        ["TEXTEQU", "Replaces the macro with the text or expression definition of the macro, all in a single text-substitution pass"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
@@ -731,6 +734,29 @@ question_bank = {
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
             },
+            "Q3": { # TODO: new
+                "details": {
+                    "When branching in MASM, you will normally jump to a(n) _.": "code label",
+                    "rpt1": "instruction pointer (EIP)",
+                    "rpt2": "stack label",
+                    "rpt3": "data label",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q4": { # TODO: new
+                "details": {
+                    "When implementing a conditional branch, the comparison is performed in the _ and the results are checkable by viewing individual bits in the _.": "arithmetic/logic unit (ALU), status register (EFLAGS)",
+                    "rpt1": "status register (EFLAGS), arithmetic/logic unit (ALU)",
+                    "rpt2": "floating point unit (FPU), status register (EFLAGS)",
+                    "rpt3": "status register (EFLAGS), floating point unit (FPU)",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q5": { # TODO: Q3, A1, Q11
+                "details": None,
+                "variant": ...,
+                "format": FREE_RESPONSE,
+            },
         },
         "Loops": {
             "Q1": {
@@ -747,6 +773,114 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
+            "Q3": { # TODO: new
+                "details": {
+                    "When using the LOOP instruction, one should be wary of which common issues?": [
+                        [
+                            "Overwriting ECX's original value in a nested loop body without preserving its outer loop counter value",
+                            "Modifying ECX directly within the loop body",
+                            "Initializing ECX to a value less than or equal to zero",
+                            "Too many instructions in the loop body",
+                        ],
+                        [
+                            "Initializing ECX to a value greater than zero",
+                            "ECX not decrementing properly in the LOOP instruction itself",
+                        ]
+                    ]
+                },
+                "format": SELECT_THAT_APPLY,
+            },
+            "Q4": { # TODO: Q3, A1, Q14
+                "details": None,
+                "variant": ...,
+                "format": FREE_RESPONSE,
+            },
         },
     },
+    "Module 4": {
+        "Equals-sign Directive": {
+            "Q1": {
+                "details": { # TODO: finish choices
+                    "Which of the following correctly defines a constant integer?": "DAYS_INTO_YEAR = 365",
+                    "rpt1": "",
+                    "rpt2": "",
+                    "rpt3": "",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+        },
+        "EQU Directive": {
+            "Q1": {
+                "details": {
+                    "The EQU directive permits a constant to be redefined at any point in a program.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+        },
+        "TEXTEQU Directive": {
+            "Q1": {
+                "details": {
+                    "Which of the following correctly uses the TEXTEQU directive?": "OPTION TEXTEQU <'Pick me!',0>",
+                    "rpt1": "TEXTEQU OPTION <'Pick me!',0>",
+                    "rpt2": "TEXTEQU <'Pick me!',0> OPTION",
+                    "rpt3": "<'Pick me!',0> TEXTEQU OPTION",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+        },
+    },
+    # "Module 5": {
+    #     "Jumps": {
+    #         "Q1": {
+    #             "details": None,
+    #             "variant": ...,
+    #             "format": TRUE_OR_FALSE,
+    #         },
+    #     },
+    # },
+    # "Module 6": {
+    #     "Jumps": {
+    #         "Q1": {
+    #             "details": None,
+    #             "variant": ...,
+    #             "format": TRUE_OR_FALSE,
+    #         },
+    #     },
+    # },
+    # "Module 7": {
+    #     "Jumps": {
+    #         "Q1": {
+    #             "details": None,
+    #             "variant": ...,
+    #             "format": TRUE_OR_FALSE,
+    #         },
+    #     },
+    # },
+    # "Module 8": {
+    #     "Jumps": {
+    #         "Q1": {
+    #             "details": None,
+    #             "variant": ...,
+    #             "format": TRUE_OR_FALSE,
+    #         },
+    #     },
+    # },
+    # "Module 9": {
+    #     "Jumps": {
+    #         "Q1": {
+    #             "details": None,
+    #             "variant": ...,
+    #             "format": TRUE_OR_FALSE,
+    #         },
+    #     },
+    # },
+    # "Module 10": {
+    #     "Jumps": {
+    #         "Q1": {
+    #             "details": None,
+    #             "variant": ...,
+    #             "format": TRUE_OR_FALSE,
+    #         },
+    #     },
+    # },
 }
