@@ -21,6 +21,8 @@ def main_menu() -> None:
     subject_frame.pack(side=TOP,
                        pady=(10,0))
     
+    checkbox_variables = [] # for reference
+    
     # iterates through all the modules
     for module in question_bank.keys():
         # creates a frame to help organize the modules with their tags
@@ -28,10 +30,10 @@ def main_menu() -> None:
         subject_inner_frame.pack(side=LEFT,
                                  anchor=N,)
         
-        # FIXME: options not being preselected
-        option = IntVar(value=1)
+        option = IntVar()
         # creates the module checkbox
         module_checkbox = Util.checkbox(subject_inner_frame)
+        checkbox_variables.append(module_checkbox)
         module_checkbox.config(text=module,
                                variable=option,)
         module_checkbox.pack(side=TOP,
@@ -48,9 +50,10 @@ def main_menu() -> None:
             left_padding.config(text=" ")
             left_padding.pack(side=LEFT)
             
-            option = IntVar(value=1)
+            option = IntVar()
             # creates the tag checkbox
             tag_checkbox = Util.checkbox(tag_frame)
+            checkbox_variables.append(tag_checkbox)
             tag_checkbox.config(text=tag,
                                 font=(FONT, 10, "normal"),
                                 variable=option,)
@@ -61,6 +64,11 @@ def main_menu() -> None:
             question_count_label.config(text=f"{len(question_bank[module][tag])} Qs",
                                         font=(FONT, 8, "bold"))
             question_count_label.pack(side=LEFT)
+    
+    # pre-selects all the checkboxes
+    # FIXME: selects all but the last one
+    for checkbox in checkbox_variables:
+        checkbox.select()
     
     # erases the data in data.json
     erase_data_label = Util.label(root)
