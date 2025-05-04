@@ -521,8 +521,20 @@ question_bank = {
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
             },
-            "Q2": { # TODO: actual Q1, Q12
-                "details": {},
+            "Q2": {
+                "details": {
+                    "What does the END directive do?": [
+                        [
+                            "Sets the entry point (procedure) for the program",
+                            "Marks the end of the module",
+                            
+                        ],
+                        [
+                            "Exits to the operating system",
+                            "Terminates a loop",
+                        ]
+                    ]
+                },
                 "format": SELECT_THAT_APPLY,
             },
         },
@@ -639,17 +651,17 @@ question_bank = {
                         ["CMP", "Compares two values"],
                         ["INC", "Increments the value by one"],
                         ["DEC", "Decrements the value by one"],
-                        ["LOOP", "Decrements ECX and repeats the code label until ECX is equal to zero"]
-                        ["CALL", "Pushes the instruction pointer on the system stack and jumps to the beginning of the named procedure"]
-                        ["RET", "Pops the top of the system stack (containing the return address) into the instruction pointer"]
-                        ["POPAD", "Pops all the 32-bit general-purpose registers from the system stack"]
-                        ["POPA", "Pops all the 16-bit general-purpose registers from the system stack"]
-                        ["POPFD", "Pops the top of the system stack into the EFLAGS register"]
-                        ["POP", "Copies the data pointed to by the stack pointer into the operand, and then increments the stack pointer"]
-                        ["PUSHAD", "Pushes all the 32-bit general-purpose registers into the system stack"]
-                        ["PUSHA", "Pushes all the 16-bit general-purpose registers into the system stack"]
-                        ["PUSHFD", "Pushes the top of the system stack into the EFLAGS register"]
-                        ["PUSH", "Decrements the stack pointer, and then copies the operand into the stack at the location pointed to by the stack pointer"]
+                        ["LOOP", "Decrements ECX and repeats the code label until ECX is equal to zero"],
+                        ["CALL", "Pushes the instruction pointer on the system stack and jumps to the beginning of the named procedure"],
+                        ["RET", "Pops the top of the system stack (containing the return address) into the instruction pointer"],
+                        ["POPAD", "Pops all the 32-bit general-purpose registers from the system stack"],
+                        ["POPA", "Pops all the 16-bit general-purpose registers from the system stack"],
+                        ["POPFD", "Pops the top of the system stack into the EFLAGS register"],
+                        ["POP", "Copies the data pointed to by the stack pointer into the operand, and then increments the stack pointer"],
+                        ["PUSHAD", "Pushes all the 32-bit general-purpose registers into the system stack"],
+                        ["PUSHA", "Pushes all the 16-bit general-purpose registers into the system stack"],
+                        ["PUSHFD", "Pushes the top of the system stack into the EFLAGS register"],
+                        ["PUSH", "Decrements the stack pointer, and then copies the operand into the stack at the location pointed to by the stack pointer"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
@@ -752,7 +764,7 @@ question_bank = {
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
             },
-            "Q3": { # TODO: new
+            "Q3": {
                 "details": {
                     "When branching in MASM, you will normally jump to a(n) _.": "code label",
                     "rpt1": "instruction pointer (EIP)",
@@ -761,7 +773,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q4": { # TODO: new
+            "Q4": {
                 "details": {
                     "When implementing a conditional branch, the comparison is performed in the _ and the results are checkable by viewing individual bits in the _.": "arithmetic/logic unit (ALU), status register (EFLAGS)",
                     "rpt1": "status register (EFLAGS), arithmetic/logic unit (ALU)",
@@ -770,9 +782,9 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q5": { # TODO: Q3, A1, Q11
+            "Q5": {
                 "details": None,
-                "variant": ...,
+                "variant": Question.mod3_jumps_q5,
                 "format": FREE_RESPONSE,
             },
         },
@@ -791,7 +803,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q3": { # TODO: new
+            "Q3": {
                 "details": {
                     "When using the LOOP instruction, one should be wary of which common issues?": [
                         [
@@ -808,9 +820,9 @@ question_bank = {
                 },
                 "format": SELECT_THAT_APPLY,
             },
-            "Q4": { # TODO: Q3, A1, Q14
+            "Q4": {
                 "details": None,
-                "variant": ...,
+                "variant": Question.mod3_loops_q4,
                 "format": FREE_RESPONSE,
             },
         },
@@ -818,7 +830,7 @@ question_bank = {
     "Module 4": {
         "Equals-sign Directive": {
             "Q1": {
-                "details": { # TODO: new
+                "details": {
                     "Which of the following correctly defines a constant integer?": "DAYS_INTO_YEAR = 365",
                     "rpt1": "DAYS_INTO_YEAR DWORD 365",
                     "rpt2": "DAYS_INTO_YEAR EQU <MOV EAX, 365>",
@@ -827,14 +839,14 @@ question_bank = {
                 "format": MULTIPLE_CHOICE,
             },
             "Q2": {
-                "details": { # TODO: new
+                "details": {
                     "The equals sign directive (=) may be used for both integer constants and string constants.": "False",
                 },
                 "format": TRUE_OR_FALSE,
             },
         },
         "EQU Directive": {
-            "Q1": { # TODO: new
+            "Q1": {
                 "details": {
                     "may": "False",
                     "may not": "True",
@@ -844,7 +856,7 @@ question_bank = {
             },
         },
         "TEXTEQU Directive": {
-            "Q1": { # TODO: new
+            "Q1": {
                 "details": {
                     "Which of the following correctly uses the TEXTEQU directive?": "OPTION TEXTEQU <'Pick me!',0>",
                     "rpt1": "TEXTEQU OPTION <'Pick me!',0>",
@@ -855,14 +867,14 @@ question_bank = {
             },
         },
         "Endianness": {
-            "Q1": { # TODO: new
+            "Q1": {
                 "details": {
                     "Arrays and strings are stored in the same order regardless of system endianness": "True",
                     "Arrays and strings are stored in a specific order depending on the system endianness": "False",
                 },
                 "format": TRUE_OR_FALSE,
             },
-            "Q2": { # TODO: new
+            "Q2": {
                 "details": {
                     "System endianness affects _": "byte-wise ordering",
                     "rp1": "memory page ordering",
@@ -871,7 +883,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q3": { # TODO: new
+            "Q3": {
                 "details": {
                     "System endianness impacts _ data types": "multi-byte",
                     "rpt1": "multi-bit",
@@ -880,7 +892,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q4": { # TODO: new
+            "Q4": {
                 "details": {
                     "The byte-ordering scheme which stores integers in memory with the most significant byte at the lowest address is called _": "big endian",
                     "rpt1": "little endian ",
@@ -889,7 +901,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q5": { # TODO: new
+            "Q5": {
                 "details": {
                     "The byte-ordering scheme which stores integers in memory with the least significant byte at the lowest address is called _": "little endian",
                     "rpt1": "big endian ",
@@ -898,60 +910,55 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q6": { # TODO: Q4, A1, Q9
+            "Q6": {
                 "details": None,
-                "variant": ...,
+                "variant": Question.mod4_endianness_q6,
                 "format": FREE_RESPONSE,
             },
-            "Q7": { # TODO: Q4, A2, Q5/7
+            "Q7": {
                 "details": None,
-                "variant": ...,
+                "variant": Question.mod4_endianness_q7,
                 "format": TRUE_OR_FALSE,
             },
-            "Q8": { # TODO: new
+            "Q8": {
                 "details": {
                     "What is the minimum size of a data type, in bytes, to be impacted by system endianness?\n\nNOTE: Write your answer as a whole number. For example, 5 is a whole number.": "2"
                 },
                 "format": FREE_RESPONSE,
             },
-            "Q9": { # TODO: M4, E3 "Given a data segment below, beginning at address offset 40F0h"
+            "Q9": {
                 "details": None,
-                "variant": ...,
+                "variant": Question.mod4_endianness_q9,
                 "format": FREE_RESPONSE,
             },
         },
         "IEEE 754 Floating Point": {
-            "Q1": { # TODO: new
+            "Q1": {
                 "details": {
                     "Identify the sizes of the sign, biased exponent, and normalized mantissa for a Single Precision x86 floating point value.": "1,8,23",
                 },
                 "format": FREE_RESPONSE,
             },
-            "Q2": { # TODO: Q4, A1, Q14
-                "details": {
-                    "": "",
-                },
-                "format": TRUE_OR_FALSE,
-            },
-            "Q3": { # TODO: M4, E4 "Without decoding, indicate if the following IEEE 754 single-precision values represent positive or negative values:"
-                "details": {
-                    "": "",
-                },
-                "variant": ...,
+            # "Q2": { TODO: finish later
+            #     "details": None,
+            #     "variant": Question.mod4_ieee_754_floating_point_q2,
+            #     "format": TRUE_OR_FALSE,
+            # },
+            "Q3": {
+                "details": None,
+                "variant": Question.mod4_ieee_754_floating_point_q3,
                 "format": SELECT_THAT_APPLY,
             },
-            "Q4": { # TODO: M4, E4 "Convert single-precision IEEE 754 floating-point hexadecimal 42E48000 to decimal floating-point."
-                "details": {
-                    "": "",
-                },
-                "variant": ...,
+            "Q4": {
+                "details": None,
+                "variant": Question.mod4_ieee_754_floating_point_q4,
                 "format": FREE_RESPONSE,
             },
         },
     },
     "Module 5": {
         "Stack - Data Structure": {
-            "Q1": { # TODO: new
+            "Q1": {
                 "details": {
                     "A stack is a data structure with a _ property.": [
                         [
@@ -968,12 +975,12 @@ question_bank = {
             },
         },
         "Runtime Stack": {
-            "Q1": { # TODO: M5, E1 "Assume ESP = 00F4h, and then PUSH EAX is executed. What is the new value of ESP"
+            "Q1": {
                 "details": None,
-                "variant": ...,
+                "variant": Question.mod5_runtime_stack_q1,
                 "format": FREE_RESPONSE,
             },
-            "Q2": { # TODO: new
+            "Q2": {
                 "details": {
                     "PUSH": "True",
                     "POP": "False",
@@ -981,32 +988,22 @@ question_bank = {
                 "variant": "The _ instruction can have an immediate operand.",
                 "format": TRUE_OR_FALSE,
             },
-            "Q3": { # TODO: M5, E1 "If a 16-bit operand is pushed, ..."
+            "Q3": {
                 "details": None,
-                "variant": ...,
-                "format": SELECT_THAT_APPLY,
-            },
-            "Q4": { # TODO: Q5, A1, Q3
-                "details": None,
-                "variant": ...,
-                "format": FREE_RESPONSE,
-            },
-            "Q5": { # TODO: Q5, A1, Q4
-                "details": None,
-                "variant": ...,
+                "variant": Question.mod5_runtime_stack_q3,
                 "format": TRUE_OR_FALSE,
             },
-            "Q6": { # TODO: Q5, A1, Q7
+            "Q4": {
                 "details": None,
-                "variant": ...,
+                "variant": Question.mod5_runtime_stack_q4,
                 "format": FREE_RESPONSE,
             },
-            "Q7": { # TODO: Q5, A1, Q9
+            "Q5": {
                 "details": None,
-                "variant": ...,
+                "variant": Question.mod5_runtime_stack_q5,
                 "format": SELECT_THAT_APPLY,
             },
-            "Q8": { # TODO: new
+            "Q6": {
                 "details": {
                     "Which of the following is true about the PUSH instruction?": "It decrements the stack pointer (by 2 or 4), and then copies the operand into the stack at the location pointed to by the stack pointer",
                     "rpt1": "It copies the operand into the stack at the location pointed to by the stack pointer, and then decrements the stack pointer (by 2 or 4)",
@@ -1015,7 +1012,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q9": { # TODO: new
+            "Q7": {
                 "details": {
                     "Which of the following is true about the POP instruction?": "It copies the data pointed to by the stack pointer into the operand, and then increments the stack pointer (by 2 or 4)",
                     "rpt1": "It copies the data pointed to by the stack pointer into the operand, and then decrements the stack pointer (by 2 or 4)",
@@ -1026,7 +1023,7 @@ question_bank = {
             },
         },
         "Procedures": {
-            "Q1": { # TODO: new
+            "Q1": {
                 "details": {
                     "The RET instruction pops the top of the system stack into the _?": "EIP",
                     "rpt1": "ESP",
@@ -1035,7 +1032,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q2": { # TODO: new
+            "Q2": {
                 "details": {
                     "pushes": "True",
                     "pops": "False",
@@ -1043,7 +1040,7 @@ question_bank = {
                 "variant": "Mechanically speaking, the CALL instruction _ its return address on the stack and copies the called procedure's address into the instruction pointer.",
                 "format": TRUE_OR_FALSE,
             },
-            "Q3": { # TODO: new
+            "Q3": {
                 "details": {
                     "The CALL instruction functions similarly to _?": "Push, then Jump",
                     "rpt1": "Jump",
@@ -1052,12 +1049,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q4": { # TODO: Q5, A1, Q12
-                "details": None,
-                "variant": ...,
-                "format": FREE_RESPONSE,
-            },
-            "Q5": { # TODO: new
+            "Q4": {
                 "details": {
                     "The stack frame inside a procedure is also known as the _?": "Activation Record",
                     "rpt1": "Activation Stack",
@@ -1070,7 +1062,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q6": { # TODO: new
+            "Q5": {
                 "details": {
                     "Which of the following are normally part of the stack frame?": [
                         [
@@ -1087,7 +1079,7 @@ question_bank = {
                 },
                 "format": SELECT_THAT_APPLY,
             },
-            "Q7": { # TODO: new
+            "Q6": {
                 "details": {
                     "A stack frame is _": "the area of the stack set aside for passed arguments, return address, local variables, and saved registers",
                     "rpt1": "the area of the text segment set aside for passed arguments, subroutine return address, local variables, and saved registers",
@@ -1097,7 +1089,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q8": { # TODO: new
+            "Q7": {
                 "details": {
                     "A subprocedure's stack frame contains the return address and its local variables.": "True",
                 },
@@ -1105,7 +1097,7 @@ question_bank = {
             },
         },
         "Saving Registers": {
-            "Q1": { # TODO: new
+            "Q1": {
                 "details": {
                     "What advantages do stack parameters have over register parameters?": [
                         [
@@ -1120,7 +1112,7 @@ question_bank = {
                 },
                 "format": SELECT_THAT_APPLY,
             },
-            "Q2": { # TODO: new
+            "Q2": {
                 "details": {
                     "on the stack": "True",
                     "in registers": "False",
@@ -1130,17 +1122,17 @@ question_bank = {
             },
         },
         "Passing Parameters to Procedures": {
-            "Q1": { # TODO: new - DOUBLE CHECK WITH PROFESSOR
+            "Q1": {
                 "details": {
                     "Match the definition to its parameter classification.": [
-                        ["Input Parameter", "Makes a copy of the parameter and passes to the procedure, to which changes to the data in the procedure are not reflected to the original parameter"],
-                        ["Output Parameter", "Passes the memory address (containing the data) to the procedure, to which changes to the data in the procedure are reflected at the memory address"],
-                        ["Input/output Parameter", "Passes the memory address to the procedure, to which changes to the data in the procedure are reflected at the memory address"],
+                        ["Input Parameter", "Passes a copy of the original data (or a memory address) to the procedure, to which changes to the data in the procedure are not reflected to the original data"],
+                        ["Output Parameter", "Passes the memory address to the procedure, to which changes to the data in the procedure are reflected at the memory address"],
+                        ["Input/output Parameter", "Passes the memory address (containing the data) to the procedure, to which changes to the data in the procedure are reflected at the memory address"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
             },
-            "Q2": { # TODO: new
+            "Q2": {
                 "details": {
                     "Match the definition to its procedure composition.": [
                         ["Argument", "A value or reference passed to a procedure"],
@@ -1150,25 +1142,25 @@ question_bank = {
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
             },
-            "Q3": { # TODO: new
+            "Q3": {
                 "details": {
                     "An argument passed by reference consists of a memory address offset.": "False",
                 },
                 "format":TRUE_OR_FALSE,
             },
-            "Q4": { # TODO: new
+            "Q4": {
                 "details": {
                     "Arrays are passed by reference to avoid copying each element into the stack/registers.": "True",
                 },
                 "format":TRUE_OR_FALSE,
             },
-            "Q5": { # TODO: new
+            "Q5": {
                 "details": {
                     "Passing by reference requires accessing a parameter's offset from inside the called procedure.": "True",
                 },
                 "format":TRUE_OR_FALSE,
             },
-            "Q6": { # TODO: new
+            "Q6": {
                 "details": {
                     "What general types of parameters are passed on the stack?": [
                         [
@@ -1184,7 +1176,7 @@ question_bank = {
                 },
                 "format": SELECT_THAT_APPLY,
             },
-            "Q7": { # TODO: new
+            "Q7": {
                 "details": {
                     "High-level languages always pass arrays to subroutines by value.": "False",
                 },

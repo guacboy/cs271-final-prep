@@ -382,3 +382,584 @@ class Question():
         answer = f"{eax_result},{second_integer},{edx_result}"
         
         return question, answer
+    
+    # TRUE OR FALSE
+    def mod3_jumps_q1() -> str:
+        question_dict = {
+            "Conditional branching": "results vary on the outcome of a logical condition",
+            "Unconditional branching": "results do not vary on the outcome of a logical condition",
+        }
+        
+        question_chosen, answer_chosen, answer = on_randomize_true_false_question(question_dict)
+            
+        # include the random selection into the question
+        question = f"{question_chosen} means {answer_chosen}."
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod3_jumps_q5() -> str:
+        first_value = random.randint(1, 9)
+        second_value = random.randint(1, 9)
+        jcond_chosen = random.choice([
+            "G", "L",
+        ])
+        
+        code_segment = ".data" \
+            "\nyes BYTE 'Yes',0" \
+            "\nno BYTE 'No',0" \
+            "\n\n.code" \
+                f"\nMOV EAX, {first_value}" \
+                f"\nCMP EAX, {second_value}" \
+                f"\nJ{jcond_chosen} _printYes" \
+                "\nMOV EDX, OFFSET no" \
+                "\nJMP _finished" \
+            "\n\n_printYes:" \
+                "\nMOV EDX, OFFSET yes" \
+            "\n\n_finished:" \
+                "\nCALL WriteString" \
+        
+        # if jcond is JG, then
+        if jcond_chosen == "G":
+            # if the first value > second value
+            if first_value > second_value:
+                answer = "Yes"
+            # if the first value <= second value
+            else:
+                answer = "No"
+        # if jcond is JL, then
+        if jcond_chosen == "L":
+            # if the first value < second value
+            if first_value < second_value:
+                answer = "Yes"
+            # if the first value >= second value
+            else:
+                answer = "No"
+        
+        question = f"{code_segment}\n\nGiven the above MASM code, what is printed to the console window?"
+        
+        return question, answer
+    
+    # TRUE OR FALSE
+    def mod3_loops_q1() -> str:
+        question_dict = {
+            "Post-test loop": "execute one-or-more times; the control condition must therefore be checked immediately after the first execution of the loop body",
+            "Pre-test loop": "execute zero-or-more times; the control condition must therefore be checked before the first execution of the loop body",
+        }
+        
+        question_chosen, answer_chosen, answer = on_randomize_true_false_question(question_dict)
+            
+        # include the random selection into the question
+        question = f"{question_chosen} will {answer_chosen}."
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod3_loops_q4() -> str:
+        eax_value = random.randint(1, 9)
+        ebx_value = random.randint(1, 9)
+        ecx_value = random.randint(2, 4)
+        change_value = random.randint(1, 2)
+        instruction_chosen = random.choice([
+            "ADD", "SUB"
+        ])
+        
+        code_segment = f"MOV EAX, {eax_value}" \
+            f"\nMOV EBX, {ebx_value}" \
+            f"\nMOV ECX, {ecx_value}" \
+            f"\n\n_{instruction_chosen.lower()}Value:" \
+                f"\n{instruction_chosen} EAX, EBX" \
+                f"\n{instruction_chosen} EBX, {change_value}" \
+                f"\nLOOP _{instruction_chosen.lower()}Value" \
+                "\nMOV result, EAX"
+        
+        # iterates ECX amount
+        for i in range(ecx_value):
+            # if instruction is to add,
+            if instruction_chosen == "ADD":
+                # adds EAX with EBX
+                eax_value += ebx_value
+                # adds EBX with the changed value
+                ebx_value += change_value
+            # if instruction is to subtract,
+            elif instruction_chosen == "SUB":
+                # subtracts EAX with EBX
+                eax_value -= ebx_value
+                # subtracts EBX with the changed value
+                ebx_value -= change_value
+        
+        answer = str(eax_value)
+        
+        question = f"{code_segment}\n\nSuppose that result is declared as DWORD. Given the above MASM code, what is the value stored in the memory location named result?"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod4_endianness_q6() -> str:
+        endian_chosen = random.choice([
+            "big-endian", "little-endian"
+        ])
+        
+        hex_value = "".join(
+            random.choice("0123456789ABCDEF")
+            for i in range(8)
+        )
+        
+        answer = ""
+        # if little endian,
+        if endian_chosen == "little-endian":
+            # then set the answer in reverse human-readable order
+            for i in range(len(hex_value) - 1, 0, -2):
+                answer += f"{hex_value[i - 1]}{hex_value[i]}"
+        # if big endian, 
+        elif endian_chosen == "big-endian":
+            # then set the answer in human-readable order
+            answer = hex_value
+        
+        question = f"Given the value, {hex_value}h, what is the hex value stored in memory on a {endian_chosen} system?\n\nNOTE: Do not include 'h' in your answer. For example: FFFB29B8"
+        
+        return question, answer
+    
+    # TRUE OR FALSE
+    def mod4_endianness_q7() -> str:
+        question_dict = {
+            "x86-64 systems": "little-endian",
+            "internet": "big-endian",
+        }
+        
+        question_chosen, answer_chosen, answer = on_randomize_true_false_question(question_dict)
+            
+        # include the random selection into the question
+        question = f"The {question_chosen} default to {answer_chosen} byte ordering."
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod4_endianness_q9() -> str:
+        endian_chosen = random.choice([
+            "big-endian", "little-endian"
+        ])
+        
+        decimal_value_list = []
+        hex_value_list = []
+        for i in range(3):
+            hex_value = "".join(
+                random.choice("0123456789ABCDEF")
+                for i in range(random.choice([2, 4]))
+            )
+            hex_value_list.append(hex_value)
+            decimal_value_list.append(int(hex_value, 16)) # hex -> decimal
+        
+        code_segment = f"someArray WORD {decimal_value_list[0]}, " \
+            f"{decimal_value_list[1]}, " \
+            f"{decimal_value_list[2]}, "
+        
+        answer = ""
+        # if little endian,
+        if endian_chosen == "little-endian":
+            # iterates through the list of hex values
+            for i in range(len(hex_value_list)):
+                # and set the answer in reverse human-readable order
+                # (does not set the list in reverse order,
+                # only the value inside the list)
+                for j in range(len(hex_value_list[i]) - 1, 0, -2):
+                    answer += f"{hex_value_list[i][j - 1]}{hex_value_list[i][j]}"
+        # if big endian, 
+        elif endian_chosen == "big-endian":
+            # then set the answer in human-readable order
+            answer = "".join(hex_value_list)
+        
+        question = f"{code_segment}\n\nGiven the data segment, what is the hex value stored in memory on a {endian_chosen} system?\n\nNOTE: Do not include 'h' in your answer. For example: FFFB29B8"
+        
+        return question, answer
+    
+    # TRUE OR FALSE
+    def mod4_ieee_754_floating_point_q2():
+        fraction_decimal_value = random.uniform(-99, 99)
+        fraction_decimal_value = -12.65
+        
+        # gets the decimal portion of the randomized value
+        decimal_portion = abs(fraction_decimal_value) % 1
+        
+        # TODO: for loop check for repeating decimal
+        # (might be hard but possible); use sliding window method
+        
+        answer = ""
+        
+        # include the random selection into the question
+        question = f"The number {fraction_decimal_value} can be represented exactly in IA-32 Floating Point Unit 32-bit IEEE 754 format."
+        
+        return question, answer
+    
+    # SELECT THAT APPLY
+    def mod4_ieee_754_floating_point_q3():
+        sign_chosen = random.choice([
+            "positive", "negative"
+        ])
+        positive_values = [
+            "0", "1", "2", "3", "4", "5", "6", "7"
+        ]
+        negative_values = [
+            "8", "9", "A", "B", "C", "D", "E", "F"
+        ]
+        
+        correct_answers = []
+        incorrect_answers = []
+        for i in range(8):
+            # if there are currently no correct answers,
+            # then add at least one correct answer
+            if len(correct_answers) <= 0:
+                # if creating a positive value
+                if sign_chosen == "positive":
+                    hex_value = f"{"".join(
+                        random.choice("01234567"))}" \
+                            f"{"".join(
+                        random.choice("0123456789ABCDEF")
+                        for i in range(random.randint(3, 7))
+                    )}h"
+                # if creating a negative value
+                elif sign_chosen == "negative":
+                    hex_value = f"{"".join(
+                        random.choice("89ABCDEF"))}" \
+                            f"{"".join(
+                        random.choice("0123456789ABCDEF")
+                        for i in range(random.randint(3, 7))
+                    )}h"
+            # if there is already at least one correct answer,
+            else:
+                # then create a random hex value
+                hex_value = f"{"".join(
+                    random.choice("0123456789ABCDEF")
+                    for i in range(random.randint(4, 8))
+                )}h"
+
+            # if sign looking for is positive
+            # and the first hex value is also positive,
+            if (sign_chosen == "positive"
+                and hex_value[0] in positive_values):
+                # then add as a correct answer
+                correct_answers.append(hex_value)
+            # if sign looking for is negative
+            # and the first hex value is also negative
+            elif (sign_chosen == "negative"
+                and hex_value[0] in negative_values):
+                # then add as a correct answer
+                correct_answers.append(hex_value)
+            # if sign looking for doesn't match with the first hex value,
+            else:
+                # then add as an incorrect answer
+                incorrect_answers.append(hex_value)
+        
+        question = f"Without decoding, indicate which of the following IEEE 754 single-precision values represent a {sign_chosen} values."
+        answer = on_randomize_select_that_apply_question(correct_answers,
+                                                         incorrect_answers)
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod4_ieee_754_floating_point_q4() -> str:
+        conversion_chosen = random.choice([
+            "encoding", "decoding"
+        ])
+        
+        hex_value_chosen = random.choice([
+            "42AA4000",
+            "C1A98000"
+        ])
+        hex_value_chosen = "C1A98000"
+    
+        # if IEEE 754 floating-point -> decimal floating-point
+        # hex -> binary
+        binary_value = bin(int(hex_value_chosen, 16))[2:].zfill(len(hex_value_chosen) * 4)
+        sign_bit = binary_value[0]
+        biased_exponent = binary_value[1:9]
+        normalized_mantissa = binary_value[9:]
+        
+        # exponent's binary -> decimal
+        exponent_decimal_value = 0
+        power = 0
+        for bit in biased_exponent[::-1]:
+            if bit == "1":
+                exponent_decimal_value += 2**power
+            power += 1
+        debiased_exponent = exponent_decimal_value - 127
+        
+        zero_bit_count = len(normalized_mantissa)
+        # drops any trailing zeros in the normalized mantissa
+        for bit in normalized_mantissa[::-1]:
+            if bit == "1":
+                mantissa_string = normalized_mantissa[:zero_bit_count]
+                break
+            zero_bit_count -= 1  
+        # front-pad the mantissa with 1.  
+        mantissa_string = f"1.{mantissa_string}"
+        
+        # converts the string into a list excluding the decimal point
+        mantissa_list = [
+                bit for bit in mantissa_string
+                if bit != "."
+            ]
+        # moves the decimal point in accordance to the debiased exponent
+        mantissa_list.insert(debiased_exponent + 1, ".")
+        
+        whole_mantissa_string = ""
+        fraction_mantissa_string = ""
+        is_decimal_point_found = False
+        # reverts the list into a string
+        for bit in mantissa_list:
+            # if the bit is a decimal point,
+            if bit == ".":
+                # update that the decimal point has been found
+                is_decimal_point_found = True
+                # and continue loop
+                continue
+            # if the decimal point has already been iterated
+            if is_decimal_point_found:
+                fraction_mantissa_string += bit
+            # if the decimal point has not been iterated yet
+            else:
+                whole_mantissa_string += bit
+                
+        # binary -> decimal
+        whole_decimal_value = 0
+        whole_power = 0
+        # sums together the decimal whole value
+        for bit in whole_mantissa_string[::-1]:
+            if bit == "1":
+                whole_decimal_value += 2**whole_power
+            whole_power += 1
+        
+        # sums together the decimal fraction value
+        # (also including the decimal whole value)
+        fraction_decimal_value = 0
+        fraction_power = -1
+        for bit in fraction_mantissa_string:
+            if bit == "1":
+                fraction_decimal_value += 2**fraction_power
+            fraction_power -= 1
+        
+        # if the sign bit was 1,
+        if sign_bit == "1":
+            # then the final value is negative
+            whole_decimal_value *= -1
+        
+        # formats the decimal values together
+        final_decimal_value = f"{whole_decimal_value}.{str(fraction_decimal_value)[2:]}"
+        
+        # if IEEE 754 floating-point -> decimal floating-point
+        if conversion_chosen == "decoding": 
+            # then set the answer to the final decimal value
+            answer = final_decimal_value
+        
+        # if decimal floating-point -> IEEE 754 floating-point
+        if conversion_chosen == "encoding":
+            # then use the now "confirmed to not contain a repeating decimal" decimal value
+            # and convert decimal -> binary
+            whole_binary_value_list = []
+            while whole_decimal_value != 0:
+                # adds the remainder to the list
+                whole_binary_value_list.append(whole_decimal_value % 2)
+                # divide by two and get the whole number
+                whole_decimal_value = int(whole_decimal_value / 2)
+            
+            whole_binary_value = ""
+            # iterates through the list in reverse
+            for bit in whole_binary_value_list[::-1]:
+                whole_binary_value += str(bit)
+                    
+            fraction_binary_value = ""
+            while fraction_decimal_value != 0:
+                fraction_decimal_value = fraction_decimal_value * 2
+                # add the whole number value from the fraction decimal result
+                fraction_binary_value += str(int(fraction_decimal_value))
+                # repeat the calculation with only the decimal portion
+                fraction_decimal_value = abs(fraction_decimal_value) % 1
+            
+            # format the binary value
+            binary_value = f"{whole_binary_value}.{fraction_binary_value}"
+            
+            # TODO: check sign
+            
+            answer = ""
+        
+        if conversion_chosen == "encoding":
+            convert_from = "single-precision IEEE 754 floating-point hexadecimal"
+            convert_to = f"decimal floating-point, {final_decimal_value},"
+        if conversion_chosen == "decoding":
+            convert_from = f"single-precision IEEE 754 floating-point hexadecimal, {hex_value_chosen}h,"
+            convert_to = "decimal floating-point"
+        
+        question = f"Convert {convert_from} to {convert_to}.\n\nNOTE: Be sure to include 'h' at the end of your answer and don't front-pad the final hex value if the decimal value is negative. For example: C1A98000h"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod5_runtime_stack_q1() -> str:
+        first_hex_value = f"{"".join(
+            random.choice("0123456789ABCDEF")
+            for i in range(1))}"
+        last_hex_value = random.randint(4, 5)
+              
+        instruction_chosen = random.choice([
+            "PUSH", "POP"
+        ])
+        
+        four_byte_registers = [
+            "EAX", "EBX", "ECX", "EDX",
+        ]
+        two_byte_registers = [
+            "AX", "BX", "CX", "DX",
+        ]
+        registers_to_be_chosen = four_byte_registers + two_byte_registers
+        register_chosen = random.choice(registers_to_be_chosen)
+        
+        # if the register is 4 byte in size
+        if register_chosen in four_byte_registers:
+            register_size = 4
+        # if the register is 2 byte in size
+        elif register_chosen in two_byte_registers:
+            register_size = 2
+        
+        # if the instruction is PUSH,
+        if instruction_chosen == "PUSH":
+            # then subtract the last hex value by the register's size
+            answer = f"00{first_hex_value + str(last_hex_value - register_size)}h"
+        # if the instruction is POP,
+        elif instruction_chosen == "POP":
+            # then add the last hex value by the register's size
+            answer = f"00{first_hex_value + str(last_hex_value + register_size)}h"
+        
+        question = f"Assume ESP = 00{first_hex_value + str(last_hex_value)}h, and then {instruction_chosen} {register_chosen} is executed. What is the new value of ESP?\n\nNOTE: Be sure to include 'h' at the end of your answer. For example: 00F4h"
+        
+        return question, answer
+    
+    # TRUE OR FALSE
+    def mod5_runtime_stack_q3() -> str:
+        question_dict = {
+            "pushed": "decremented",
+            "popped": "incremented",
+        }
+        
+        question_chosen, answer_chosen, answer = on_randomize_true_false_question(question_dict)
+            
+        # include the random selection into the question
+        question = f"In the IA32 architecture, ESP is {answer_chosen} each time data is {question_chosen} onto the stack."
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod5_runtime_stack_q4() -> str:
+        eax_value = random.randint(1, 100)
+        ebx_value = random.randint(1, 100)
+        ecx_value = random.randint(1, 100)
+        edx_value = random.randint(1, 100)
+        register_chosen = random.choice([
+            "EAX", "EBX", "ECX", "EDX"
+        ])
+        
+        push_instruction_list = [
+            ["PUSH EAX", eax_value],
+            ["PUSH EBX", ebx_value],
+            ["PUSH ECX", ecx_value],
+            ["PUSH EDX", edx_value],
+        ]
+        pop_instruction_list = [
+            "POP ECX",
+            "POP EDX",
+            "POP EBX",
+            "POP EAX",
+        ]
+        # to keep track of newly assigned values
+        pop_instruction_dict = {
+            "POP ECX": ecx_value,
+            "POP EDX": edx_value,
+            "POP EBX": ebx_value,
+            "POP EAX": eax_value,
+        }
+        
+        random.shuffle(push_instruction_list)
+        random.shuffle(pop_instruction_list)
+        
+        # inserts the execution point at a random location
+        # within the pop instructions
+        pop_instruction_list.insert(
+            random.randint(0, len(pop_instruction_list) - 1),
+            "; Execution Point B"
+        )
+        
+        push_instruction_string = f"{push_instruction_list[0][0]}" \
+            f"\n{push_instruction_list[1][0]}" \
+            f"\n{push_instruction_list[2][0]}" \
+            f"\n{push_instruction_list[3][0]}"
+                
+        pop_instruction_string = f"{pop_instruction_list[0]}" \
+            f"\n{pop_instruction_list[1]}" \
+            f"\n{pop_instruction_list[2]}" \
+            f"\n{pop_instruction_list[3]}" \
+            f"\n{pop_instruction_list[4]}"
+        
+        code_segment = f"MOV EAX, {eax_value}" \
+            f"\nMOV EBX, {ebx_value}" \
+            f"\nMOV ECX, {ecx_value}" \
+            f"\nMOV EDX, {edx_value}" \
+            "\n; Execution Point A" \
+            f"\n{push_instruction_string}" \
+            f"\n{pop_instruction_string}" \
+        
+        hex_value = f"{"".join(
+            random.choice("0123456789ABCD")
+            for i in range(4))}"
+        decimal_value = int(hex_value, 16) # hex -> decimal
+        # subtract 16 to the decimal value because
+        # four "push instructions" will have already been performed
+        decimal_value -= 16
+        
+        # creates a list of the register values
+        # in the order it was "pushed" into the stack
+        answer_stack = [
+            value[1] for value in push_instruction_list
+        ]
+        # iterates through the pop instruction order
+        for instruction in pop_instruction_list:
+            # if the instruction is an execution point,
+            if instruction == "; Execution Point B":
+                # then convert decimal value into hex value
+                final_hex_value = hex(decimal_value)[2:].upper()
+                # and stop the loop
+                break
+            # otherwise, assign the register with the last value
+            # of the above list
+            pop_instruction_dict[instruction] = answer_stack.pop()
+            # "pop instruction" increments the ESP by 4
+            decimal_value += 4
+        
+        question = f"{code_segment}\n\nAssume ESP = {hex_value}h at Execution Point A. At Execution Point B, what is the decimal value in {register_chosen}, the hexadecimal value in ESP, and the decimal value in [ESP]?\n\nNOTE: Type the answer in order separated by a comma and be sure to include 'h' at the end of your answer. For example: 7,1C2Fh,99"
+        answer = f"{pop_instruction_dict["POP " + register_chosen]},{final_hex_value}h,{answer_stack[-1]}"
+        
+        return question, answer
+    
+    # SELECT THAT APPLY
+    def mod5_runtime_stack_q5():
+        correct_answers = [
+            "PUSH",
+            "RET",
+            "POP",
+            "CALL",
+        ]
+        incorrect_answers = [
+            "ADD",
+            "SUB",
+            "MOV",
+            "JMP",
+            "CLD",
+            "CMP",
+            "INC",
+            "DEC",
+            "LOOP",
+        ]
+        
+        question = "Which of the following instructions always modify the ESP register?"
+        answer = on_randomize_select_that_apply_question(correct_answers,
+                                                         incorrect_answers)
+        
+        return question, answer
