@@ -98,6 +98,62 @@ class Question():
         return question, answer
     
     # FREE RESPONSE
+    def mod1_data_arithmetics_q1() -> str:
+        arithmetic_chosen = random.choice([
+            "unsigned addition",
+            "signed subtraction",
+        ])
+        
+        # if the arithmetic is addition
+        if arithmetic_chosen == "unsigned addition":
+            arithmetic_dict = {
+                "  00010111" \
+                "\n+ 01011101": "01110100",
+                "  10000111" \
+                "\n+ 01110001": "11111000",
+                "  10111010" \
+                "\n+ 10110001": "1101011",
+                "  10111011" \
+                "\n+ 00110001": "11101100",
+                "  1A2F" \
+                "\n+ 4742": "6171",
+                "  2C19" \
+                "\n+ 570B": "8324",
+                "  2C25" \
+                "\n+ 574B": "8370",
+            }
+        # if the arithmetic is subtraction
+        elif arithmetic_chosen == "signed subtraction":
+            arithmetic_dict = {
+                "  01011101" \
+                "\n- 00011000": "01110100",
+                "  10110110" \
+                "\n- 00010001": "10100101",
+                "  10010110" \
+                "\n- 01111001": "00011101",
+                "  4742" \
+                "\n- 1A2F": "2D13",
+                "  C48A" \
+                "\n- AACC": "19BE",
+                "  6A6F" \
+                "\n- 1F89": "4AE6",
+            }
+        
+        # selects a random problem and result
+        question_to_be_chosen = [
+            (problem, result) for (problem, result) in arithmetic_dict.items()
+        ]
+        question_chosen = random.choice(question_to_be_chosen)
+        problem_chosen = question_chosen[0]
+        result_chosen = question_chosen[1]
+        
+        # include the random selections into the question
+        question = f"Compute the following {arithmetic_chosen}.\n\n{problem_chosen}\n\nNOTE: Do not include commas or spaces. For example: 11001100"
+        answer = result_chosen
+        
+        return question, answer
+    
+    # FREE RESPONSE
     def mod1_large_value_prefixes_q2() -> str:
         # select a random size of digit storage
         size_of_storage = random.randint(1, 10)
@@ -339,7 +395,7 @@ class Question():
         if compare_integers == 0:
             zero_flag = 1
         
-        question = f"{code_segment}\n\nWhat are the correct values of the Carry, Zero, and Sign flags after the following instructions execute?\n\nNOTE: Type the answer in order separated by a comma. For example: 1,0,1 is equivalent to Carry = 1, Zero = 0, Sign = 1."
+        question = f"{code_segment}\n\nWhat are the correct values of the Carry, Zero, and Sign flags after the following instructions execute?\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 1,0,1 is equivalent to Carry = 1, Zero = 0, Sign = 1."
         answer = f"{carry_flag},{zero_flag},{sign_flag}"
         
         return question, answer
@@ -359,7 +415,7 @@ class Question():
         # ADD EAX with EBX, then SUB EAX with ECX
         eax_result = first_integer + second_integer - third_integer
         
-        question = f"{code_segment}\n\nAfter the MASM code is executed, what are the decimal values in the EAX, EBX, and ECX?\n\nNOTE: Type the answer in order separated by a comma. For example: 2,5,0 is equivalent to EAX = 1, EBX = 0, ECX = 1."
+        question = f"{code_segment}\n\nAfter the MASM code is executed, what are the decimal values in the EAX, EBX, and ECX?\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 2,5,0 is equivalent to EAX = 1, EBX = 0, ECX = 1."
         answer = f"{eax_result},{second_integer},{third_integer}"
         
         return question, answer
@@ -378,7 +434,7 @@ class Question():
         eax_result = int(first_integer / second_integer)
         edx_result = first_integer % second_integer
         
-        question = f"{code_segment}\n\nAfter the MASM code is executed, what are the decimal values in the EAX, EBX, and EDX?\n\nNOTE: Type the answer in order separated by a comma. For example: 2,5,0 is equivalent to EAX = 1, EBX = 0, EDX = 1."
+        question = f"{code_segment}\n\nAfter the MASM code is executed, what are the decimal values in the EAX, EBX, and EDX?\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 2,5,0 is equivalent to EAX = 1, EBX = 0, EDX = 1."
         answer = f"{eax_result},{second_integer},{edx_result}"
         
         return question, answer
@@ -573,24 +629,6 @@ class Question():
         
         return question, answer
     
-    # TRUE OR FALSE
-    def mod4_ieee_754_floating_point_q2():
-        fraction_decimal_value = random.uniform(-99, 99)
-        fraction_decimal_value = -12.65
-        
-        # gets the decimal portion of the randomized value
-        decimal_portion = abs(fraction_decimal_value) % 1
-        
-        # TODO: for loop check for repeating decimal
-        # (might be hard but possible); use sliding window method
-        
-        answer = ""
-        
-        # include the random selection into the question
-        question = f"The number {fraction_decimal_value} can be represented exactly in IA-32 Floating Point Unit 32-bit IEEE 754 format."
-        
-        return question, answer
-    
     # SELECT THAT APPLY
     def mod4_ieee_754_floating_point_q3():
         sign_chosen = random.choice([
@@ -662,134 +700,158 @@ class Question():
             "encoding", "decoding"
         ])
         
-        hex_value_chosen = random.choice([
-            "42AA4000",
-            "C1A98000"
-        ])
-        hex_value_chosen = "C1A98000"
+        hex_dict = {
+            "42AA4000": "85.125",
+            "C1A98000": "-21.1875",
+            "42E48000": "114.25",
+            "3EA00000": "0.3125",
+            "C2032000": "-32.78125",
+            "C19B8000": "-19.4375",
+            "C3FC3000": "-504.375",
+            "C4C83400": "-1,601.625",
+        }
+        
+        # hex_value_chosen = random.choice([
+        #     "42AA4000",
+        #     "C1A98000"
+        # ])
     
-        # if IEEE 754 floating-point -> decimal floating-point
-        # hex -> binary
-        binary_value = bin(int(hex_value_chosen, 16))[2:].zfill(len(hex_value_chosen) * 4)
-        sign_bit = binary_value[0]
-        biased_exponent = binary_value[1:9]
-        normalized_mantissa = binary_value[9:]
+        # # if IEEE 754 floating-point -> decimal floating-point
+        # # hex -> binary
+        # binary_value = bin(int(hex_value_chosen, 16))[2:].zfill(len(hex_value_chosen) * 4)
+        # sign_bit = binary_value[0]
+        # biased_exponent = binary_value[1:9]
+        # normalized_mantissa = binary_value[9:]
         
-        # exponent's binary -> decimal
-        exponent_decimal_value = 0
-        power = 0
-        for bit in biased_exponent[::-1]:
-            if bit == "1":
-                exponent_decimal_value += 2**power
-            power += 1
-        debiased_exponent = exponent_decimal_value - 127
+        # # exponent's binary -> decimal
+        # exponent_decimal_value = 0
+        # power = 0
+        # for bit in biased_exponent[::-1]:
+        #     if bit == "1":
+        #         exponent_decimal_value += 2**power
+        #     power += 1
+        # debiased_exponent = exponent_decimal_value - 127
         
-        zero_bit_count = len(normalized_mantissa)
-        # drops any trailing zeros in the normalized mantissa
-        for bit in normalized_mantissa[::-1]:
-            if bit == "1":
-                mantissa_string = normalized_mantissa[:zero_bit_count]
-                break
-            zero_bit_count -= 1  
-        # front-pad the mantissa with 1.  
-        mantissa_string = f"1.{mantissa_string}"
+        # zero_bit_count = len(normalized_mantissa)
+        # # drops any trailing zeros in the normalized mantissa
+        # for bit in normalized_mantissa[::-1]:
+        #     if bit == "1":
+        #         mantissa_string = normalized_mantissa[:zero_bit_count]
+        #         break
+        #     zero_bit_count -= 1  
+        # # front-pad the mantissa with 1.  
+        # mantissa_string = f"1.{mantissa_string}"
         
-        # converts the string into a list excluding the decimal point
-        mantissa_list = [
-                bit for bit in mantissa_string
-                if bit != "."
-            ]
-        # moves the decimal point in accordance to the debiased exponent
-        mantissa_list.insert(debiased_exponent + 1, ".")
+        # # converts the string into a list excluding the decimal point
+        # mantissa_list = [
+        #         bit for bit in mantissa_string
+        #         if bit != "."
+        #     ]
+        # # moves the decimal point in accordance to the debiased exponent
+        # mantissa_list.insert(debiased_exponent + 1, ".")
         
-        whole_mantissa_string = ""
-        fraction_mantissa_string = ""
-        is_decimal_point_found = False
-        # reverts the list into a string
-        for bit in mantissa_list:
-            # if the bit is a decimal point,
-            if bit == ".":
-                # update that the decimal point has been found
-                is_decimal_point_found = True
-                # and continue loop
-                continue
-            # if the decimal point has already been iterated
-            if is_decimal_point_found:
-                fraction_mantissa_string += bit
-            # if the decimal point has not been iterated yet
-            else:
-                whole_mantissa_string += bit
+        # whole_mantissa_string = ""
+        # fraction_mantissa_string = ""
+        # is_decimal_point_found = False
+        # # reverts the list into a string
+        # for bit in mantissa_list:
+        #     # if the bit is a decimal point,
+        #     if bit == ".":
+        #         # update that the decimal point has been found
+        #         is_decimal_point_found = True
+        #         # and continue loop
+        #         continue
+        #     # if the decimal point has already been iterated
+        #     if is_decimal_point_found:
+        #         fraction_mantissa_string += bit
+        #     # if the decimal point has not been iterated yet
+        #     else:
+        #         whole_mantissa_string += bit
                 
-        # binary -> decimal
-        whole_decimal_value = 0
-        whole_power = 0
-        # sums together the decimal whole value
-        for bit in whole_mantissa_string[::-1]:
-            if bit == "1":
-                whole_decimal_value += 2**whole_power
-            whole_power += 1
+        # # binary -> decimal
+        # whole_decimal_value = 0
+        # whole_power = 0
+        # # sums together the decimal whole value
+        # for bit in whole_mantissa_string[::-1]:
+        #     if bit == "1":
+        #         whole_decimal_value += 2**whole_power
+        #     whole_power += 1
         
-        # sums together the decimal fraction value
-        # (also including the decimal whole value)
-        fraction_decimal_value = 0
-        fraction_power = -1
-        for bit in fraction_mantissa_string:
-            if bit == "1":
-                fraction_decimal_value += 2**fraction_power
-            fraction_power -= 1
+        # # sums together the decimal fraction value
+        # # (also including the decimal whole value)
+        # fraction_decimal_value = 0
+        # fraction_power = -1
+        # for bit in fraction_mantissa_string:
+        #     if bit == "1":
+        #         fraction_decimal_value += 2**fraction_power
+        #     fraction_power -= 1
         
-        # if the sign bit was 1,
-        if sign_bit == "1":
-            # then the final value is negative
-            whole_decimal_value *= -1
+        # # if the sign bit was 1,
+        # if sign_bit == "1":
+        #     # then the final value is negative
+        #     whole_decimal_value *= -1
         
-        # formats the decimal values together
-        final_decimal_value = f"{whole_decimal_value}.{str(fraction_decimal_value)[2:]}"
+        # # formats the decimal values together
+        # final_decimal_value = f"{whole_decimal_value}.{str(fraction_decimal_value)[2:]}"
         
-        # if IEEE 754 floating-point -> decimal floating-point
-        if conversion_chosen == "decoding": 
-            # then set the answer to the final decimal value
-            answer = final_decimal_value
+        # # if IEEE 754 floating-point -> decimal floating-point
+        # if conversion_chosen == "decoding": 
+        #     # then set the answer to the final decimal value
+        #     answer = final_decimal_value
+        
+        # # if decimal floating-point -> IEEE 754 floating-point
+        # if conversion_chosen == "encoding":
+        #     # then use the now "confirmed to not contain a repeating decimal" decimal value
+        #     # and convert decimal -> binary
+        #     whole_binary_value_list = []
+        #     while whole_decimal_value != 0:
+        #         # adds the remainder to the list
+        #         whole_binary_value_list.append(whole_decimal_value % 2)
+        #         # divide by two and get the whole number
+        #         whole_decimal_value = int(whole_decimal_value / 2)
+            
+        #     whole_binary_value = ""
+        #     # iterates through the list in reverse
+        #     for bit in whole_binary_value_list[::-1]:
+        #         whole_binary_value += str(bit)
+                    
+        #     fraction_binary_value = ""
+        #     while fraction_decimal_value != 0:
+        #         fraction_decimal_value = fraction_decimal_value * 2
+        #         # add the whole number value from the fraction decimal result
+        #         fraction_binary_value += str(int(fraction_decimal_value))
+        #         # repeat the calculation with only the decimal portion
+        #         fraction_decimal_value = abs(fraction_decimal_value) % 1
+            
+        #     # format the binary value
+        #     binary_value = f"{whole_binary_value}.{fraction_binary_value}"
+            
+        #     # TODO: finish encoding
+            
+        #     answer = ""
+        
+        # selects a random question from the question bank
+        question_to_be_chosen = [
+            (hex, decimal) for (hex, decimal) in hex_dict.items()
+        ]
+        question_chosen = random.choice(question_to_be_chosen)
+        hex_value_chosen = question_chosen[0]
+        decimal_value_chosen = question_chosen[1]
         
         # if decimal floating-point -> IEEE 754 floating-point
         if conversion_chosen == "encoding":
-            # then use the now "confirmed to not contain a repeating decimal" decimal value
-            # and convert decimal -> binary
-            whole_binary_value_list = []
-            while whole_decimal_value != 0:
-                # adds the remainder to the list
-                whole_binary_value_list.append(whole_decimal_value % 2)
-                # divide by two and get the whole number
-                whole_decimal_value = int(whole_decimal_value / 2)
+            answer = hex_value_chosen
             
-            whole_binary_value = ""
-            # iterates through the list in reverse
-            for bit in whole_binary_value_list[::-1]:
-                whole_binary_value += str(bit)
-                    
-            fraction_binary_value = ""
-            while fraction_decimal_value != 0:
-                fraction_decimal_value = fraction_decimal_value * 2
-                # add the whole number value from the fraction decimal result
-                fraction_binary_value += str(int(fraction_decimal_value))
-                # repeat the calculation with only the decimal portion
-                fraction_decimal_value = abs(fraction_decimal_value) % 1
+            convert_from = f"decimal floating-point, {decimal_value_chosen},"
+            convert_to = "single-precision IEEE 754 floating-point hexadecimal"
+        # if IEEE 754 floating-point -> decimal floating-point
+        elif conversion_chosen == "decoding":
+            answer = decimal_value_chosen
             
-            # format the binary value
-            binary_value = f"{whole_binary_value}.{fraction_binary_value}"
-            
-            # TODO: check sign
-            
-            answer = ""
-        
-        if conversion_chosen == "encoding":
-            convert_from = "single-precision IEEE 754 floating-point hexadecimal"
-            convert_to = f"decimal floating-point, {final_decimal_value},"
-        if conversion_chosen == "decoding":
-            convert_from = f"single-precision IEEE 754 floating-point hexadecimal, {hex_value_chosen}h,"
+            convert_from = f"single-precision IEEE 754 floating-point hexadecimal, {hex_value_chosen},"
             convert_to = "decimal floating-point"
         
-        question = f"Convert {convert_from} to {convert_to}.\n\nNOTE: Be sure to include 'h' at the end of your answer and don't front-pad the final hex value if the decimal value is negative. For example: C1A98000h"
+        question = f"Convert {convert_from} to {convert_to}.\n\nNOTE: Do not include 'h' in your answer and don't front-pad the final hex value if the decimal value is negative. For example: F3B96000"
         
         return question, answer
     
@@ -823,13 +885,13 @@ class Question():
         # if the instruction is PUSH,
         if instruction_chosen == "PUSH":
             # then subtract the last hex value by the register's size
-            answer = f"00{first_hex_value + str(last_hex_value - register_size)}h"
+            answer = f"00{first_hex_value + str(last_hex_value - register_size)}"
         # if the instruction is POP,
         elif instruction_chosen == "POP":
             # then add the last hex value by the register's size
-            answer = f"00{first_hex_value + str(last_hex_value + register_size)}h"
+            answer = f"00{first_hex_value + str(last_hex_value + register_size)}"
         
-        question = f"Assume ESP = 00{first_hex_value + str(last_hex_value)}h, and then {instruction_chosen} {register_chosen} is executed. What is the new value of ESP?\n\nNOTE: Be sure to include 'h' at the end of your answer. For example: 00F4h"
+        question = f"Assume ESP = 00{first_hex_value + str(last_hex_value)}h, and then {instruction_chosen} {register_chosen} is executed. What is the new value of ESP?\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
         
         return question, answer
     
@@ -933,8 +995,8 @@ class Question():
             # "pop instruction" increments the ESP by 4
             decimal_value += 4
         
-        question = f"{code_segment}\n\nAssume ESP = {hex_value}h at Execution Point A. At Execution Point B, what is the decimal value in {register_chosen}, the hexadecimal value in ESP, and the decimal value in [ESP]?\n\nNOTE: Type the answer in order separated by a comma and be sure to include 'h' at the end of your answer. For example: 7,1C2Fh,99"
-        answer = f"{pop_instruction_dict["POP " + register_chosen]},{final_hex_value}h,{answer_stack[-1]}"
+        question = f"{code_segment}\n\nAssume ESP = {hex_value}h at Execution Point A. At Execution Point B, what is the decimal value in {register_chosen}, the hexadecimal value in ESP, and the decimal value in [ESP]?\n\nNOTE: Type the answer in order separated by a comma (no spaces) and o not include 'h' in your answer. For example: 7,1C2F,99"
+        answer = f"{pop_instruction_dict["POP " + register_chosen]},{final_hex_value},{answer_stack[-1]}"
         
         return question, answer
     

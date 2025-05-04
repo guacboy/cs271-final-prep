@@ -142,6 +142,13 @@ question_bank = {
                 "format": TRUE_OR_FALSE,
             },
         },
+        "Data Arithmetics": {
+            "Q1": {
+                "details": None,
+                "variant": Question.mod1_data_arithmetics_q1,
+                "format": FREE_RESPONSE,
+            },
+        },
         "Numerical Data Types": {
             "Q1": {
                 "details": {
@@ -939,11 +946,14 @@ question_bank = {
                 },
                 "format": FREE_RESPONSE,
             },
-            # "Q2": { TODO: finish later
-            #     "details": None,
-            #     "variant": Question.mod4_ieee_754_floating_point_q2,
-            #     "format": TRUE_OR_FALSE,
-            # },
+            "Q2": {
+                "details": {
+                    "-12.65": "False",
+                    "102.8046875": "True",
+                },
+                "variant": "The number _ can be represented exactly in IA-32 Floating Point Unit 32-bit IEEE 754 format.",
+                "format": TRUE_OR_FALSE,
+            },
             "Q3": {
                 "details": None,
                 "variant": Question.mod4_ieee_754_floating_point_q3,
