@@ -1194,15 +1194,61 @@ question_bank = {
             },
         },
     },
-    # "Module 6": {
-    #     "Jumps": {
-    #         "Q1": {
-    #             "details": None,
-    #             "variant": ...,
-    #             "format": TRUE_OR_FALSE,
-    #         },
-    #     },
-    # },
+    "Module 6": {
+        "Bit Errors": {
+            "Q1": {
+                "details": {
+                    "If they did not have error detection/correction, WiFi systems would almost never send/receive signals containing bit errors.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q2": {
+                "details": {
+                    "One cause of bit errors is signal noise.": "True",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+        },
+        "Parity Bits": {
+            "Q1": {
+                "details": {
+                    "An even parity system requires an _ number of '1'-bits for parity": "even",
+                    "rpt1": "odd",
+                    "rpt2": "even or odd",
+                    "rpt3": "even and odd",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q2": {
+                "details": {
+                    "An odd parity system requires an _ number of '1'-bits for parity": "odd",
+                    "rpt1": "even",
+                    "rpt2": "even or odd",
+                    "rpt3": "even and odd",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q3": {
+                "details": None,
+                "variant": Question.mod6_parity_bits_q3,
+                "format": TRUE_OR_FALSE,
+            },
+            "Q4": {
+                "details": {
+                    "Simple parity checks can detect any odd number of errors in a bit stream.": "True",
+                    "Simple parity checks can detect any even number of errors in a bit stream.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q5": {
+                "details": {
+                    "Simple parity checks can correct any single-bit errors.": "False",
+                    "Simple parity checks can detect any single-bit errors.": "True",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+        },
+    },
     # "Module 7": {
     #     "Jumps": {
     #         "Q1": {

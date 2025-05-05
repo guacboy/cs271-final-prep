@@ -1025,3 +1025,42 @@ class Question():
                                                          incorrect_answers)
         
         return question, answer
+    
+    # TRUE OR FALSE
+    def mod6_parity_bits_q3() -> str:
+        parity_chosen = random.choice([
+            "odd", "even",
+        ])
+        
+        bits_chosen_list = []
+        # creates a list of zeros and ones
+        for i in range(4):
+            for j in range(4):
+                bits_chosen_list.append(random.choice("01"))
+            # adds a space between every four bits,
+            # except for after the last four
+            if i < 3:
+                bits_chosen_list.append(" ")
+        # joins the list together to create a string
+        bits_chosen = "".join(bits_chosen_list)
+        
+        one_count = 0
+        # counts for every bit = 1
+        for bit in bits_chosen:
+            if bit == "1":
+                one_count += 1
+        
+        # if odd-parity and even # of 1 bits
+        if parity_chosen == "odd" and one_count % 2 == 0:
+            answer = "True"
+        # if even-parity and odd # of 1 bits
+        elif parity_chosen == "even" and one_count % 2 != 0:
+            answer = "True"
+        # otherwise,
+        else:
+            answer = "False"
+            
+        # include the random selection into the question
+        question = f"Given an {parity_chosen}-parity system which checks parity 16 bits at a time, the following data would be flagged as having an error.\n\n{bits_chosen}"
+        
+        return question, answer
