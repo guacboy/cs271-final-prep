@@ -82,8 +82,6 @@ def create_exam() -> None:
             # displays the correct answer for post-exam viewing
             value["is_end"] = True
             
-            # TODO: free response not case sensitive
-            
             # if the user's selected answer is correct
             if (value["selected_answer"] == value["answer"]
                 or (isinstance(value["selected_answer"], str)
@@ -103,6 +101,20 @@ def create_exam() -> None:
                 # with a random counter that will countdown on
                 # when the question will appear in the next exam
                 data["questions_marked_wrong"].append([question_location] + [random.randint(1, 3)])
+        
+        # checks if all the questions in each tag have been marked correctly
+        # to decrease the chances of seeing questions from *this* tag
+        for module in data["bank"]:
+            for tag in data["bank"][module]:
+                question_count = []
+                # iterates the count of each question
+                for count in data["bank"][module][tag]["questions"].values():
+                    question_count.append(count)
+                
+                # if the overall tag count is less than the smallest question count,
+                if data["bank"][module][tag]["count"] < min(question_count):
+                    # then increment the tag count
+                    data["bank"][module][tag]["count"] += 1
         
         with open("data.json", "w") as file:
             file.write(json.dumps(data, indent=4))
@@ -417,6 +429,8 @@ def create_questions():
         # if there are no redemption questions,
         # then start picking questions from the bank
         else:
+            # TODO: select from a module a certain number of times
+            
             # selects a random module
             module_chosen = random.choice(list(question_bank.keys()))
             
@@ -692,13 +706,13 @@ def create_choices(current_choice_frame: Frame,
             and saves the answer.
             """
             
-            # if starts with a "-" (user wants to deselect their answer)
+            # if starts with a "-" (user wants to deselect their answer),
             if selected_answer.startswith("-"):
-                # remove the answer
+                # removes the answer
                 selected_checkbox.remove(selected_answer[1:])
-            # otherwise
+            # otherwise,
             else:
-                # add the answer
+                # adds the answer
                 selected_checkbox.add(selected_answer)
                 
             on_update_selected_answer(selected_checkbox)
