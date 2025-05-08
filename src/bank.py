@@ -247,7 +247,7 @@ question_bank = {
                     "smaller": "False",
                     "larger": "True",
                 },
-                "variant": "The ASCII code values for alphabetic letters are _ than for decimal digits",
+                "variant": "The ASCII code values for alphabetic letters are _ than for decimal digits.",
                 "format": TRUE_OR_FALSE,
             },
         },
@@ -342,7 +342,7 @@ question_bank = {
         "Main Memory": {
             "Q1": {
                 "details": {
-                    "In a specific architecture, created by _, programs are stored in memory and executed according to an instruction execution cycle": "John von Neumann",
+                    "In a specific architecture, created by _, programs are stored in memory and executed according to an instruction execution cycle.": "John von Neumann",
                     "rpt1": "David Hilbert",
                     "rpt2": "Kurt Gödel",
                     "rpt3": "Albert Einstein",
@@ -816,7 +816,7 @@ question_bank = {
                     "The jump destination associated with LOOP must be within _ bytes.": "[-128,+127]",
                     "rpt1": "[-255,+255]",
                     "rpt2": "[-inf,+inf]",
-                    "rpt3": "[-99,+99]",
+                    "rpt3": "user-defined",
                 },
                 "format": MULTIPLE_CHOICE,
             },
@@ -872,6 +872,7 @@ question_bank = {
                 "format": TRUE_OR_FALSE,
             },
         },
+        # FIXME: formatting issues with radiobutton
         "TEXTEQU Directive": {
             "Q1": {
                 "details": {
@@ -886,8 +887,8 @@ question_bank = {
         "Endianness": {
             "Q1": {
                 "details": {
-                    "Arrays and strings are stored in the same order regardless of system endianness": "True",
-                    "Arrays and strings are stored in a specific order depending on the system endianness": "False",
+                    "Arrays and strings are stored in the same order regardless of system endianness.": "True",
+                    "Arrays and strings are stored in a specific order depending on the system endianness.": "False",
                 },
                 "format": TRUE_OR_FALSE,
             },
@@ -1137,7 +1138,7 @@ question_bank = {
                     "on the stack": "True",
                     "in registers": "False",
                 },
-                "variant": "Passing arguments to procedure _ offer(s) a more flexible approach.",
+                "variant": "Passing arguments to a procedure _ can offer a more flexible approach.",
                 "format":TRUE_OR_FALSE,
             },
         },
@@ -1221,36 +1222,23 @@ question_bank = {
         },
         "Parity Bits": {
             "Q1": {
-                "details": {
-                    "An even parity system requires an _ number of '1'-bits for parity": "even",
-                    "rpt1": "odd",
-                    "rpt2": "even or odd",
-                    "rpt3": "even and odd",
-                },
-                "format": MULTIPLE_CHOICE,
-            },
-            "Q2": {
-                "details": {
-                    "An odd parity system requires an _ number of '1'-bits for parity": "odd",
-                    "rpt1": "even",
-                    "rpt2": "even or odd",
-                    "rpt3": "even and odd",
-                },
-                "format": MULTIPLE_CHOICE,
-            },
-            "Q3": {
                 "details": None,
-                "variant": Question.mod6_parity_bits_q3,
+                "variant": Question.mod6_parity_bits_q1,
                 "format": TRUE_OR_FALSE,
             },
-            "Q4": {
+            "Q2": {
+                "details": None,
+                "variant": Question.mod6_parity_bits_q2,
+                "format": TRUE_OR_FALSE,
+            },
+            "Q3": {
                 "details": {
                     "Simple parity checks can detect any odd number of errors in a bit stream.": "True",
                     "Simple parity checks can detect any even number of errors in a bit stream.": "False",
                 },
                 "format": TRUE_OR_FALSE,
             },
-            "Q5": {
+            "Q4": {
                 "details": {
                     "Simple parity checks can correct any single-bit errors.": "False",
                     "Simple parity checks can detect any single-bit errors.": "True",

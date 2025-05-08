@@ -546,7 +546,7 @@ class Question():
         
         answer = str(eax_value)
         
-        question = f"{code_segment}\n\nSuppose that result is declared as DWORD. Given the above MASM code, what is the value stored in the memory location named result?"
+        question = f"{code_segment}\n\nSuppose that 'result' is declared as DWORD. Given the above MASM code, what is the value stored in the memory location named 'result'?"
         
         return question, answer
     
@@ -608,7 +608,7 @@ class Question():
         
         code_segment = f"someArray WORD {decimal_value_list[0]}, " \
             f"{decimal_value_list[1]}, " \
-            f"{decimal_value_list[2]}, "
+            f"{decimal_value_list[2]} "
         
         answer = ""
         # if little endian,
@@ -851,7 +851,7 @@ class Question():
             convert_from = f"single-precision IEEE 754 floating-point hexadecimal, {hex_value_chosen},"
             convert_to = "decimal floating-point"
         
-        question = f"Convert {convert_from} to {convert_to}.\n\nNOTE: Do not include 'h' in your answer and don't front-pad the final hex value if the decimal value is negative. For example: F3B96000"
+        question = f"Convert {convert_from} to {convert_to}.\n\nNOTE: Do not include 'h' in your answer and don't front-pad the final hex value. For example: F3B96000"
         
         return question, answer
     
@@ -1027,7 +1027,21 @@ class Question():
         return question, answer
     
     # TRUE OR FALSE
-    def mod6_parity_bits_q3() -> str:
+    def mod6_parity_bits_q1() -> str:
+        question_dict = {
+            "even": "even",
+            "odd": "odd",
+        }
+        
+        question_chosen, answer_chosen, answer = on_randomize_true_false_question(question_dict)
+            
+        # include the random selection into the question
+        question = f"An {question_chosen} parity system requires an {answer_chosen} number of '1'-bits for parity."
+        
+        return question, answer
+    
+    # TRUE OR FALSE
+    def mod6_parity_bits_q2() -> str:
         parity_chosen = random.choice([
             "odd", "even",
         ])
