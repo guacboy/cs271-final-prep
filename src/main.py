@@ -14,6 +14,9 @@ def main_menu() -> None:
     Displays main menu GUI.
     """
     
+    with open("data.json", "r") as file:
+            data = json.load(file)
+    
     subject_frame = Util.frame(root)
     subject_frame.pack(side=TOP,
                        pady=(10,0))
@@ -66,6 +69,12 @@ def main_menu() -> None:
                                 command=lambda o=option: on_update_tag_selected(o.get()))
             tag_checkbox.pack(side=LEFT)
             
+            # if any checkboxes were previously selected (from a different instance),
+            if tag in data["questions_selected"][module]:
+                # then select those checkboxes
+                module_checkbox.select()
+                tag_checkbox.select()
+            
             # adds the tag checkbox into a list under their module
             module_checkbox_dict[module][module_checkbox].append({tag: tag_checkbox})
             
@@ -74,11 +83,6 @@ def main_menu() -> None:
             question_count_label.config(text=f"{len(question_bank[module][tag])} Qs",
                                         font=(FONT, 8, "bold"))
             question_count_label.pack(side=LEFT)
-    
-    # pre-selects all the checkboxes
-    # FIXME: selects all but the last one
-    # for checkbox in checkbox_variables:
-    #     checkbox.select()
     
     def on_update_module_selected(module_selected: str,
                                   module_checkbox: Checkbutton) -> None:
@@ -468,6 +472,8 @@ def create_json() -> None:
             data["bank"].update({
                 module: {},
             })
+        # if the module has not been added
+        if module not in data["questions_selected"]:
             # adds the module as one of the current selections
             data["questions_selected"].update({
                 module: [],
