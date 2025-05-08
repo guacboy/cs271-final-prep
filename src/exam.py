@@ -403,6 +403,30 @@ def create_questions():
     if maximum_number_of_questions >= 30 or "" in data["debug_question"]:
         # set to 30
         maximum_number_of_questions = 30
+        
+    # FIXME: temporary placeholder
+    module_list = [
+        "Module 1",
+        "Module 2",
+        "Module 3",
+        "Module 4",
+        "Module 5",
+        "Module 6",
+    ]
+    
+    module_to_be_chosen = []
+    module_idx = 0
+    # fills the list of modules to be chosen
+    while len(module_to_be_chosen) < maximum_number_of_questions:
+        module_to_be_chosen.append(module_list[module_idx])
+        module_idx += 1
+        
+        # if the module idx is the same as the size of the list,
+        if module_idx == len(module_list):
+            # then reset the module idx (prevents idx error)
+            module_idx = 0
+    
+    random.shuffle(module_to_be_chosen)
 
     questions_to_be_chosen_final = []
     # repeats until the maximum_number_of_questions are selected
@@ -429,10 +453,8 @@ def create_questions():
         # if there are no redemption questions,
         # then start picking questions from the bank
         else:
-            # TODO: select from a module a certain number of times
-            
-            # selects a random module
-            module_chosen = random.choice(list(question_bank.keys()))
+            # selects a module from the end of the shuffled list
+            module_chosen = module_to_be_chosen.pop()
             
             # counts the number of times each tag was marked as correct
             tag_count_list = [
