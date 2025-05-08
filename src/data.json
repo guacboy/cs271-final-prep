@@ -28,10 +28,18 @@
                 },
                 "count": 0
             },
+            "Data Arithmetics": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
             "Numerical Data Types": {
                 "questions": {
                     "Q1": 0,
-                    "Q2": 0
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0
                 },
                 "count": 0
             },
@@ -127,51 +135,187 @@
         "Module 2": {
             "Directives": {
                 "questions": {
-                    "Q1": 0
+                    "Q1": 0,
+                    "Q2": 0
                 },
                 "count": 0
             },
             "Identifiers": {
                 "questions": {
-                    "Q1": 0
+                    "Q1": 0,
+                    "Q2": 0
                 },
                 "count": 0
             },
-            "Memory Locations": {
+            "Memory Addresses": {
                 "questions": {
-                    "Q1": 0
+                    "Q1": 0,
+                    "Q2": 0
                 },
                 "count": 0
             },
             "Composition of an Instruction": {
                 "questions": {
                     "Q1": 0,
-                    "Q2": 0
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0,
+                    "Q8": 0
                 },
                 "count": 0
             },
             "Instruction Mnemonics": {
                 "questions": {
                     "Q1": 0,
-                    "Q2": 0
-                },
-                "count": 0
-            },
-            "Operands": {
-                "questions": {
-                    "Q1": 0
-                },
-                "count": 0
-            },
-            "Data and Memory Offsets": {
-                "questions": {
-                    "Q1": 0
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0
                 },
                 "count": 0
             },
             "Irvine Procedures": {
                 "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 3": {
+            "Jumps": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0
+                },
+                "count": 0
+            },
+            "Loops": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 4": {
+            "Equals-sign Directive": {
+                "questions": {
+                    "Q1": 0,
                     "Q2": 0
+                },
+                "count": 0
+            },
+            "EQU Directive": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "TEXTEQU Directive": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Endianness": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0,
+                    "Q8": 0,
+                    "Q9": 0
+                },
+                "count": 0
+            },
+            "IEEE 754 Floating Point": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 5": {
+            "Stack - Data Structure": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Runtime Stack": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0
+                },
+                "count": 0
+            },
+            "Procedures": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0
+                },
+                "count": 0
+            },
+            "Saving Registers": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "Passing Parameters to Procedures": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 6": {
+            "Bit Errors": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            },
+            "Parity Bits": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0
                 },
                 "count": 0
             }
@@ -182,6 +326,14 @@
         "",
         ""
     ],
+    "questions_selected": {
+        "Module 1": [],
+        "Module 2": [],
+        "Module 3": [],
+        "Module 4": [],
+        "Module 5": [],
+        "Module 6": []
+    },
     "redemption_questions": [],
     "questions_marked_wrong": []
 }
