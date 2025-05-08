@@ -19,6 +19,7 @@ def create_exam() -> None:
     # creates a new window (for the exam)
     exam_window = Toplevel()  
     exam_window.geometry("1075x800")
+    exam_window.resizable(False, False)
     exam_window.config(background=BG_COLOR)
     
     # question details frame
@@ -32,6 +33,8 @@ def create_exam() -> None:
                                  bg=DETAILS_BG_COLOR,)
     question_number_label.pack(side=LEFT,
                                padx=(15, 0))
+    
+    # TODO: add a confirmation to ending exam
     
     # ends the exam
     end_exam_button = Util.button(question_details_frame)
@@ -411,21 +414,9 @@ def create_questions():
     if maximum_number_of_questions >= 30 or "" not in data["debug_question"]:
         # set to 30
         maximum_number_of_questions = 30
-    
-    modules_to_be_chosen = []
-    module_idx = 0
-    # fills the list of modules to be chosen
-    while len(modules_to_be_chosen) < maximum_number_of_questions:
-        modules_to_be_chosen.append(current_modules_selected[module_idx])
-        module_idx += 1
-        # if the module idx is the same as the size of the list,
-        if module_idx == len(current_modules_selected):
-            # then reset the module idx (prevents idx error)
-            module_idx = 0
-    
-    random.shuffle(modules_to_be_chosen)
 
     questions_to_be_chosen_final = []
+    module_idx = 0
     # repeats until the maximum_number_of_questions are selected
     while len(questions_to_be_chosen_final) < maximum_number_of_questions:
         with open("data.json", "r") as file:
@@ -450,12 +441,13 @@ def create_questions():
         # if there are no redemption questions,
         # then start picking questions from the bank
         else:
-            # selects a module at the start of the shuffled list
-            module_chosen = modules_to_be_chosen[0]
+            # selects a question from each module with incrementing idx
+            module_chosen = current_modules_selected[module_idx]
             
+            # TODO: create list of tags selected by user
             # counts the number of times each tag was marked as correct
             tag_count_list = [
-                tag_count["count"] for tag_count in data["bank"][module_chosen].values()
+                tag["count"] for tag in data["bank"][module_chosen].values()
             ]
             # selects tags that are <= to the minimum number of the above list
             tags_to_be_chosen = [
@@ -469,7 +461,8 @@ def create_questions():
             question_count_list = [
                 question_count for question_count in data["bank"][module_chosen][tag_chosen]["questions"].values()
             ]
-            # selects questions that are <= to the minimum number of the above list and are not empty ("")
+            # selects questions that are <= to the minimum number of the above list
+            # and are not empty ("")
             questions_to_be_chosen = [
                 question for question, question_count in data["bank"][module_chosen][tag_chosen]["questions"].items()
                 if question_count <= min(question_count_list)
@@ -478,6 +471,13 @@ def create_questions():
             question_chosen = random.choice(questions_to_be_chosen)
         
         question_location = [module_chosen, tag_chosen, question_chosen]
+        
+        # increment to the next module available
+        module_idx += 1
+        # if the module idx is the same as the size of the list,
+        if module_idx == len(current_modules_selected):
+            # then reset the module idx (prevents idx error)
+            module_idx = 0
         
         # if there is no question that was preselected,
         # check for duplicate questions
@@ -495,15 +495,12 @@ def create_questions():
                     # then flag the question as a duplicate
                     is_duplicate_question = True
                     break
+            
             # if a duplicate question has been found,
             # then repeat the loop until a unique question has been selected
             if is_duplicate_question:
                 continue
-            # if no duplicate questions have been found,
-            # then remove the module from the list of modules to be chosen
-            else:
-                modules_to_be_chosen.pop(0)
-        
+                
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
         details_chosen = result_chosen["details"]
         format_chosen = result_chosen["format"]
@@ -746,6 +743,7 @@ def create_choices(current_choice_frame: Frame,
                 selected_checkbox.add(selected_answer)
                 
             on_update_selected_answer(selected_checkbox)
+    # TODO: add break line between each question (probably have to extend window height)
     # if the question is a "match to answer" or "match to answer randomized"
     elif choice_format == MATCH_TO_ANSWER or choice_format == MATCH_TO_ANSWER_RANDOMIZED:
         # reassigns any previous answer that user may have saved
@@ -825,6 +823,7 @@ def create_choices(current_choice_frame: Frame,
         # preselect the saved answer (when user revisits the question)
         option.set(current_question["selected_answer"])
 
+# TODO: pack the widgets together for better readability
 def display_current_question(action: str,
                              question_number_label: Label,
                              current_question_label: Label,
