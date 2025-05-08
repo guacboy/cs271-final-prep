@@ -204,6 +204,16 @@ question_bank = {
                 "variant": "How many bytes long is a(n) _ on x86 systems?",
                 "format": FREE_RESPONSE,
             },
+            "Q4": {
+                "details": {
+                    "24": "16,777,215",
+                    "20": "65,536",
+                    "16": "32,767",
+                    "12": "1,738",
+                },
+                "variant": "What is the largest unsigned integer that may be stored in _ bits?",
+                "format": MULTIPLE_CHOICE,
+            },
         },
         "Large Value Prefixes": {
             "Q1": {
