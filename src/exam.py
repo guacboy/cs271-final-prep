@@ -386,43 +386,39 @@ def create_questions():
     
     with open("data.json", "r") as file:
         data = json.load(file)
+        
+    current_modules_selected = []
+    current_tags_selected = []
+    total_number_of_questions = []
+    # creates a list of modules selected   
+    for module in data["questions_selected"]:
+        if len(data["questions_selected"][module]) > 0:
+            current_modules_selected.append(module)
+            # creates a list of tags selected
+            for tag in data["questions_selected"][module]:
+                current_tags_selected.append(tag)
+                # creates a list of all the questions (within the module and tag)
+                # to later be counted
+                for question in question_bank[module][tag]:
+                    total_number_of_questions.append(question)
     
-    # TODO: update to vary on tag selections
-    
-    number_of_questions_to_count = []
-    # iterate to get the count of total questions
-    for module in question_bank:
-        for tag in question_bank[module]:
-            for question in question_bank[module][tag]:
-                number_of_questions_to_count.append(question)
-    
-    # the size of number of questions - the size of number of questions marked wrong
-    maximum_number_of_questions = len(number_of_questions_to_count) - len(data["questions_marked_wrong"])
-    
+    # the number of questions - the number of questions marked wrong
+    maximum_number_of_questions = len(total_number_of_questions) - len(data["questions_marked_wrong"])
+
     # if the maximum number is greater than 30, or there is a question already preselected
     if maximum_number_of_questions >= 30 or "" in data["debug_question"]:
         # set to 30
         maximum_number_of_questions = 30
-        
-    # FIXME: temporary placeholder
-    module_list = [
-        "Module 1",
-        "Module 2",
-        "Module 3",
-        "Module 4",
-        "Module 5",
-        "Module 6",
-    ]
     
     module_to_be_chosen = []
     module_idx = 0
     # fills the list of modules to be chosen
     while len(module_to_be_chosen) < maximum_number_of_questions:
-        module_to_be_chosen.append(module_list[module_idx])
+        module_to_be_chosen.append(current_modules_selected[module_idx])
         module_idx += 1
         
         # if the module idx is the same as the size of the list,
-        if module_idx == len(module_list):
+        if module_idx == len(current_modules_selected):
             # then reset the module idx (prevents idx error)
             module_idx = 0
     
@@ -481,6 +477,8 @@ def create_questions():
             question_chosen = random.choice(questions_to_be_chosen)
         
         question_location = [module_chosen, tag_chosen, question_chosen]
+        
+        # FIXME: duplicate check not checking
         
         # if there is no question that was preselected,
         # check for duplicate questions

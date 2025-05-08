@@ -14,15 +14,11 @@ def main_menu() -> None:
     Displays main menu GUI.
     """
     
-    with open("data.json", "r") as file:
-        data = json.load(file)
-    
     subject_frame = Util.frame(root)
     subject_frame.pack(side=TOP,
                        pady=(10,0))
     
-    checkbox_variables = [] # for reference
-    
+    module_checkbox_dict = {}
     # iterates through all the modules
     for module in question_bank.keys():
         # creates a frame to help organize the modules with their tags
@@ -30,14 +26,23 @@ def main_menu() -> None:
         subject_inner_frame.pack(side=LEFT,
                                  anchor=N,)
         
-        option = IntVar()
+        option = StringVar(value=f"-{module}")
         # creates the module checkbox
         module_checkbox = Util.checkbox(subject_inner_frame)
-        checkbox_variables.append(module_checkbox)
         module_checkbox.config(text=module,
-                               variable=option,)
+                               onvalue=module,
+                               offvalue=f"-{module}",
+                               variable=option,
+                               command=lambda o=option, cb=module_checkbox: on_update_module_selected(o.get(), cb))
         module_checkbox.pack(side=TOP,
                              anchor=W,)
+        
+        # creates a list of all the tag checkboxes under *this* module
+        module_checkbox_dict.update({
+            module: {
+                module_checkbox: []
+            }
+        })
         
         # iterates through all the tags
         for tag in question_bank[module].keys():
@@ -50,14 +55,19 @@ def main_menu() -> None:
             left_padding.config(text=" ")
             left_padding.pack(side=LEFT)
             
-            option = IntVar()
+            option = StringVar(value=f"-{tag}")
             # creates the tag checkbox
             tag_checkbox = Util.checkbox(tag_frame)
-            checkbox_variables.append(tag_checkbox)
             tag_checkbox.config(text=tag,
                                 font=(FONT, 10, "normal"),
-                                variable=option,)
+                                onvalue=tag,
+                                offvalue=f"-{tag}",
+                                variable=option,
+                                command=lambda o=option: on_update_tag_selected(o.get()))
             tag_checkbox.pack(side=LEFT)
+            
+            # adds the tag checkbox into a list under their module
+            module_checkbox_dict[module][module_checkbox].append({tag: tag_checkbox})
             
             # creates the number of questions within that tag
             question_count_label = Util.label(tag_frame)
@@ -67,8 +77,84 @@ def main_menu() -> None:
     
     # pre-selects all the checkboxes
     # FIXME: selects all but the last one
-    for checkbox in checkbox_variables:
-        checkbox.select()
+    # for checkbox in checkbox_variables:
+    #     checkbox.select()
+    
+    def on_update_module_selected(module_selected: str,
+                                  module_checkbox: Checkbutton) -> None:
+        """
+        Updates the data.json file with the modules selected.
+        """
+
+        with open("data.json", "r") as file:
+            data = json.load(file)
+        
+        # if starts with a "-" (user wants to deselect their module),
+        if module_selected.startswith("-"):
+            # deselects their checkboxes
+            for tag_list in module_checkbox_dict[module_selected[1:]][module_checkbox]:
+                for tag_checkbox in tag_list.values():
+                    tag_checkbox.deselect()
+                # and removes the tags
+                data["questions_selected"][module_selected[1:]].clear()
+        # otherwise,
+        else:
+            # adds the tags and selects their checkboxes
+            for tag_list in module_checkbox_dict[module_selected][module_checkbox]:
+                for tag, tag_checkbox in tag_list.items():
+                    # if the tag has not already been added into the list
+                    if tag not in data["questions_selected"][module_selected]:
+                        data["questions_selected"][module_selected].append(tag)
+                    tag_checkbox.select()
+        
+        with open("data.json", "w") as file:
+            file.write(json.dumps(data, indent=4))
+    
+    def on_update_tag_selected(tag_selected: str) -> None:
+        """
+        Updates the data.json file with the tags selected.
+        """
+        
+        with open("data.json", "r") as file:
+            data = json.load(file)
+        
+        module_selected = None
+        # iterates through the entire question bank to find
+        # which module the tag belongs in
+        for module in question_bank:
+            for tag in question_bank[module].keys():
+                # if the module location is found
+                if tag_selected == tag or tag_selected[1:] == tag:
+                    # mark the module
+                    module_selected = module
+                    break
+            # if the module has been marked,
+            if module_selected != None:
+                # then break out of the entire loop
+                break
+        
+        # if starts with a "-" (user wants to deselect their tag),
+        if tag_selected.startswith("-"):
+            # removes the tag
+            data["questions_selected"][module_selected].remove(tag_selected[1:])
+        # otherwise,
+        else:
+            # adds the tag
+            data["questions_selected"][module_selected].append(tag_selected)
+        
+        with open("data.json", "w") as file:
+            file.write(json.dumps(data, indent=4))
+        
+        # if there is at least one tag for the module selected,
+        if len(data["questions_selected"][module_selected]) > 0:
+            # then select the module's checkbox
+            for module_checkbox in module_checkbox_dict[module_selected]:
+                module_checkbox.select()
+        # if there are no tags selected for the module selected,
+        elif len(data["questions_selected"][module_selected]) == 0:
+            # then deselect the module's checkbox
+            for module_checkbox in module_checkbox_dict[module_selected]:
+                module_checkbox.deselect()
     
     # erases the data in data.json
     erase_data_label = Util.label(root)
@@ -106,6 +192,9 @@ def main_menu() -> None:
         Erases any data and reloads the data.json file.
         """
         
+        with open("data.json", "r") as file:
+            data = json.load(file)
+        
         data["bank"].clear()
         data["redemption_questions"].clear()
         data["questions_marked_wrong"].clear()
@@ -136,6 +225,9 @@ def main_menu() -> None:
     create_button.bind("<Enter>", func=lambda e: on_enter_option(create_button))
     create_button.bind("<Leave>", func=lambda e: on_leave_option(create_button))
     create_button.pack(side=BOTTOM)
+    
+    with open("data.json", "r") as file:
+        data = json.load(file)
     
     # if a question has not been selected,
     if "" in data["debug_question"]:
@@ -188,6 +280,9 @@ def main_menu() -> None:
         """
         Clears the debugger selections.
         """
+        
+        with open("data.json", "r") as file:
+            data = json.load(file)
         
         data["debug_question"] = [""] * 3
         
@@ -348,6 +443,9 @@ def main_menu() -> None:
             Updates the debug question to its preselected values.
             """
             
+            with open("data.json", "r") as file:
+                data = json.load(file)
+            
             data["debug_question"] = [module, tag, question]
             
             with open("data.json", "w") as file:
@@ -366,14 +464,18 @@ def create_json() -> None:
     for module in question_bank:
         # if the module has not been added
         if module not in data["bank"]:
-            # addx the module into the file
+            # adds the module as one of the available options
             data["bank"].update({
                 module: {},
+            })
+            # adds the module as one of the current selections
+            data["questions_selected"].update({
+                module: [],
             })
         for tag in question_bank[module]:
             # if the tag has not been added
             if tag not in data["bank"][module]:
-                # addx the tag into the file
+                # # adds the tag as one of the available options
                 data["bank"][module].update({
                     tag: {
                         "questions": {},
@@ -383,7 +485,7 @@ def create_json() -> None:
             for question in question_bank[module][tag]:
                 # if the question has not been added
                 if question not in data["bank"][module][tag]["questions"]:
-                    # adds the question into the file
+                    # # adds the question as one of the available options
                     data["bank"][module][tag]["questions"].update({
                         question: 0,
                     })
@@ -408,7 +510,7 @@ def on_leave_option(button: Button) -> None:
     button.config(bg=OPTION_COLOR)
 
 if __name__ == "__main__":
-    main_menu()
     create_json() # creates/updates the json file
+    main_menu()
     root.mainloop()
     
