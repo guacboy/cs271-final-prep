@@ -401,28 +401,29 @@ def create_questions():
                 # to later be counted
                 for question in question_bank[module][tag]:
                     total_number_of_questions.append(question)
-    
+                    
     # the number of questions - the number of questions marked wrong
     maximum_number_of_questions = len(total_number_of_questions) - len(data["questions_marked_wrong"])
-
+    
+    # TODO: add an error if there are no available questions to be selected
+    
     # if the maximum number is greater than 30, or there is a question already preselected
-    if maximum_number_of_questions >= 30 or "" in data["debug_question"]:
+    if maximum_number_of_questions >= 30 or "" not in data["debug_question"]:
         # set to 30
         maximum_number_of_questions = 30
     
-    module_to_be_chosen = []
+    modules_to_be_chosen = []
     module_idx = 0
     # fills the list of modules to be chosen
-    while len(module_to_be_chosen) < maximum_number_of_questions:
-        module_to_be_chosen.append(current_modules_selected[module_idx])
+    while len(modules_to_be_chosen) < maximum_number_of_questions:
+        modules_to_be_chosen.append(current_modules_selected[module_idx])
         module_idx += 1
-        
         # if the module idx is the same as the size of the list,
         if module_idx == len(current_modules_selected):
             # then reset the module idx (prevents idx error)
             module_idx = 0
     
-    random.shuffle(module_to_be_chosen)
+    random.shuffle(modules_to_be_chosen)
 
     questions_to_be_chosen_final = []
     # repeats until the maximum_number_of_questions are selected
@@ -449,8 +450,8 @@ def create_questions():
         # if there are no redemption questions,
         # then start picking questions from the bank
         else:
-            # selects a module from the end of the shuffled list
-            module_chosen = module_to_be_chosen.pop()
+            # selects a module at the start of the shuffled list
+            module_chosen = modules_to_be_chosen[0]
             
             # counts the number of times each tag was marked as correct
             tag_count_list = [
@@ -478,21 +479,30 @@ def create_questions():
         
         question_location = [module_chosen, tag_chosen, question_chosen]
         
-        # FIXME: duplicate check not checking
-        
         # if there is no question that was preselected,
         # check for duplicate questions
         if "" in data["debug_question"]:
             is_duplicate_question = False
-            for question, marked_wrong_question in zip(questions_to_be_chosen_final, data["questions_marked_wrong"]):
-                # if the question is already in the final list or was recently marked wrong,
-                if question_location in question or question_location in marked_wrong_question:
+            for question in questions_to_be_chosen_final:
+                # if the question is already in the final list,
+                if question_location in question:
                     # then flag the question as a duplicate
                     is_duplicate_question = True
                     break
-            # and repeat the loop until a unique question has been selected
+            for marked_wrong_question in data["questions_marked_wrong"]:
+                # if the question was recently marked wrong,
+                if question_location in marked_wrong_question:
+                    # then flag the question as a duplicate
+                    is_duplicate_question = True
+                    break
+            # if a duplicate question has been found,
+            # then repeat the loop until a unique question has been selected
             if is_duplicate_question:
                 continue
+            # if no duplicate questions have been found,
+            # then remove the module from the list of modules to be chosen
+            else:
+                modules_to_be_chosen.pop(0)
         
         result_chosen = question_bank[module_chosen][tag_chosen][question_chosen]
         details_chosen = result_chosen["details"]
