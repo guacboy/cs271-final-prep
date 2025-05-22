@@ -222,6 +222,9 @@ def main_menu() -> None:
         root.after(3000, reset_erase_data_button)
         create_json() # creates/updates the json file
     
+    # TODO: disable button if questions selected list is empty, or if exam window is opened
+    # TODO: minimize main window when exam window is opened; use iconify()
+    
     # creates the exam
     create_button = Util.button(root)
     create_button.config(text="Create Exam",
@@ -279,7 +282,10 @@ def main_menu() -> None:
         if clear_debugger_label.cget("fg") != BG_COLOR:
             clear_debugger_label.config(font=(FONT, 10, "bold"),
                                         fg=FONT_COLOR,)
-            
+    
+    # FIXME: debugger doesn't clear sometimes when button is clicked;
+    # maybe because widgets are updating properly in real time
+     
     def on_click_clear_debugger() -> None:
         """
         Clears the debugger selections.

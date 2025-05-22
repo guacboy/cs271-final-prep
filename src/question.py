@@ -153,6 +153,7 @@ class Question():
         
         return question, answer
     
+    # FIXME: last digit not rounding properly
     # FREE RESPONSE
     def mod1_large_value_prefixes_q2() -> str:
         # select a random size of digit storage
@@ -174,7 +175,7 @@ class Question():
         storage_type_chosen = random.choice(storage_type_to_be_chosen)
         
         # include the random selections into the question
-        question = f"How many bits are there in {str(size_of_storage)}{storage_type_chosen}?\n\nNOTE: For answers larger than 10 digits, only include the first 10 digits.\nFor example, 1.234567890 * 10^20 will be equivalent to 1234567890"
+        question = f"How many bits are there in {str(size_of_storage)}{storage_type_chosen}?\n\nNOTE: For answers larger than 10 digits, only include the first 10 digits.\nFor example: 1.234567890 * 10^20 will be equivalent to 1234567890"
         answer = str(size_of_storage * storage_type_dict[storage_type_chosen] * 8)
         
         # if the answer contains greater than 10 digits
@@ -395,7 +396,7 @@ class Question():
         if compare_integers == 0:
             zero_flag = 1
         
-        question = f"{code_segment}\n\nWhat are the correct values of the Carry, Zero, and Sign flags after the following instructions execute?\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 1,0,1 is equivalent to Carry = 1, Zero = 0, Sign = 1."
+        question = f"{code_segment}\n\nWhat are the correct values of the Carry, Zero, and Sign flags after the following instructions execute?\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 1,0,1 is equivalent to Carry = 1, Zero = 0, Sign = 1"
         answer = f"{carry_flag},{zero_flag},{sign_flag}"
         
         return question, answer
@@ -1078,3 +1079,6 @@ class Question():
         question = f"Given an {parity_chosen}-parity system which checks parity 16 bits at a time, the following data would be flagged as having an error.\n\n{bits_chosen}"
         
         return question, answer
+    
+    def mod7_referencing_stack_passed_parameters():
+        pass

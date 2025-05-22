@@ -247,7 +247,7 @@ question_bank = {
                     "smaller": "False",
                     "larger": "True",
                 },
-                "variant": "The ASCII code values for alphabetic letters are _ than for decimal digits.",
+                "variant": "The ASCII code values for alphabetic letters are _ than decimal digits.",
                 "format": TRUE_OR_FALSE,
             },
         },
@@ -530,10 +530,6 @@ question_bank = {
                         ["END", "Marks the end of module"],
                         ["INVOKE", "Calls a procedure at address given by the expression"],
                         ["BYTE, WORD, DWORD, etc.", "Allocates memory space for 'variable' storage"],
-                        ["=", "Defines a constant"],
-                        ["$", "Used as the current location counter to find the address of the instruction or data label"],
-                        ["EQU", "Allows full expressions and lines of assembly code to be copied inline"],
-                        ["TEXTEQU", "Replaces the macro with the text or expression definition of the macro, all in a single text-substitution pass"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
@@ -666,19 +662,6 @@ question_bank = {
                         ["JMP", "Transfers program execution to a different memory address signified by a code label"],
                         ["CLD", "Clears the Direction Flag"],
                         ["CMP", "Compares two values"],
-                        ["INC", "Increments the value by one"],
-                        ["DEC", "Decrements the value by one"],
-                        ["LOOP", "Decrements ECX and repeats the code label until ECX is equal to zero"],
-                        ["CALL", "Pushes the instruction pointer on the system stack and jumps to the beginning of the named procedure"],
-                        ["RET", "Pops the top of the system stack (containing the return address) into the instruction pointer"],
-                        ["POPAD", "Pops all the 32-bit general-purpose registers from the system stack"],
-                        ["POPA", "Pops all the 16-bit general-purpose registers from the system stack"],
-                        ["POPFD", "Pops the top of the system stack into the EFLAGS register"],
-                        ["POP", "Copies the data pointed to by the stack pointer into the operand, and then increments the stack pointer"],
-                        ["PUSHAD", "Pushes all the 32-bit general-purpose registers into the system stack"],
-                        ["PUSHA", "Pushes all the 16-bit general-purpose registers into the system stack"],
-                        ["PUSHFD", "Pushes the top of the system stack into the EFLAGS register"],
-                        ["PUSH", "Decrements the stack pointer, and then copies the operand into the stack at the location pointed to by the stack pointer"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
@@ -736,9 +719,11 @@ question_bank = {
                         ["ReadInt", "Reads a signed integer from keyboard"],
                         ["ReadDec", "Reads an unsigned integer from keyboard"],
                         ["ReadString", "Reads a string from keyboard"],
+                        ["ReadChar", "Reads a single character from keyboard"],
                         ["WriteInt", "Writes a signed integer to the console window"],
                         ["WriteDec", "Writes an unsigned integer to the console window"],
                         ["WriteString", "Writes a string to the console window"],
+                        ["WriteChar", "Writes a single ASCII character to the console window"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
@@ -746,6 +731,20 @@ question_bank = {
         },
     },
     "Module 3": {
+        "Instruction Mnemonics": {
+            "Q1": {
+                "details": {
+                    "Match the definition to its instruction mnemonic.": [
+                        ["INC", "Increments the value by one"],
+                        ["DEC", "Decrements the value by one"],
+                        ["LOOP", "Decrements ECX and repeats the code label until ECX is equal to zero"],
+                        ["CALL", "Pushes the instruction pointer on the system stack and jumps to the beginning of the named procedure"],
+                        ["RET", "Pops the top of the system stack (containing the return address) into the instruction pointer"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
         "Jumps": {
             "Q1": {
                 "details": None,
@@ -845,6 +844,19 @@ question_bank = {
         },
     },
     "Module 4": {
+        "Directives": {
+            "Q1": {
+                "details": {
+                    "Match the definition to its directive.": [
+                        ["=", "Defines a constant"],
+                        ["$", "Used as the current location counter to find the address of the instruction or data label"],
+                        ["EQU", "Allows full expressions and lines of assembly code to be copied inline"],
+                        ["TEXTEQU", "Replaces the macro with the text or expression definition of the macro, all in a single text-substitution pass"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
         "Equals-sign Directive": {
             "Q1": {
                 "details": {
@@ -894,7 +906,7 @@ question_bank = {
             },
             "Q2": {
                 "details": {
-                    "System endianness affects _": "byte-wise ordering",
+                    "System endianness affects _.": "byte-wise ordering",
                     "rp1": "memory page ordering",
                     "rp2": "bit-wise ordering",
                     "rp3": "array index ordering",
@@ -940,7 +952,7 @@ question_bank = {
             },
             "Q8": {
                 "details": {
-                    "What is the minimum size of a data type, in bytes, to be impacted by system endianness?\n\nNOTE: Write your answer as a whole number. For example, 5 is a whole number.": "2"
+                    "What is the minimum size of a data type, in bytes, to be impacted by system endianness?\n\nNOTE: Write your answer as a whole number. For example: 5": "2"
                 },
                 "format": FREE_RESPONSE,
             },
@@ -978,6 +990,23 @@ question_bank = {
         },
     },
     "Module 5": {
+        "Instruction Mnemonics": {
+            "Q1": {
+                "details": {
+                    "Match the definition to its instruction mnemonic.": [
+                        ["POPAD", "Pops all the 32-bit general-purpose registers from the system stack"],
+                        ["POPA", "Pops all the 16-bit general-purpose registers from the system stack"],
+                        ["POPFD", "Pops the top of the system stack into the EFLAGS register"],
+                        ["POP", "Copies the data pointed to by the stack pointer into the operand, and then increments the stack pointer"],
+                        ["PUSHAD", "Pushes all the 32-bit general-purpose registers into the system stack"],
+                        ["PUSHA", "Pushes all the 16-bit general-purpose registers into the system stack"],
+                        ["PUSHFD", "Pushes the top of the system stack into the EFLAGS register"],
+                        ["PUSH", "Decrements the stack pointer, and then copies the operand into the stack at the location pointed to by the stack pointer"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
         "Stack - Data Structure": {
             "Q1": {
                 "details": {
@@ -1247,15 +1276,42 @@ question_bank = {
             },
         },
     },
-    # "Module 7": {
-    #     "Jumps": {
-    #         "Q1": {
-    #             "details": None,
-    #             "variant": ...,
-    #             "format": TRUE_OR_FALSE,
-    #         },
-    #     },
-    # },
+    "Module 7": {
+        "Referencing Stack-Passed Parameters": {
+            "Q1": { # TODO: M7, E1
+                "details": None,
+                "variant": Question.mod7_referencing_stack_passed_parameters,
+                "format": FREE_RESPONSE,
+            },
+        },
+        "Accessing Array Elements": {
+            "Q1": { # TODO: M7, E2
+                "details": {
+                    "Match the definition to its addressing method.": [
+                        ["", ""],
+                        ["", ""],
+                        ["", ""],
+                        ["", ""],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+        "Operators": {
+            "Q1": {
+                "details": {
+                    "Match the definition to its operatives.": [
+                        ["TYPE", "Returns the number of bytes in the data type used in the declaration of a given data label"],
+                        ["SIZEOF", "Returns the size of memory assigned in the declaration of a given data label"],
+                        ["LENGTHOF", "Returns the length used in the declaration of a given data label"],
+                        ["OFFSET", "Returns the address offset from the start of the data segment of a given data label"],
+                        ["PTR", "Explicitly specifies the number of bytes to write to memory"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+    },
     # "Module 8": {
     #     "Jumps": {
     #         "Q1": {
