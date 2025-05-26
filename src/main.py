@@ -21,68 +21,81 @@ def main_menu() -> None:
     subject_frame.pack(side=TOP,
                        pady=(10,0))
     
+    column_group = [
+        ["Module 1"],
+        ["Module 2", "Module 3", "Module 4"],
+        ["Module 5", "Module 6", "Module 7"],
+    ]
+    
     module_checkbox_dict = {}
     # iterates through all the modules
-    for module in question_bank.keys():
-        # creates a frame to help organize the modules with their tags
-        subject_inner_frame = Util.frame(subject_frame)
-        subject_inner_frame.pack(side=LEFT,
-                                 anchor=N,)
+    # FIXME: modules not aligning correctly
+    for group in column_group:
+        # creates a frame to organize the modules' columns
+        # (for more compact viewing)
+        column_frame = Util.frame(subject_frame)
+        column_frame.pack(side=LEFT,
+                          anchor=N,)
         
-        option = StringVar(value=f"-{module}")
-        # creates the module checkbox
-        module_checkbox = Util.checkbox(subject_inner_frame)
-        module_checkbox.config(text=module,
-                               onvalue=module,
-                               offvalue=f"-{module}",
-                               variable=option,
-                               command=lambda o=option, cb=module_checkbox: on_update_module_selected(o.get(), cb))
-        module_checkbox.pack(side=TOP,
-                             anchor=W,)
-        
-        # creates a list of all the tag checkboxes under *this* module
-        module_checkbox_dict.update({
-            module: {
-                module_checkbox: []
-            }
-        })
-        
-        # iterates through all the tags
-        for tag in question_bank[module].keys():
-            tag_frame = Util.frame(subject_inner_frame)
-            tag_frame.pack(side=TOP,
-                           anchor=W,)
+        for module in group:
+            # creates a frame to organize the modules with their tags
+            subject_inner_frame = Util.frame(column_frame)
+            subject_inner_frame.pack()
             
-            # creates a padding to the left
-            left_padding = Util.label(tag_frame)
-            left_padding.config(text=" ")
-            left_padding.pack(side=LEFT)
-            
-            option = StringVar(value=f"-{tag}")
-            # creates the tag checkbox
-            tag_checkbox = Util.checkbox(tag_frame)
-            tag_checkbox.config(text=tag,
-                                font=(FONT, 10, "normal"),
-                                onvalue=tag,
-                                offvalue=f"-{tag}",
+            option = StringVar(value=f"-{module}")
+            # creates the module checkbox
+            module_checkbox = Util.checkbox(subject_inner_frame)
+            module_checkbox.config(text=module,
+                                onvalue=module,
+                                offvalue=f"-{module}",
                                 variable=option,
-                                command=lambda o=option: on_update_tag_selected(o.get()))
-            tag_checkbox.pack(side=LEFT)
+                                command=lambda o=option, cb=module_checkbox: on_update_module_selected(o.get(), cb))
+            module_checkbox.pack(side=TOP,
+                                anchor=W,)
             
-            # if any checkboxes were previously selected (from a different instance),
-            if tag in data["questions_selected"][module]:
-                # then select those checkboxes
-                module_checkbox.select()
-                tag_checkbox.select()
+            # creates a list of all the tag checkboxes under *this* module
+            module_checkbox_dict.update({
+                module: {
+                    module_checkbox: []
+                }
+            })
             
-            # adds the tag checkbox into a list under their module
-            module_checkbox_dict[module][module_checkbox].append({tag: tag_checkbox})
-            
-            # creates the number of questions within that tag
-            question_count_label = Util.label(tag_frame)
-            question_count_label.config(text=f"{len(question_bank[module][tag])} Qs",
-                                        font=(FONT, 8, "bold"))
-            question_count_label.pack(side=LEFT)
+            # iterates through all the tags
+            for tag in question_bank[module].keys():
+                tag_frame = Util.frame(subject_inner_frame)
+                tag_frame.pack(side=TOP,
+                            anchor=W,)
+                
+                # creates a padding to the left
+                left_padding = Util.label(tag_frame)
+                left_padding.config(text=" ")
+                left_padding.pack(side=LEFT)
+                
+                option = StringVar(value=f"-{tag}")
+                # creates the tag checkbox
+                tag_checkbox = Util.checkbox(tag_frame)
+                tag_checkbox.config(text=tag,
+                                    font=(FONT, 10, "normal"),
+                                    onvalue=tag,
+                                    offvalue=f"-{tag}",
+                                    variable=option,
+                                    command=lambda o=option: on_update_tag_selected(o.get()))
+                tag_checkbox.pack(side=LEFT)
+                
+                # if any checkboxes were previously selected (from a different instance),
+                if tag in data["questions_selected"][module]:
+                    # then select those checkboxes
+                    module_checkbox.select()
+                    tag_checkbox.select()
+                
+                # adds the tag checkbox into a list under their module
+                module_checkbox_dict[module][module_checkbox].append({tag: tag_checkbox})
+                
+                # creates the number of questions within that tag
+                question_count_label = Util.label(tag_frame)
+                question_count_label.config(text=f"{len(question_bank[module][tag])} Qs",
+                                            font=(FONT, 8, "bold"))
+                question_count_label.pack(side=LEFT)
     
     def on_update_module_selected(module_selected: str,
                                   module_checkbox: Checkbutton) -> None:
