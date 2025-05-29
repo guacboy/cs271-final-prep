@@ -1277,24 +1277,81 @@ question_bank = {
         },
     },
     "Module 7": {
-        "Referencing Stack-Passed Parameters": {
-            "Q1": { # TODO: M7, E1
+        "Referencing Stack Parameters": {
+            "Q1": {
                 "details": None,
-                "variant": Question.mod7_referencing_stack_passed_parameters,
+                "variant": Question.mod7_referencing_stack_passed_parameters_q1,
                 "format": FREE_RESPONSE,
             },
-        },
-        "Accessing Array Elements": {
-            "Q1": { # TODO: M7, E2
+            "Q2": {
                 "details": {
-                    "Match the definition to its addressing method.": [
-                        ["", ""],
-                        ["", ""],
-                        ["", ""],
-                        ["", ""],
+                    "Match the definition to its addressing mode.": [
+                        ["Register Indirect", "Register itself is incremented or decremented to change the pointer to another element of the array"],
+                        ["Register Direct", "Refers to data in memory using variable names (data labels)"],
+                        ["Indexed Operands", "Surrounds any of the 4-byte multi-purpose registers with brackets to access values at their memory location"],
+                        ["Base + Offset", "Utilizes a base pointer to establish a known location in memory, and a constant offset from that memory location to access some information"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+            "Q3": {
+                "details": {
+                    "When passing procedure parameters on the stack, why are the following lines of code often necessary in a procedure?\n\nPUSH EBP\nMOV EBP, ESP": "To keep additional usage of the stack within the procedure from invalidating the stack offsets",
+                    "rpt1": "They are never necessary",
+                    "rpt2": "To preserve the original EBP register value for register indirect addressing",
+                    "rpt3": "Because the procedure might change the EBP register value",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q4": {
+                "details": {
+                    "Match the following components of the stack frame in the order in which they should be pushed on the stack.": [
+                        ["1.", "Passed Parameters"],
+                        ["2.", "Procedure Return Address"],
+                        ["3.", "Old EBP Value"],
+                        ["4.", "Local Variables"],
+                        ["5.", "Saved Registers"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER,
+            },
+            "Q5": {
+                "details": {
+                    "Register Indirect": "MOV EAX, [ESI]",
+                    "Indexed Operands": "MOV EAX, list[EBX]",
+                    "Base+Offset": "MOV EAX, [EDX+EBX]",
+                    "Register Direct": "MOV EAX, list[ESI]",
+                },
+                "variant": "Given the following register states, and using _ addressing, which of the following lines of code will move the 11th element of the list array (of DWORDs) to the EAX register?\nEDX register contains the address (OFFSET) of the first element of list.\nESI register contains the address (OFFSET) of the eleventh element of list.\nEBX register contains the value 40.",
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q6": {
+                "details": {
+                    "If you reference a point beyond the end of an array in MASM (for example, the address of the what would be the 105th element of a 100-element array), what happens?": "You attempt to access whatever data bytes are stored there",
+                    "rpt1": "Compile-time error",
+                    "rpt2": "Run-time error",
+                    "rpt3": "The disassembler prevents your program from compiling",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q7": {
+                "details": {
+                    "list[8]": "5th element",
+                    "list[6]": "4th element",
+                    "list[14]": "8th element",
+                    "list[16]": "9th element",
+                },
+                "variant": "Given list, an array of WORDs, what element is addressed by _?",
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q8": {
+                "details": {
+                    "Arrays elements are stored in _ memory.": "contiguous",
+                    "rpt1": "random",
+                    "rpt2": "disjoint",
+                    "rpt3": "distant",
+                },
+                "format": MULTIPLE_CHOICE,
             },
         },
         "Operators": {
@@ -1309,6 +1366,33 @@ question_bank = {
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+            "Q2": {
+                "details": None,
+                "variant": Question.mod7_operators_q2,
+                "format": FREE_RESPONSE,
+            },
+            "Q3": {
+                "details": None,
+                "variant": Question.mod7_operators_q3,
+                "format": FREE_RESPONSE,
+            },
+            "Q4": {
+                "details": None,
+                "variant": Question.mod7_operators_q4,
+                "format": FREE_RESPONSE,
+            },
+        },
+        "Stack Frames": {
+            "Q1": {
+                "details": None,
+                "variant": Question.mod7_stack_frames_q1,
+                "format": FREE_RESPONSE,
+            },
+            "Q2": {
+                "details": None,
+                "variant": Question.mod7_stack_frames_q2,
+                "format": FREE_RESPONSE,
             },
         },
     },

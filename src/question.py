@@ -1080,5 +1080,325 @@ class Question():
         
         return question, answer
     
-    def mod7_referencing_stack_passed_parameters():
-        pass
+    # FREE RESPONSE
+    def mod7_referencing_stack_passed_parameters_q1():
+        ebx = []
+        # generates random values
+        for i in range(6):
+            ebx.append("".join(
+                random.choice("0123456789ABCDEF")
+                for i in range(2)))
+            
+        edx = []
+        # generates random values
+        for i in range(13):
+            edx.append("".join(
+                random.choice("0123456789ABCDEF")
+                for i in range(2)))
+        
+        ebx_string = ""
+        # converts the ebx array into a string
+        for i in range(0, len(ebx), 2):
+            ebx_string += ebx[i + 1]
+            ebx_string += ebx[i]
+            
+            # if it is the last idx,
+            if i == len(ebx) - 2:
+                # then add the hex radix
+                ebx_string += "h"
+            # if an even idx (aka. for every two hex values)
+            # and it is not the last idx,
+            elif (i % 2 == 0
+                and i <= len(ebx) - 2):
+                # then add the hex radix and comma
+                ebx_string += "h, "
+                
+        edx_string = ""
+        # converts the edx array into a string
+        for i in range(0, len(edx), ):
+            edx_string += edx[i]
+            
+            # if it is the last idx,
+            if i == len(edx) - 1:
+                # then add the hex radix
+                edx_string += "h"
+            # if it is not the last idx,
+            elif (i < len(edx)):
+                # then add the hex radix and comma
+                edx_string += "h, "
+        
+        code_segment = ".data" \
+            f"\nmyArr1 WORD {ebx_string}" \
+            f"\nmyArr2 BYTE {edx_string}" \
+            "\n\n.code" \
+            "\nmain PROC" \
+            "\nMOV EBX, OFFSET myArr1" \
+            "\nMOV EDX, OFFSET myArr2" \
+            "\nexit" \
+            "\nmain ENDP"
+        
+        register_type_chosen = random.choice(["AL", "AX", "EAX"])
+        register_chosen = random.choice(["EBX", "EDX"])
+        register_offset_chosen = random.randint(1, 6)
+        
+        # if it is *this* specific register,
+        if register_type_chosen == "AL":
+            # then assign the register storage size
+            array_value_length = 1
+        elif register_type_chosen == "AX":
+            array_value_length = 2
+        elif register_type_chosen == "EAX":
+            array_value_length = 4
+        
+        # if EBX was chosen
+        # and the register offset and register storage size > ebx array,
+        if (register_chosen == "EBX"
+            and register_offset_chosen + array_value_length > len(ebx)):
+            # then combine ebx and edx into one array 
+            array = ebx + edx
+        # if EBX was chosen,
+        elif register_chosen == "EBX":
+            # then assign to ebx array
+            array = ebx
+        # if EDX was chosen,
+        elif register_chosen == "EDX":
+            # then assign to edx array
+            array = edx
+        
+        answer = []
+        # start: register offset, stop: register offset + register storage size
+        for i in range(register_offset_chosen, register_offset_chosen + array_value_length):
+            answer.append(array[i])
+            
+        answer.reverse()
+        answer = "".join(answer)
+        
+        question = f"{code_segment}\n\nGiven the above data segment, what is the hex value after 'MOV {register_type_chosen}, [{register_chosen}+{str(register_offset_chosen)}]' is performed'?\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod7_operators_q2():
+        array = []
+        # generates random values
+        for i in range(6):
+            array.append("".join(
+                random.choice("0123456789ABCDEF")
+                for i in range(2)))
+                
+        array_string = ""
+        # converts the array array into a string
+        for i in range(0, len(array), ):
+            array_string += array[i]
+            
+            # if it is the last idx,
+            if i == len(array) - 1:
+                # then add the hex radix
+                array_string += "h"
+            # if it is not the last idx,
+            elif (i < len(array)):
+                # then add the hex radix and comma
+                array_string += "h, "
+        
+        var_storage_chosen = random.choice(["DWORD", "WORD", "BYTE"])
+        
+        # if it is *this* specific variable storage,
+        if var_storage_chosen == "DWORD":
+            # then assign the variable storage size
+            var_storage = 4
+        elif var_storage_chosen == "WORD":
+            var_storage = 2
+        elif var_storage_chosen == "BYTE":
+            var_storage = 1
+            
+        code_segment = ".data" \
+            f"\nmyPtrCheck BYTE {array_string}" \
+            "\n\n.code" \
+            "\nmain PROC" \
+            "\n; ..." \
+            f"\nMOV EAX, {var_storage_chosen} PTR myPtrCheck" \
+            "\n; Execution Point A" \
+            "\n; ..." \
+            "\nexit" \
+            "\nmain ENDP"
+        
+        answer = []
+        for i in range(0, var_storage):
+            answer.append(array[i])
+            
+        answer.reverse()
+        answer = "".join(answer)
+        
+        question = f"{code_segment}\n\nGiven the above data segment, what hexadecimal value does EAX contain at Execution Point A?\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod7_operators_q3():
+        length_chosen = random.randint(4, 8)
+        array = []
+        # generates random values
+        for i in range(length_chosen):
+            array.append(random.randint(1, 9999))
+                
+        array_string = ""
+        # converts the array array into a string
+        for i in range(0, len(array), ):
+            array_string += str(array[i])
+
+            # if it is not the last idx,
+            if (i < len(array) - 1):
+                # then add a spacing and a comma
+                array_string += ", "
+        
+        var_storage_chosen = random.choice(["DWORD", "WORD", "BYTE"])
+        
+        # if it is *this* specific variable storage,
+        if var_storage_chosen == "DWORD":
+            # then assign the variable storage size
+            var_storage = 4
+        elif var_storage_chosen == "WORD":
+            var_storage = 2
+        elif var_storage_chosen == "BYTE":
+            var_storage = 1
+            
+        code_segment = ".data" \
+            f"\nidArray {var_storage_chosen} {array_string}" \
+            f"\nidLength DWORD LENGTHOF idArray" \
+            f"\nidSize DWORD SIZEOF idArray" \
+            f"\nidType DWORD TYPE idArray" \
+        
+        subquestion_chosen = random.choice(["LENGTHOF", "SIZEOF", "TYPE"])
+        # if it is *this* subquestion,
+        if subquestion_chosen == "LENGTHOF":
+            # then assign the respective answer
+            answer = str(len(array))
+            # and its subquestion string
+            subquestion_string = "idLength"
+        elif subquestion_chosen == "SIZEOF":
+            answer = str(len(array) * var_storage)
+            subquestion_string = "idSize"
+        elif subquestion_chosen == "TYPE":
+            answer = str(var_storage)
+            subquestion_string = "idType"
+        
+        question = f"{code_segment}\n\nGiven the above data segment, what value does {subquestion_string} contain, in decimal?"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod7_operators_q4():
+        length_chosen = random.randint(4, 8)
+        array = []
+        # generates random values
+        for i in range(length_chosen):
+            array.append(random.randint(1, 9999))
+                
+        array_string = ""
+        # converts the array array into a string
+        for i in range(0, len(array), ):
+            array_string += str(array[i])
+
+            # if it is not the last idx,
+            if (i < len(array) - 1):
+                # then add a spacing and a comma
+                array_string += ", "
+        
+        # selects a random integer to be used as an idx
+        idx_chosen = random.randint(1, length_chosen - 1)
+        
+        code_segment = ".data" \
+            f"\nidArray DWORD {array_string}" \
+            f"\nidLength DWORD LENGTHOF idArray" \
+            f"\nidSize DWORD SIZEOF idArray" \
+            f"\nidType DWORD TYPE idArray" \
+            "\n\n.code" \
+            "\nmain PROC" \
+            "\n; ..." \
+            "\nMOV ESI, OFFSET idArray" \
+            f"\nMOV EAX, [ESI+{idx_chosen}*TYPE idArray]" \
+            "\n; Execution Point A" \
+            "\n; ..." \
+            "\nexit" \
+            "\nmain ENDP"
+            
+        answer = str(array[idx_chosen])
+        
+        question = f"{code_segment}\n\nGiven the above data segment, what value does EAX contain at Execution Point A?"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod7_stack_frames_q1():
+        # creates a list of words between 5-10 characters
+        words_to_be_chosen = [
+            word for word in WORD_WEBSITE.text.splitlines()
+            if len(word) >= 5 and len(word) <= 10
+        ]
+        
+        variable_type_to_be_chosen = [
+            "BYTE", "WORD", "DWORD",
+        ]
+        
+        variable_dict = {
+            "x": ["", ""],
+            "y": ["", ""],
+            "z": ["", ""],
+        }
+        
+        answer = 0
+        for var in variable_dict:
+            variable_chosen = random.choice(variable_type_to_be_chosen)
+            
+            # if it is *this* variable type,
+            if variable_chosen == "BYTE":
+                # selects a random word from the word list,
+                word_chosen = random.choice(words_to_be_chosen)
+                # assigns the variable to its respective value
+                variable_dict[var][0] = f"{variable_chosen} '{word_chosen.capitalize()}',0"
+                # and expected code,
+                variable_dict[var][1] = f"OFFSET {var}"
+                
+                # and increments the answer to its respective value
+                answer += 4
+            elif variable_chosen == "WORD":
+                variable_dict[var][0] = f"{variable_chosen} {random.randint(10, 99)}"
+                variable_dict[var][1] = var
+                
+                answer += 2
+            elif variable_chosen == "DWORD":
+                variable_dict[var][0] = f"{variable_chosen} {random.randint(100000, 999999)}"
+                variable_dict[var][1] = var
+                
+                answer += 4
+        answer = str(answer)
+        
+        code_segment = ".data" \
+            f"\nx {variable_dict["x"][0]}" \
+            f"\ny {variable_dict["y"][0]}" \
+            f"\nz {variable_dict["z"][0]}" \
+            "\n\n.code" \
+            "\nmain PROC" \
+            f"\nPUSH {variable_dict["x"][1]}" \
+            f"\nPUSH {variable_dict["y"][1]}" \
+            f"\nPUSH {variable_dict["z"][1]}" \
+            "\nCALL someProcedure" \
+            "\nINC EAX" \
+            "\nMOV EBX, z" \
+            "\nXOR EAX, EBX" \
+            "\nexit" \
+            "\nmain ENDP"
+        
+        question = f"{code_segment}\n\nGiven the above data segment, inside someProcedure, what numerical operand should be used with the RET instruction?\n\nNOTE: RET n, what should n be? For example: 10"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod7_stack_frames_q2():
+        return_value_chosen = random.randint(4, 10)
+        answer = str(return_value_chosen + 4)
+        
+        question = f"The following instruction will increment the stack pointer (ESP) by how many bytes?\n\nRET {return_value_chosen}"
+        
+        return question, answer
+    
