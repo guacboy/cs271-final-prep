@@ -1402,3 +1402,73 @@ class Question():
         
         return question, answer
     
+    # SELECT THAT APPLY
+    def mod8_string_primitives_q2():
+        register_chosen = random.choice([
+            "ESI", "EDI", "ESI and EDI"
+        ])
+        
+        is_plural = ""
+        if register_chosen == "ESI":
+            correct_answers = [
+                "LODSB",
+                "MOVSB",
+                "CMPSB",
+            ]
+            incorrect_answers = [
+                "STOSB",
+                "SCASB",
+            ]
+        elif register_chosen == "EDI":
+            correct_answers = [
+                "CMPSB",
+                "MOVSB",
+                "SCASB",
+                "STOSB",
+            ]
+            incorrect_answers = [
+                "LODSB",
+            ]
+        # if two registers were chosen, 
+        elif register_chosen == "ESI and EDI":
+            correct_answers = [
+                "CMPSB",
+                "MOVSB",
+            ]
+            incorrect_answers = [
+                "LODSB",
+                "STOSB",
+                "SCASB",
+            ]
+            
+            # then make the question plural
+            is_plural = "s"
+        
+        question = f"Which of the following string primitives will modify the {register_chosen} register{is_plural}?"
+        answer = [correct_answers] + [incorrect_answers]
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod8_macros_vs_procedures_q13():
+        byte_chosen = random.randint(1000, 9999)
+        used_amount_chosen = random.randint(10, 99)
+        macro_req_chosen = random.randint(10, 99)
+        proc_req_chosen = random.randint(100, 999)
+        proc_call_req_chosen = random.randint(10, 99)
+        
+        macro_answer = byte_chosen + (used_amount_chosen * macro_req_chosen)
+        proc_answer = byte_chosen + proc_req_chosen + (used_amount_chosen * proc_call_req_chosen)
+        answer = f"{macro_answer},{proc_answer}"
+        
+        question = f"Suppose that a program's data and executable code require {byte_chosen} bytes of memory. " \
+            f"A new section of code must be added; it will be used with various values {used_amount_chosen} times " \
+            f"during the execution of a program. When implemented as a macro, the macro code requires {macro_req_chosen} " \
+            f"bytes of memory. When implemented as a procedure, the procedure code requires {proc_req_chosen} bytes " \
+            f"(including parameter-passing, etc.), and each procedure call requires {proc_call_req_chosen} bytes. " \
+            "\n\nHow many bytes of memory will the entire program require if the new code is added as a macro? as a procedure?" \
+            "\n\nNOTE: Type the answer in order separated by a comma (no spaces). " \
+            "For example: 1689,4804"
+        
+        return question, answer
+    

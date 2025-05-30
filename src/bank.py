@@ -1396,15 +1396,169 @@ question_bank = {
             },
         },
     },
-    # "Module 8": {
-    #     "Jumps": {
-    #         "Q1": {
-    #             "details": None,
-    #             "variant": ...,
-    #             "format": TRUE_OR_FALSE,
-    #         },
-    #     },
-    # },
+    "Module 8": {
+        "String Primitives": {
+            "Q1": {
+                "details": {
+                    "Match the definition to its string primitive.": [
+                        ["CMPSB", "Compares the value stored in memory pointed to by ESI to that stored in memory pointed to by EDI, then modifies ESI and EDI to point to the next (or previous) memory cells"],
+                        ["STOSB", "Copies whatever value is in the AL register into the memory location pointed to by the EDI register, then modifies EDI to point to the next (or previous) memory location"],
+                        ["LODSB", "Copies whatever value is in memory at the location pointed to by the ESI register into the AL register, then modifies ESI to point to the next (or previous) memory location"],
+                        ["MOVSB", "Copies whatever value is in memory at the location pointed to by the ESI register into the memory cell pointed to by the EDI register, then modifies ESI and EDI to point to the next (or previous) memory locations"],
+                        ["SCASB", "Compares the value in AL to the value stored in memory pointed to by EDI, then modifies only EDI to point to the next (or previous) memory cells"],
+                        ["REP", "Repeats string primitive and decrements ECX while ECX > 0"],
+                        ["STD", "Sets the direction flag (in status register) and decrements the primitives by the TYPE"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+            "Q2": {
+                "details": None,
+                "variant": Question.mod8_string_primitives_q2,
+                "format": SELECT_THAT_APPLY,
+            },
+            "Q3": {
+                "details": {
+                    "Which of the following would be appropriate to scan through one string, stopping when a character in AL is successfully matched to a character in the string? Assume AL, ECX, ESI, and EDI have already been set appropriately (if necessary).": "REPNE SCASB",
+                    "rpt1": "REPE SCASB",
+                    "rpt2": "REPNE CMPSB",
+                    "rpt3": "REPE CMPSB",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q4": {
+                "details": {
+                    "but will not modify": "False",
+                    "and modifies": "True",
+                },
+                "variant": "The REP prefix checks the value of ECX _ it.",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q5": {
+                "details": {
+                    "may be used": "False",
+                    "can not be used": "True",
+                },
+                "variant": "The REP prefixes _ with most instructions (MOV, CMP, ADD, etc.).",
+                "format": TRUE_OR_FALSE,
+            },
+        },
+        "Macros vs Procedures": {
+            "Q1": {
+                "details": {
+                    "_ are translated only once, and can be called many times.": "Procedures",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Macros",
+                    "rpt3": "Both Macros and Procedures",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q2": {
+                "details": {
+                    "_ are a separate, named section of code.": "Both Macros and Procedures",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Macros",
+                    "rpt3": "Procedures",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q3": {
+                "details": {
+                    "_ are used to implement a module of program logic.": "Procedures",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Both Macros and Procedures",
+                    "rpt3": "Macros",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q4": {
+                "details": {
+                    "_ are used to implement some small task or to simplify writing/reading a program.": "Macros",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Both Macros and Procedures",
+                    "rpt3": "Procedures",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q5": {
+                "details": {
+                    "_ have call / return mechanisms which modify the instruction pointer during runtime.": "Procedures",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Both Macros and Procedures",
+                    "rpt3": "Macros",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q6": {
+                "details": {
+                    "_ are replaced inline by the macro body as a preprocessing step.": "Macros",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Both Macros and Procedures",
+                    "rpt3": "Procedures",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q7": {
+                "details": {
+                    "_ may have parameters, passed in registers/on the stack.": "Procedures",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Both Macros and Procedures",
+                    "rpt3": "Macros",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q8": {
+                "details": {
+                    "_ may have arguments which replace parameter placeholders in its definition.": "Macros",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Both Macros and Procedures",
+                    "rpt3": "Procedures",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q9": {
+                "details": {
+                    "_ may be used multiple times without bloating the code segment.": "Procedures",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Both Macros and Procedures",
+                    "rpt3": "Macros",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q10": {
+                "details": {
+                    "_ are expanded every time they are called, possibly bloating the code segment.": "Macros",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Both Macros and Procedures",
+                    "rpt3": "Procedures",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q11": {
+                "details": {
+                    "For _, arguments are substituted exactly as entered, without checking for memory, registers, or literals.": "Macros",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Both Macros and Procedures",
+                    "rpt3": "Procedures",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q12": {
+                "details": {
+                    "_ may have LOCAL labels.": "Both Macros and Procedures",
+                    "rpt1": "Neither Macros Nor Procedures",
+                    "rpt2": "Macros",
+                    "rpt3": "Procedures",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q13": {
+                "details": None,
+                "variant": Question.mod8_macros_vs_procedures_q13,
+                "format": FREE_RESPONSE,
+            },
+        },
+    },
     # "Module 9": {
     #     "Jumps": {
     #         "Q1": {
