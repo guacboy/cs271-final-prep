@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import font
+from tkinter import messagebox
 import json
 import random
 
@@ -34,27 +35,39 @@ def create_exam() -> None:
     question_number_label.pack(side=LEFT,
                                padx=(15, 0))
     
-    # TODO: add a confirmation to ending exam
-    
     # ends the exam
     end_exam_button = Util.button(question_details_frame)
     end_exam_button.config(text="END",
                            padx=5,
                            pady=0,
-                           command=lambda: end_exam(question_details_dict))
+                           command=lambda: end_exam_confirmation(question_details_dict))
     end_exam_button.bind("<Enter>", func=lambda e: on_enter_option(end_exam_button))
     end_exam_button.bind("<Leave>", func=lambda e: on_leave_option(end_exam_button))
     end_exam_button.pack(side=RIGHT,
                          padx=(0, 15))
     
+    def end_exam_confirmation(question_details_dict: dict) -> None:
+        """
+        Displays a confirmation window if user wants to the end exam.
+        """
+        
+        is_confirm = messagebox.askyesno(message="Submit exam?",
+                                         parent=exam_window,)
+        
+        # if user selects yes,
+        if is_confirm:
+            # exam will end
+            end_exam(question_details_dict)
+    
     def end_exam(question_details_dict: dict) -> None:
-        end_exam_button.config(text="EXIT",
-                               padx=3,
-                               command=lambda: exam_window.destroy())
         """
         Ends the exam and scans through the user's selected answers,
         marking correct or incorrect.
         """
+        
+        end_exam_button.config(text="EXIT",
+                               padx=3,
+                               command=lambda: exam_window.destroy())
         
         with open("data.json", "r") as file:
             data = json.load(file)
