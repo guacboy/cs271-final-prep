@@ -245,7 +245,7 @@ def create_exam() -> None:
                      padx=(0, 15))
     
     # list of randomly selected questions
-    chosen_questions_list, maximum_number_of_questions = create_questions()
+    chosen_questions_list, maximum_number_of_questions = create_questions(exam_window)
     
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
@@ -399,7 +399,7 @@ def create_exam() -> None:
     question_navigator_frame.pack(side=BOTTOM,
                                   pady=(0, 20),)
 
-def create_questions():
+def create_questions(exam_window: Tk):
     """
     Creates a list of randomly selected questions
     to be displayed in the exam.
@@ -426,7 +426,10 @@ def create_questions():
     # the number of questions - the number of questions marked wrong
     maximum_number_of_questions = len(total_number_of_questions) - len(data["questions_marked_wrong"])
     
-    # TODO: add an error if there are no available questions to be selected
+    if maximum_number_of_questions == 0:
+        messagebox.showerror(message="Uh ouh! There are no questions available.\nPlease select more questions or erase your data.",
+                             parent=exam_window)
+        exam_window.destroy()
     
     # if the maximum number is greater than 30, or there is a question already preselected
     if maximum_number_of_questions >= 30 or "" not in data["debug_question"]:
