@@ -128,7 +128,8 @@ def create_exam() -> None:
                                  current_question_label,
                                  current_choice_frame,
                                  current_answer_label,
-                                 question_details_dict,)
+                                 question_details_dict,
+                                 maximum_number_of_questions,)
     
     flag_button = Util.button(question_details_frame)
     flag_button.config(text="⚐",
@@ -206,7 +207,8 @@ def create_exam() -> None:
                                                                 current_question_label,
                                                                 current_choice_frame,
                                                                 current_answer_label,
-                                                                question_details_dict))
+                                                                question_details_dict,
+                                                                maximum_number_of_questions,))
     prev_button.bind("<Enter>", func=lambda e: on_enter_option(prev_button))
     prev_button.bind("<Leave>", func=lambda e: on_leave_option(prev_button))
     prev_button.pack(side=LEFT,
@@ -222,7 +224,8 @@ def create_exam() -> None:
                                                                 current_question_label,
                                                                 current_choice_frame,
                                                                 current_answer_label,
-                                                                question_details_dict))
+                                                                question_details_dict,
+                                                                maximum_number_of_questions,))
     next_button.bind("<Enter>", func=lambda e: on_enter_option(next_button))
     next_button.bind("<Leave>", func=lambda e: on_leave_option(next_button))
     next_button.pack(side=RIGHT,
@@ -272,7 +275,8 @@ def create_exam() -> None:
                                                                                       current_question_label,
                                                                                       current_choice_frame,
                                                                                       current_answer_label,
-                                                                                      question_details_dict))
+                                                                                      question_details_dict,
+                                                                                      maximum_number_of_questions,))
             
         # binds each button to a hover effect
         question_navigator_button.bind("<Enter>", lambda e, button=question_navigator_button: on_enter_question_navigator(button))
@@ -337,7 +341,8 @@ def create_exam() -> None:
                              current_question_label,
                              current_choice_frame,
                              current_answer_label,
-                             question_details_dict)
+                             question_details_dict,
+                             maximum_number_of_questions)
     
     def on_enter_question_navigator(button: Button) -> None:
         """
@@ -829,7 +834,8 @@ def display_current_question(action: str,
                              current_question_label: Label,
                              current_choice_frame: Frame,
                              current_answer_label: Label,
-                             question_details_dict: dict) -> None:
+                             question_details_dict: dict,
+                             maximum_number_of_questions: int,) -> None:
     """
     Displays the current question
     and updates any relevant information.
@@ -847,15 +853,15 @@ def display_current_question(action: str,
     # to action parameter (new question idx)
     else:
         current_question_idx = int(action)
-        
+    
     # if attempting to navigate past the maximum questions
-    if current_question_idx > 30:
+    if current_question_idx > maximum_number_of_questions:
         # loop back to the first question
         current_question_idx = 1
     # if attempting to navigate below the minimum questions
     elif current_question_idx < 1:
         # loop back to the last question
-        current_question_idx = 30
+        current_question_idx = maximum_number_of_questions
     
     # resets all the question navigator buttons to its previous state
     for value in question_details_dict.values():
