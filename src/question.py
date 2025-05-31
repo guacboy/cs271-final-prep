@@ -176,11 +176,17 @@ class Question():
         
         # include the random selections into the question
         question = f"How many bits are there in {str(size_of_storage)}{storage_type_chosen}?" \
-            "\n\nNOTE: For answers larger than 10 digits, only include the first 10 digits.\nFor example: 1.234567890 * 10^20 will be equivalent to 1234567890"
+            "\n\nNOTE: For answers larger than 10 digits, " \
+            "only include the first 10 digits rounded to the nearest integer." \
+            "\nFor example: 1.2345678905 * 10^20 will be equivalent to 1234567891"
         answer = str(size_of_storage * storage_type_dict[storage_type_chosen] * 8)
         
         # if the answer contains greater than 10 digits
         if len(answer) > 10:
+            # round up to nearest integer
+            if int(answer[10]) >= 5:
+                answer = answer.replace(answer[9], str(int(answer[9]) + 1))
+            
             # include only the first 10 digits
             answer = answer[:10]
         
