@@ -175,7 +175,8 @@ class Question():
         storage_type_chosen = random.choice(storage_type_to_be_chosen)
         
         # include the random selections into the question
-        question = f"How many bits are there in {str(size_of_storage)}{storage_type_chosen}?\n\nNOTE: For answers larger than 10 digits, only include the first 10 digits.\nFor example: 1.234567890 * 10^20 will be equivalent to 1234567890"
+        question = f"How many bits are there in {str(size_of_storage)}{storage_type_chosen}?" \
+            "\n\nNOTE: For answers larger than 10 digits, only include the first 10 digits.\nFor example: 1.234567890 * 10^20 will be equivalent to 1234567890"
         answer = str(size_of_storage * storage_type_dict[storage_type_chosen] * 8)
         
         # if the answer contains greater than 10 digits
@@ -1450,7 +1451,7 @@ class Question():
         return question, answer
     
     # FREE RESPONSE
-    def mod8_macros_vs_procedures_q13():
+    def mod8_macros_vs_procedures_q9():
         byte_chosen = random.randint(1000, 9999)
         used_amount_chosen = random.randint(10, 99)
         macro_req_chosen = random.randint(10, 99)
@@ -1469,6 +1470,430 @@ class Question():
             "\n\nHow many bytes of memory will the entire program require if the new code is added as a macro? as a procedure?" \
             "\n\nNOTE: Type the answer in order separated by a comma (no spaces). " \
             "For example: 1689,4804"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod9_infix_vs_postfix_q3():
+        subquestion_dict = {
+            "postfix": "infix",
+            "infix": "postfix",
+        }
+        # selects a random subquestion;
+        # either postfix -> infix or infix -> postfix
+        subquestion_chosen = random.choice([
+            key for key in subquestion_dict.keys()
+        ])
+        
+        value_type_list = [
+            "(", "operand",
+        ]
+        operator_list = [
+            "^", "*", "/", "+", "-"
+        ]
+        
+        postfix_equation_list = []
+        is_done_with_equation = False
+        # creates the equation
+        while True:
+            # if the equation list is empty (aka. the first value)
+            if len(postfix_equation_list) <= 0:
+                value_type_chosen = random.choice(value_type_list)
+            # if the equation list > 15,
+            elif len(postfix_equation_list) > 15:
+                # then the last value should be an operand
+                value_type_chosen = "operand"
+                # and set to end the while loop
+                is_done_with_equation = True
+            # if the previous value in the equation list is an operator
+            elif postfix_equation_list[-1] in operator_list:
+                value_type_chosen = random.choice(value_type_list)
+            # if the previous value in the equation list is an operand
+            elif postfix_equation_list[-1].isdigit():
+                value_type_chosen = "operator"
+            
+            # if the value type chosen is an open parenthesis,
+            if value_type_chosen == "(":
+                # then enclose the parentheses
+                # with an operand, operator, operand, and operator (in order)
+                # for example: (4 + 2) *
+                postfix_equation_list.append("(")
+                postfix_equation_list.append(str(random.randint(1, 15)))
+                postfix_equation_list.append(random.choice(operator_list))
+                postfix_equation_list.append(str(random.randint(1, 15)))
+                postfix_equation_list.append(")")
+                postfix_equation_list.append(random.choice(operator_list))
+            elif value_type_chosen == "operand":
+                postfix_equation_list.append(str(random.randint(1, 15)))
+            elif value_type_chosen == "operator":
+                postfix_equation_list.append(random.choice(operator_list))
+            
+            if is_done_with_equation:
+                break
+        
+        order_of_precedence = {
+            "^": 3,
+            "*": 2, "/": 2,
+            "+": 1, "-": 1,
+        }
+        
+        answer = ""
+        infix_equation_list = []
+        operative_stack = [] # for tracking order of precendece
+        for i in range(len(postfix_equation_list)):
+            curr_value = postfix_equation_list[i]
+            
+            if curr_value.isdigit():
+                if subquestion_chosen == "postfix":
+                    answer += curr_value
+                elif subquestion_chosen == "infix":
+                    infix_equation_list.append(curr_value)
+            # if the current value is an operator
+            else:
+                # if the operative stack is empty
+                if len(operative_stack) <= 0:
+                    operative_stack.append(curr_value)
+                else:
+                    # if the current value is an open parenthesis
+                    if curr_value == "(":
+                        operative_stack.append(curr_value)
+                    # if the current value is a closed parenthesis,
+                    elif curr_value == ")":
+                        # then while the open parenthesis exists in the operative stack,
+                        while "(" in operative_stack:
+                            # pop the operative stack until the open parenthesis is encountered
+                            removed_value = operative_stack.pop()
+                            
+                            # and add the removed value to the answer (excluding the open parenthesis)
+                            if removed_value != "(":
+                                if subquestion_chosen == "postfix":
+                                    answer += removed_value
+                                elif subquestion_chosen == "infix":
+                                    infix_equation_list.append(removed_value)
+                    else:
+                        # if the previous value in the operative stack is an open parenthesis
+                        if operative_stack[-1] == "(":
+                            operative_stack.append(curr_value)
+                        else:
+                            # while the previous value in the operative stack is >= the current value
+                            # (order of precendence determined via the dictionary above)
+                            while (order_of_precedence[operative_stack[-1]] >= order_of_precedence[curr_value]
+                                    and len(operative_stack) > 0):
+                                removed_value = operative_stack.pop()
+                                
+                                if subquestion_chosen == "postfix":
+                                    # pop the operative stack into the answer
+                                    answer += removed_value
+                                elif subquestion_chosen == "infix":
+                                    infix_equation_list.append(removed_value)
+                                
+                                if len(operative_stack) <= 0:
+                                    break
+                            
+                            # once the current value is greater than the previous value in the operative stack,
+                            # add the current value to the operative stack
+                            operative_stack.append(curr_value)
+
+        # if there are still operators remaining in the operative stack,
+        while len(operative_stack) > 0:
+            removed_value = operative_stack.pop()
+            
+            if subquestion_chosen == "postfix":
+                # add the entire stack to the answer
+                answer += removed_value
+            elif subquestion_chosen == "infix":
+                infix_equation_list.append(removed_value)
+        
+        if subquestion_chosen == "postfix":
+            equation_string = " ".join(postfix_equation_list)
+        elif subquestion_chosen == "infix":
+            equation_string = " ".join(infix_equation_list)
+            answer = "".join(postfix_equation_list)
+        
+        question = f"Convert the following {subquestion_dict[subquestion_chosen]} expression to {subquestion_chosen}." \
+            f"\n\n{equation_string}" \
+            "\n\nNOTE: Do not include spaces. For example: 1242-*411+^/+"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod9_infix_vs_postfix_q4():
+        value_type_list = [
+            "(", "operand",
+        ]
+        operator_list = [
+            "*", "/", "+", "-"
+        ]
+        
+        postfix_equation_list = []
+        is_done_with_equation = False
+        # creates the equation
+        while True:
+            # if the equation list is empty (aka. the first value)
+            if len(postfix_equation_list) <= 0:
+                value_type_chosen = random.choice(value_type_list)
+            # if the equation list > 15,
+            elif len(postfix_equation_list) > 15:
+                # then the last value should be an operand
+                value_type_chosen = "operand"
+                # and set to end the while loop
+                is_done_with_equation = True
+            # if the previous value in the equation list is an operator
+            elif postfix_equation_list[-1] in operator_list:
+                value_type_chosen = random.choice(value_type_list)
+            # if the previous value in the equation list is an operand
+            elif postfix_equation_list[-1].isdigit():
+                value_type_chosen = "operator"
+            
+            # if the value type chosen is an open parenthesis,
+            if value_type_chosen == "(":
+                # then enclose the parentheses
+                # with an operand, operator, operand, and operator (in order)
+                # for example: (4 + 2) *
+                postfix_equation_list.append("(")
+                postfix_equation_list.append(str(random.randint(1, 9)))
+                postfix_equation_list.append(random.choice(operator_list))
+                postfix_equation_list.append(str(random.randint(1, 9)))
+                postfix_equation_list.append(")")
+                postfix_equation_list.append(random.choice(operator_list))
+            elif value_type_chosen == "operand":
+                postfix_equation_list.append(str(random.randint(1, 9)))
+            elif value_type_chosen == "operator":
+                postfix_equation_list.append(random.choice(operator_list))
+            
+            if is_done_with_equation:
+                break
+        
+        order_of_precedence = {
+            "*": 2, "/": 2,
+            "+": 1, "-": 1,
+        }
+        
+        infix_equation_list = []
+        operative_stack = [] # for tracking order of precendece
+        for i in range(len(postfix_equation_list)):
+            curr_value = postfix_equation_list[i]
+            
+            if curr_value.isdigit():
+                infix_equation_list.append(curr_value)
+            # if the current value is an operator
+            else:
+                # if the operative stack is empty
+                if len(operative_stack) <= 0:
+                    operative_stack.append(curr_value)
+                else:
+                    # if the current value is an open parenthesis
+                    if curr_value == "(":
+                        operative_stack.append(curr_value)
+                    # if the current value is a closed parenthesis,
+                    elif curr_value == ")":
+                        # then while the open parenthesis exists in the operative stack,
+                        while "(" in operative_stack:
+                            # pop the operative stack until the open parenthesis is encountered
+                            removed_value = operative_stack.pop()
+                            
+                            # and add the removed value to the answer (excluding the open parenthesis)
+                            if removed_value != "(":
+                                infix_equation_list.append(removed_value)
+                    else:
+                        # if the previous value in the operative stack is an open parenthesis
+                        if operative_stack[-1] == "(":
+                            operative_stack.append(curr_value)
+                        else:
+                            # while the previous value in the operative stack is >= the current value
+                            # (order of precendence determined via the dictionary above)
+                            while (order_of_precedence[operative_stack[-1]] >= order_of_precedence[curr_value]
+                                    and len(operative_stack) > 0):
+                                infix_equation_list.append(operative_stack.pop())
+                                
+                                if len(operative_stack) <= 0:
+                                    break
+                            
+                            # once the current value is greater than the previous value in the operative stack,
+                            # add the current value to the operative stack
+                            operative_stack.append(curr_value)
+
+        # if there are still operators remaining in the operative stack,
+        while len(operative_stack) > 0:
+            infix_equation_list.append(operative_stack.pop())
+        
+        postfix_stack = []
+        for i in range(len(infix_equation_list)):
+            curr_value = infix_equation_list[i]
+            
+            if curr_value.isdigit():
+                postfix_stack.append(curr_value)
+            # if the current value is an operator
+            else:
+                left_value = float(postfix_stack[-2])
+                right_value = float(postfix_stack.pop())
+                
+                if curr_value == "+":
+                    result = left_value + right_value
+                elif curr_value == "-":
+                    result = left_value - right_value
+                elif curr_value == "*":
+                    result = left_value * right_value
+                elif curr_value == "/":
+                    result = left_value / right_value
+                
+                # reassign the left value in the postfix stack
+                # with the current result
+                postfix_stack[-1] = result
+        
+        answer = str(round(float(postfix_stack[0]), 1)) # round to nearest tenth
+        equation_string = " ".join(infix_equation_list)
+        
+        question = f"Find the decimal value of the postfix expression." \
+            f"\n\n{equation_string}" \
+            "\n\nNOTE: Round answer to one decimal place. For example: 13.0"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod9_infix_vs_postfix_q7():
+        value_type_list = [
+            "(", "operand",
+        ]
+        operator_list = [
+            "*", "/", "+", "-"
+        ]
+        letter_list = [
+            "A", "B", "C", "D", "E",
+            "F", "G", "H", "I", "J",
+        ]
+        
+        postfix_equation_list = []
+        is_done_with_equation = False
+        # creates the equation
+        while True:
+            # if the equation list is empty (aka. the first value)
+            if len(postfix_equation_list) <= 0:
+                value_type_chosen = random.choice(value_type_list)
+            # if the equation list > 10,
+            elif len(postfix_equation_list) > 10:
+                # then the last value should be an operand
+                value_type_chosen = "operand"
+                # and set to end the while loop
+                is_done_with_equation = True
+            # if the previous value in the equation list is an operator
+            elif postfix_equation_list[-1] in operator_list:
+                value_type_chosen = random.choice(value_type_list)
+            # if the previous value in the equation list is an operand
+            elif postfix_equation_list[-1].isalpha():
+                value_type_chosen = "operator"
+            
+            # if the value type chosen is an open parenthesis,
+            if value_type_chosen == "(":
+                # then enclose the parentheses
+                # with an operand, operator, operand, and operator (in order)
+                # for example: (A + B) *
+                postfix_equation_list.append("(")
+                postfix_equation_list.append(letter_list.pop(0))
+                postfix_equation_list.append(random.choice(operator_list))
+                postfix_equation_list.append(letter_list.pop(0))
+                postfix_equation_list.append(")")
+                postfix_equation_list.append(random.choice(operator_list))
+            elif value_type_chosen == "operand":
+                postfix_equation_list.append(letter_list.pop(0))
+            elif value_type_chosen == "operator":
+                postfix_equation_list.append(random.choice(operator_list))
+
+            if is_done_with_equation:
+                break
+        
+        order_of_precedence = {
+            "*": 2, "/": 2,
+            "+": 1, "-": 1,
+        }
+        
+        infix_equation_list = []
+        operative_stack = [] # for tracking order of precendece
+        for i in range(len(postfix_equation_list)):
+            curr_value = postfix_equation_list[i]
+            
+            if curr_value.isalpha():
+                infix_equation_list.append(curr_value)
+            # if the current value is an operator
+            else:
+                # if the operative stack is empty
+                if len(operative_stack) <= 0:
+                    operative_stack.append(curr_value)
+                else:
+                    # if the current value is an open parenthesis
+                    if curr_value == "(":
+                        operative_stack.append(curr_value)
+                    # if the current value is a closed parenthesis,
+                    elif curr_value == ")":
+                        # then while the open parenthesis exists in the operative stack,
+                        while "(" in operative_stack:
+                            # pop the operative stack until the open parenthesis is encountered
+                            removed_value = operative_stack.pop()
+                            
+                            # and add the removed value to the answer (excluding the open parenthesis)
+                            if removed_value != "(":
+                                infix_equation_list.append(removed_value)
+                    else:
+                        # if the previous value in the operative stack is an open parenthesis
+                        if operative_stack[-1] == "(":
+                            operative_stack.append(curr_value)
+                        else:
+                            # while the previous value in the operative stack is >= the current value
+                            # (order of precendence determined via the dictionary above)
+                            while (order_of_precedence[operative_stack[-1]] >= order_of_precedence[curr_value]
+                                    and len(operative_stack) > 0):
+                                infix_equation_list.append(operative_stack.pop())
+                                
+                                if len(operative_stack) <= 0:
+                                    break
+                            
+                            # once the current value is greater than the previous value in the operative stack,
+                            # add the current value to the operative stack
+                            operative_stack.append(curr_value)
+
+        # if there are still operators remaining in the operative stack,
+        while len(operative_stack) > 0:
+            infix_equation_list.append(operative_stack.pop())
+        
+        infix_equation_into_code = ""
+        postfix_stack = []
+        for i in range(len(infix_equation_list)):
+            curr_value = infix_equation_list[i]
+            
+            if curr_value.isalpha():
+                infix_equation_into_code += f"\nFLD {curr_value}"
+                postfix_stack.append(curr_value)
+            # if the current value is an operator
+            else:
+                left_value = postfix_stack[-2]
+                right_value = postfix_stack.pop()
+                
+                if curr_value == "+":
+                    infix_equation_into_code += f"\nFADD"
+                    result = f"{left_value}+{right_value}"
+                elif curr_value == "-":
+                    infix_equation_into_code += f"\nFSUB"
+                    result = f"{left_value}-{right_value}"
+                elif curr_value == "*":
+                    infix_equation_into_code += f"\nFMUL"
+                    result = f"{left_value}*{right_value}"
+                elif curr_value == "/":
+                    infix_equation_into_code += f"\nFDIV"
+                    result = f"{left_value}/{right_value}"
+                
+                # reassign the left value in the postfix stack
+                # as a closed parenthese equation
+                postfix_stack[-1] = f"({result})"
+        
+        code_segment = "FINIT" \
+            f"{infix_equation_into_code}" \
+            "\nFSTP Z"
+            
+        answer = f"Z={postfix_stack[0]}"
+        
+        question = f"{code_segment}\n\nGiven the above MASM code, " \
+            f"what is the expected output?" \
+            "\n\nNOTE: Do not include spaces. For example: Z=A+(B-C)/(D*E)"
         
         return question, answer
     

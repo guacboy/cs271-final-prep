@@ -1357,7 +1357,7 @@ question_bank = {
         "Operators": {
             "Q1": {
                 "details": {
-                    "Match the definition to its operatives.": [
+                    "Match the definition to its operative.": [
                         ["TYPE", "Returns the number of bytes in the data type used in the declaration of a given data label"],
                         ["SIZEOF", "Returns the size of memory assigned in the declaration of a given data label"],
                         ["LENGTHOF", "Returns the length used in the declaration of a given data label"],
@@ -1447,40 +1447,22 @@ question_bank = {
             "Q1": {
                 "details": {
                     "_ are translated only once, and can be called many times.": "Procedures",
-                    "rpt1": "Neither Macros Nor Procedures",
-                    "rpt2": "Macros",
-                    "rpt3": "Both Macros and Procedures",
+                    "_ can be redefined during runtime.": "Neither Macros Nor Procedures",
+                    "_ are used to implement some small task or to simplify writing/reading a program.": "Macros",
+                    "_ are a separate, named section of code.": "Both Macros and Procedures",
                 },
                 "format": MULTIPLE_CHOICE,
             },
             "Q2": {
                 "details": {
-                    "_ are a separate, named section of code.": "Both Macros and Procedures",
-                    "rpt1": "Neither Macros Nor Procedures",
-                    "rpt2": "Macros",
-                    "rpt3": "Procedures",
+                    "_ are used to implement a module of program logic.": "Procedures",
+                    "_ will delete itself once it has been called.": "Neither Macros Nor Procedures",
+                    "_ may have LOCAL labels.": "Both Macros and Procedures",
+                    "_ are replaced inline by the macro body as a preprocessing step.": "Macros",
                 },
                 "format": MULTIPLE_CHOICE,
             },
             "Q3": {
-                "details": {
-                    "_ are used to implement a module of program logic.": "Procedures",
-                    "rpt1": "Neither Macros Nor Procedures",
-                    "rpt2": "Both Macros and Procedures",
-                    "rpt3": "Macros",
-                },
-                "format": MULTIPLE_CHOICE,
-            },
-            "Q4": {
-                "details": {
-                    "_ are used to implement some small task or to simplify writing/reading a program.": "Macros",
-                    "rpt1": "Neither Macros Nor Procedures",
-                    "rpt2": "Both Macros and Procedures",
-                    "rpt3": "Procedures",
-                },
-                "format": MULTIPLE_CHOICE,
-            },
-            "Q5": {
                 "details": {
                     "_ have call / return mechanisms which modify the instruction pointer during runtime.": "Procedures",
                     "rpt1": "Neither Macros Nor Procedures",
@@ -1489,16 +1471,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q6": {
-                "details": {
-                    "_ are replaced inline by the macro body as a preprocessing step.": "Macros",
-                    "rpt1": "Neither Macros Nor Procedures",
-                    "rpt2": "Both Macros and Procedures",
-                    "rpt3": "Procedures",
-                },
-                "format": MULTIPLE_CHOICE,
-            },
-            "Q7": {
+            "Q4": {
                 "details": {
                     "_ may have parameters, passed in registers/on the stack.": "Procedures",
                     "rpt1": "Neither Macros Nor Procedures",
@@ -1507,7 +1480,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q8": {
+            "Q5": {
                 "details": {
                     "_ may have arguments which replace parameter placeholders in its definition.": "Macros",
                     "rpt1": "Neither Macros Nor Procedures",
@@ -1516,7 +1489,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q9": {
+            "Q6": {
                 "details": {
                     "_ may be used multiple times without bloating the code segment.": "Procedures",
                     "rpt1": "Neither Macros Nor Procedures",
@@ -1525,7 +1498,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q10": {
+            "Q7": {
                 "details": {
                     "_ are expanded every time they are called, possibly bloating the code segment.": "Macros",
                     "rpt1": "Neither Macros Nor Procedures",
@@ -1534,7 +1507,7 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q11": {
+            "Q8": {
                 "details": {
                     "For _, arguments are substituted exactly as entered, without checking for memory, registers, or literals.": "Macros",
                     "rpt1": "Neither Macros Nor Procedures",
@@ -1543,31 +1516,113 @@ question_bank = {
                 },
                 "format": MULTIPLE_CHOICE,
             },
-            "Q12": {
-                "details": {
-                    "_ may have LOCAL labels.": "Both Macros and Procedures",
-                    "rpt1": "Neither Macros Nor Procedures",
-                    "rpt2": "Macros",
-                    "rpt3": "Procedures",
-                },
-                "format": MULTIPLE_CHOICE,
-            },
-            "Q13": {
+            "Q9": {
                 "details": None,
-                "variant": Question.mod8_macros_vs_procedures_q13,
+                "variant": Question.mod8_macros_vs_procedures_q9,
                 "format": FREE_RESPONSE,
             },
         },
     },
-    # "Module 9": {
-    #     "Jumps": {
-    #         "Q1": {
-    #             "details": None,
-    #             "variant": ...,
-    #             "format": TRUE_OR_FALSE,
-    #         },
-    #     },
-    # },
+    "Module 9": {
+        "Infix vs Postfix": {
+            "Q1": {
+                "details": {
+                    "Match the following operators into the correct order of precendence.": [
+                        ["1.", "^ (exponent)"],
+                        ["2.", "*, / (multiplication, division)"],
+                        ["3.", "+, - (addition, subtraction)"],
+                        ["4.", "( (opening parenthesis)"],
+                        ["5.", "= (evaluation)"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER,
+            },
+            "Q2": {
+                "details": {
+                    "When converting from infix to postfix, the order of _ is preserved but the order of _ is not preserved.": "operands, operators",
+                    "rpt1": "operators, operands",
+                    "rpt2": "operators, operators",
+                    "rpt3": "operands, operands",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q3": {
+                "details": None,
+                "variant": Question.mod9_infix_vs_postfix_q3,
+                "format": FREE_RESPONSE,
+            },
+            "Q4": {
+                "details": None,
+                "variant": Question.mod9_infix_vs_postfix_q4,
+                "format": FREE_RESPONSE,
+            },
+            "Q5": {
+                "details": {
+                    "but not in REAL8 or REAL4": "False",
+                    "REAL8, or REAL4": "True",
+                },
+                "variant": "The IA-32 FPU FLD instruction can load in REAL10, _.",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q6": {
+                "details": {
+                    "how many memory operands does the 0-address FPU instructions have?": "none",
+                    "rpt1": "0-1",
+                    "rpt2": "1-2",
+                    "rpt3": "2-3",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q7": {
+                "details": None,
+                "variant": Question.mod9_infix_vs_postfix_q7,
+                "format": FREE_RESPONSE,
+            },
+        },
+        "Irvine Procedures": {
+            "Q1": {
+                "details": {
+                    "Match the definition to its Irvine procedure.": [
+                        ["ReadFloat", "Retrieves a user-entered float and pushes it onto the FPU stack"],
+                        ["WriteFloat", "Prints out the value in ST(0) in scientific notation"],
+                        ["ShowFPUStack", "Prints out the full FPU stack"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+        "FPU Instructions": {
+            "Q1": {
+                "details": {
+                    "Match the definition to its FPU instruction.": [
+                        ["FABS", "Clears the sign of ST(0)"],
+                        ["FADD", "Adds source to destination, overwritting the destination"],
+                        ["FCHS", "Inverts the sign of ST(0)"],
+                        ["FDIVR", "Divides source by destination, overwritting the destination"],
+                        ["FDIV", "Divides destination by source, overwritting the destination"],
+                        ["FMUL", "Multiplies source by destination, overwritting the destination"],
+                        ["FSQRT", "Square roots destination, overwritting the destination"],
+                        ["FSUBR", "Subtracts destination from source, overwritting the destination"],
+                        ["FSUB", "Subtracts source from destination, overwritting the destination"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+            "Q2": {
+                "details": {
+                    "Match the definition to its directive.": [
+                        ["FILD", "Converts an integer value to a floating-point value and pushes to the FPU stack from the operand memory location"],
+                        ["FLD", "Pushes a floating-point value to the FPU stack from the operand memory location"],
+                        ["FINIT", "Initializes the FPU"],
+                        ["FSTP", "Pops from the FPU stack into a memory location (or stack register)"],
+                        ["FST", "Copies the value in ST(0) into a memory location (or stack register)"],
+                        ["ST(n)", "Accesses registers from the pushdown stack"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+    },
     # "Module 10": {
     #     "Jumps": {
     #         "Q1": {
