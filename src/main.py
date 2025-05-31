@@ -237,12 +237,14 @@ def main_menu() -> None:
         create_json() # creates/updates the json file
     
     # TODO: disable button if questions selected list is empty, or if exam window is opened
-    # TODO: minimize main window when exam window is opened; use iconify()
     
     # creates the exam
     create_button = Util.button(root)
     create_button.config(text="Create Exam",
-                         command=lambda: create_exam())
+                         command=lambda: [
+                             create_exam(root),
+                             root.iconify(),
+                         ])
     create_button.bind("<Enter>", func=lambda e: on_enter_option(create_button))
     create_button.bind("<Leave>", func=lambda e: on_leave_option(create_button))
     create_button.pack(side=BOTTOM)

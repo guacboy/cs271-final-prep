@@ -8,7 +8,7 @@ from util import *
 from bank import Bank, question_bank, \
     MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE, SELECT_THAT_APPLY, MATCH_TO_ANSWER, MATCH_TO_ANSWER_RANDOMIZED
 
-def create_exam() -> None:
+def create_exam(root: Tk) -> None:
     """
     Displays exam GUI.
     """
@@ -67,7 +67,10 @@ def create_exam() -> None:
         
         end_exam_button.config(text="EXIT",
                                padx=3,
-                               command=lambda: exam_window.destroy())
+                               command=lambda: [
+                                   exam_window.destroy(),
+                                   root.deiconify(),
+                               ])
         
         with open("data.json", "r") as file:
             data = json.load(file)
@@ -427,7 +430,7 @@ def create_questions(exam_window: Tk):
     maximum_number_of_questions = len(total_number_of_questions) - len(data["questions_marked_wrong"])
     
     if maximum_number_of_questions == 0:
-        messagebox.showerror(message="Uh ouh! There are no questions available.\nPlease select more questions or erase your data.",
+        messagebox.showerror(message="Uh ouh! There are no questions available.\nPlease select more questions or reset your data.",
                              parent=exam_window)
         exam_window.destroy()
     
@@ -465,7 +468,6 @@ def create_questions(exam_window: Tk):
             # selects a question from each module with incrementing idx
             module_chosen = current_modules_selected[module_idx]
             
-            # TODO: create list of tags selected by user
             # counts the number of times each tag was marked as correct
             tag_count_list = [
                 tag["count"] for tag in data["bank"][module_chosen].values()
@@ -764,15 +766,15 @@ def create_choices(current_choice_frame: Frame,
                 selected_checkbox.add(selected_answer)
                 
             on_update_selected_answer(selected_checkbox)
-    # TODO: add break line between each question (probably have to extend window height)
+
     # if the question is a "match to answer" or "match to answer randomized"
     elif choice_format == MATCH_TO_ANSWER or choice_format == MATCH_TO_ANSWER_RANDOMIZED:
         # reassigns any previous answer that user may have saved
         selected_optionmenu = current_question["selected_answer"]
         
-        # if the list is empty
+        # if the list is empty,
         if len(selected_optionmenu) <= 0:
-            # populate the list with placeholders (to later be indexed)
+            # populate the list with placeholders (to store user's answers)
             selected_optionmenu = [""] * len(current_question["choices"])
         
         # iterates through the list of questions, skipping the first idx
@@ -804,7 +806,7 @@ def create_choices(current_choice_frame: Frame,
                 optionmenu.pack()
             else:
                 optionmenu.pack(pady=(0,25))
-        
+            
         # fixes visual bug;
         # creates the last optionmenu (to allow for the bugged text to print),
         # then destroys itself
