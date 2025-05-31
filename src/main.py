@@ -25,6 +25,7 @@ def main_menu() -> None:
         ["Module 1"],
         ["Module 2", "Module 3", "Module 4"],
         ["Module 5", "Module 6", "Module 7"],
+        ["Module 8", "Module 9"]
     ]
     
     module_checkbox_dict = {}
@@ -46,12 +47,12 @@ def main_menu() -> None:
             # creates the module checkbox
             module_checkbox = Util.checkbox(subject_inner_frame)
             module_checkbox.config(text=module,
-                                onvalue=module,
-                                offvalue=f"-{module}",
-                                variable=option,
-                                command=lambda o=option, cb=module_checkbox: on_update_module_selected(o.get(), cb))
+                                   onvalue=module,
+                                   offvalue=f"-{module}",
+                                   variable=option,
+                                   command=lambda o=option, cb=module_checkbox: on_update_module_selected(o.get(), cb))
             module_checkbox.pack(side=TOP,
-                                anchor=W,)
+                                 anchor=W,)
             
             # creates a list of all the tag checkboxes under *this* module
             module_checkbox_dict.update({
@@ -64,7 +65,7 @@ def main_menu() -> None:
             for tag in question_bank[module].keys():
                 tag_frame = Util.frame(subject_inner_frame)
                 tag_frame.pack(side=TOP,
-                            anchor=W,)
+                               anchor=W,)
                 
                 # creates a padding to the left
                 left_padding = Util.label(tag_frame)
@@ -295,9 +296,6 @@ def main_menu() -> None:
         if clear_debugger_label.cget("fg") != BG_COLOR:
             clear_debugger_label.config(font=(FONT, 10, "bold"),
                                         fg=FONT_COLOR,)
-    
-    # FIXME: debugger doesn't clear sometimes when button is clicked;
-    # maybe because widgets are updating properly in real time
      
     def on_click_clear_debugger() -> None:
         """
@@ -316,7 +314,7 @@ def main_menu() -> None:
         for optionmenu in debug_frame.winfo_children():
             # if it's an optionmenu,
             if isinstance(optionmenu, OptionMenu):
-                # then destroy the optionmenu
+                # then reset the optionmenu
                 optionmenu.destroy()
         
         on_create_debug_optionmenu()
@@ -337,6 +335,9 @@ def main_menu() -> None:
         """
         Creates the debugger options.
         """
+        
+        with open("data.json", "r") as file:
+            data = json.load(file)
         
         module = data["debug_question"][0]
         tag = data["debug_question"][1]
