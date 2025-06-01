@@ -8,7 +8,8 @@ from util import *
 from bank import Bank, question_bank, \
     MULTIPLE_CHOICE, TRUE_OR_FALSE, FREE_RESPONSE, SELECT_THAT_APPLY, MATCH_TO_ANSWER, MATCH_TO_ANSWER_RANDOMIZED
 
-def create_exam(root: Tk) -> None:
+def create_exam(root: Tk,
+                create_button: Button) -> None:
     """
     Displays exam GUI.
     """
@@ -146,6 +147,16 @@ def create_exam(root: Tk) -> None:
                                  current_answer_label,
                                  question_details_dict,
                                  maximum_number_of_questions,)
+        
+        # enables the "create exam" button
+        on_toggle_create_button(ACTIVE)
+    
+    def on_toggle_create_button(current_state: str) -> None:
+        """
+        Toggles the "create exam" button's state.
+        """
+        
+        create_button.config(state=current_state)
     
     flag_button = Util.button(question_details_frame)
     flag_button.config(text="⚐",
@@ -248,7 +259,21 @@ def create_exam(root: Tk) -> None:
                      padx=(0, 15))
     
     # list of randomly selected questions
-    chosen_questions_list, maximum_number_of_questions = create_questions(exam_window)
+    chosen_questions_list, maximum_number_of_questions = create_questions()
+    
+    # if there are no questions to available,
+    if maximum_number_of_questions == 0:
+        # display an error message and destroy the exam window
+        messagebox.showerror(message="Uh ouh! There are no questions available.\nPlease select more questions or reset your data.",
+                             parent=exam_window)
+        exam_window.destroy()
+        return
+    
+    # minimizes the main window
+    root.iconify()
+    
+    # disables the "create exam" button
+    on_toggle_create_button(DISABLED)
     
     # question navigator frame
     question_navigator_frame = Util.frame(exam_window)
@@ -402,7 +427,7 @@ def create_exam(root: Tk) -> None:
     question_navigator_frame.pack(side=BOTTOM,
                                   pady=(0, 20),)
 
-def create_questions(exam_window: Tk):
+def create_questions():
     """
     Creates a list of randomly selected questions
     to be displayed in the exam.
@@ -428,11 +453,6 @@ def create_questions(exam_window: Tk):
                     
     # the number of questions - the number of questions marked wrong
     maximum_number_of_questions = len(total_number_of_questions) - len(data["questions_marked_wrong"])
-    
-    if maximum_number_of_questions == 0:
-        messagebox.showerror(message="Uh ouh! There are no questions available.\nPlease select more questions or reset your data.",
-                             parent=exam_window)
-        exam_window.destroy()
     
     # if the maximum number is greater than 30, or there is a question already preselected
     if maximum_number_of_questions >= 30 or "" not in data["debug_question"]:
@@ -679,7 +699,7 @@ def create_choices(current_choice_frame: Frame,
         # if the selected answer is empty
         # (because user may have deselected/deleted their previous selected answer)
         if (selected_answer == ""
-            or len(selected_answer) <= 0
+            or len(selected_answer) == 0
             or (isinstance(selected_answer, list) and "" in selected_answer)):
             # update the question navigator to "incomplete" icon
             update_question_navigator_icon("incomplete", question_details_dict)
@@ -773,7 +793,7 @@ def create_choices(current_choice_frame: Frame,
         selected_optionmenu = current_question["selected_answer"]
         
         # if the list is empty,
-        if len(selected_optionmenu) <= 0:
+        if len(selected_optionmenu) == 0:
             # populate the list with placeholders (to store user's answers)
             selected_optionmenu = [""] * len(current_question["choices"])
         

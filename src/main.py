@@ -115,6 +115,9 @@ def main_menu() -> None:
                     tag_checkbox.deselect()
                 # and removes the tags
                 data["questions_selected"][module_selected[1:]].clear()
+            
+            # disable the "create exam" button
+            create_button.config(state=DISABLED)
         # otherwise,
         else:
             # adds the tags and selects their checkboxes
@@ -124,6 +127,9 @@ def main_menu() -> None:
                     if tag not in data["questions_selected"][module_selected]:
                         data["questions_selected"][module_selected].append(tag)
                     tag_checkbox.select()
+                    
+            # enables the "create exam" button
+            create_button.config(state=ACTIVE)
         
         with open("data.json", "w") as file:
             file.write(json.dumps(data, indent=4))
@@ -168,11 +174,18 @@ def main_menu() -> None:
             # then select the module's checkbox
             for module_checkbox in module_checkbox_dict[module_selected]:
                 module_checkbox.select()
+                
+            # enables the "create exam" button
+            create_button.config(state=ACTIVE)
+                
         # if there are no tags selected for the module selected,
         elif len(data["questions_selected"][module_selected]) == 0:
             # then deselect the module's checkbox
             for module_checkbox in module_checkbox_dict[module_selected]:
                 module_checkbox.deselect()
+                
+            # disables the "create exam" button
+            create_button.config(state=DISABLED)
     
     # erases the data in data.json
     erase_data_label = Util.label(root)
@@ -236,21 +249,27 @@ def main_menu() -> None:
         root.after(3000, reset_erase_data_button)
         create_json() # creates/updates the json file
     
-    # TODO: disable button if questions selected list is empty, or if exam window is opened
-    
     # creates the exam
     create_button = Util.button(root)
     create_button.config(text="Create Exam",
-                         command=lambda: [
-                             create_exam(root),
-                             root.iconify(),
-                         ])
+                         command=lambda: create_exam(root,
+                                                     create_button,))
     create_button.bind("<Enter>", func=lambda e: on_enter_option(create_button))
     create_button.bind("<Leave>", func=lambda e: on_leave_option(create_button))
     create_button.pack(side=BOTTOM)
     
-    with open("data.json", "r") as file:
-        data = json.load(file)
+    # checks if any questions are currently selected
+    for module in data["questions_selected"]:
+        # if the list is empty,
+        if len(data["questions_selected"][module]) == 0:
+            # then disable the "create exam" button
+            create_button.config(state=DISABLED)
+        # if there is at least one list that is not empty,
+        elif len(data["questions_selected"][module]) > 0:
+            # then (re)enable the "create exam" button
+            create_button.config(state=ACTIVE)
+            # and end the loop
+            break
     
     # if a question has not been selected,
     if "" in data["debug_question"]:
