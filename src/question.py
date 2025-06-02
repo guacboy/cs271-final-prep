@@ -153,7 +153,6 @@ class Question():
         
         return question, answer
     
-    # FIXME: last digit not rounding properly
     # FREE RESPONSE
     def mod1_large_value_prefixes_q2() -> str:
         # select a random size of digit storage
@@ -176,7 +175,7 @@ class Question():
         
         # include the random selections into the question
         question = f"How many bits are there in {str(size_of_storage)}{storage_type_chosen}?" \
-            "\n\nNOTE: For answers larger than 10 digits, " \
+            "\n\nNOTE: Do not include commas. For answers larger than 10 digits, " \
             "only include the first 10 digits rounded to the nearest integer." \
             "\nFor example: 1.2345678905 * 10^20 will be equivalent to 1234567891"
         answer = str(size_of_storage * storage_type_dict[storage_type_chosen] * 8)
@@ -403,7 +402,8 @@ class Question():
         if compare_integers == 0:
             zero_flag = 1
         
-        question = f"{code_segment}\n\nWhat are the correct values of the Carry, Zero, and Sign flags after the following instructions execute?\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 1,0,1 is equivalent to Carry = 1, Zero = 0, Sign = 1"
+        question = f"{code_segment}\n\nWhat are the correct values of the Carry, Zero, and Sign flags after the following instructions execute?" \
+            "\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 1,0,1 is equivalent to Carry = 1, Zero = 0, Sign = 1"
         answer = f"{carry_flag},{zero_flag},{sign_flag}"
         
         return question, answer
@@ -423,7 +423,8 @@ class Question():
         # ADD EAX with EBX, then SUB EAX with ECX
         eax_result = first_integer + second_integer - third_integer
         
-        question = f"{code_segment}\n\nAfter the MASM code is executed, what are the decimal values in the EAX, EBX, and ECX?\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 2,5,0 is equivalent to EAX = 1, EBX = 0, ECX = 1."
+        question = f"{code_segment}\n\nAfter the MASM code is executed, what are the decimal values in the EAX, EBX, and ECX?" \
+        "\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 2,5,0 is equivalent to EAX = 1, EBX = 0, ECX = 1."
         answer = f"{eax_result},{second_integer},{third_integer}"
         
         return question, answer
@@ -442,7 +443,8 @@ class Question():
         eax_result = int(first_integer / second_integer)
         edx_result = first_integer % second_integer
         
-        question = f"{code_segment}\n\nAfter the MASM code is executed, what are the decimal values in the EAX, EBX, and EDX?\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 2,5,0 is equivalent to EAX = 1, EBX = 0, EDX = 1."
+        question = f"{code_segment}\n\nAfter the MASM code is executed, what are the decimal values in the EAX, EBX, and EDX?" \
+            "\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 2,5,0 is equivalent to EAX = 1, EBX = 0, EDX = 1."
         answer = f"{eax_result},{second_integer},{edx_result}"
         
         return question, answer
@@ -580,7 +582,8 @@ class Question():
             # then set the answer in human-readable order
             answer = hex_value
         
-        question = f"Given the value, {hex_value}h, what is the hex value stored in memory on a {endian_chosen} system?\n\nNOTE: Do not include 'h' in your answer. For example: FFFB29B8"
+        question = f"Given the value, {hex_value}h, what is the hex value stored in memory on a {endian_chosen} system?" \
+        "\n\nNOTE: Do not include 'h' in your answer. For example: FFFB29B8"
         
         return question, answer
     
@@ -633,7 +636,8 @@ class Question():
             # then set the answer in human-readable order
             answer = "".join(hex_value_list)
         
-        question = f"{code_segment}\n\nGiven the data segment, what is the hex value stored in memory on a {endian_chosen} system?\n\nNOTE: Do not include 'h' in your answer. For example: FFFB29B8"
+        question = f"{code_segment}\n\nGiven the data segment, what is the hex value stored in memory on a {endian_chosen} system?" \
+            "\n\nNOTE: Do not include 'h' in your answer. For example: FFFB29B8"
         
         return question, answer
     
@@ -859,7 +863,8 @@ class Question():
             convert_from = f"single-precision IEEE 754 floating-point hexadecimal, {hex_value_chosen},"
             convert_to = "decimal floating-point"
         
-        question = f"Convert {convert_from} to {convert_to}.\n\nNOTE: Do not include 'h' in your answer and don't front-pad the final hex value. For example: F3B96000"
+        question = f"Convert {convert_from} to {convert_to}." \
+            "\n\nNOTE: Do not include 'h' in your answer and don't front-pad the final hex value. For example: F3B96000"
         
         return question, answer
     
@@ -899,7 +904,9 @@ class Question():
             # then add the last hex value by the register's size
             answer = f"00{first_hex_value + str(last_hex_value + register_size)}"
         
-        question = f"Assume ESP = 00{first_hex_value + str(last_hex_value)}h, and then {instruction_chosen} {register_chosen} is executed. What is the new value of ESP?\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
+        question = f"Assume ESP = 00{first_hex_value + str(last_hex_value)}h, and then {instruction_chosen} {register_chosen} is executed. " \
+            "What is the new value of ESP?" \
+            "\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
         
         return question, answer
     
@@ -1003,7 +1010,10 @@ class Question():
             # "pop instruction" increments the ESP by 4
             decimal_value += 4
         
-        question = f"{code_segment}\n\nAssume ESP = {hex_value}h at Execution Point A. At Execution Point B, what is the decimal value in {register_chosen}, the hexadecimal value in ESP, and the decimal value in [ESP]?\n\nNOTE: Type the answer in order separated by a comma (no spaces) and o not include 'h' in your answer. For example: 7,1C2F,99"
+        question = f"{code_segment}\n\nAssume ESP = {hex_value}h at Execution Point A. " \
+            f"At Execution Point B, what is the decimal value in {register_chosen}, " \
+            "the hexadecimal value in ESP, and the decimal value in [ESP]?" \
+            "\n\nNOTE: Type the answer in order separated by a comma (no spaces) and o not include 'h' in your answer. For example: 7,1C2F,99"
         answer = f"{pop_instruction_dict["POP " + register_chosen]},{final_hex_value},{answer_stack[-1]}"
         
         return question, answer
@@ -1088,7 +1098,7 @@ class Question():
         return question, answer
     
     # FREE RESPONSE
-    def mod7_referencing_stack_passed_parameters_q1():
+    def mod7_referencing_stack_passed_parameters_q1() -> str:
         ebx = []
         # generates random values
         for i in range(6):
@@ -1180,12 +1190,14 @@ class Question():
         answer.reverse()
         answer = "".join(answer)
         
-        question = f"{code_segment}\n\nGiven the above data segment, what is the hex value after 'MOV {register_type_chosen}, [{register_chosen}+{str(register_offset_chosen)}]' is performed'?\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
+        question = f"{code_segment}\n\nGiven the above data segment, what is the hex value after " \
+            f"'MOV {register_type_chosen}, [{register_chosen}+{str(register_offset_chosen)}]' is performed'?" \
+            "\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
         
         return question, answer
     
     # FREE RESPONSE
-    def mod7_operators_q2():
+    def mod7_operators_q2() -> str:
         array = []
         # generates random values
         for i in range(6):
@@ -1236,12 +1248,14 @@ class Question():
         answer.reverse()
         answer = "".join(answer)
         
-        question = f"{code_segment}\n\nGiven the above data segment, what hexadecimal value does EAX contain at Execution Point A?\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
+        question = f"{code_segment}\n\nGiven the above data segment, " \
+            "what hexadecimal value does EAX contain at Execution Point A?" \
+            "\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
         
         return question, answer
     
     # FREE RESPONSE
-    def mod7_operators_q3():
+    def mod7_operators_q3() -> str:
         length_chosen = random.randint(4, 8)
         array = []
         # generates random values
@@ -1294,7 +1308,7 @@ class Question():
         return question, answer
     
     # FREE RESPONSE
-    def mod7_operators_q4():
+    def mod7_operators_q4() -> str:
         length_chosen = random.randint(4, 8)
         array = []
         # generates random values
@@ -1336,7 +1350,7 @@ class Question():
         return question, answer
     
     # FREE RESPONSE
-    def mod7_stack_frames_q1():
+    def mod7_stack_frames_q1() -> str:
         # creates a list of words between 5-10 characters
         words_to_be_chosen = [
             word for word in WORD_WEBSITE.text.splitlines()
@@ -1396,12 +1410,14 @@ class Question():
             "\nexit" \
             "\nmain ENDP"
         
-        question = f"{code_segment}\n\nGiven the above data segment, inside someProcedure, what numerical operand should be used with the RET instruction?\n\nNOTE: RET n, what should n be? For example: 10"
+        question = f"{code_segment}\n\nGiven the above data segment, " \
+            "inside someProcedure, what numerical operand should be used with the RET instruction?" \
+            "\n\nNOTE: RET n, what should n be? For example: 10"
         
         return question, answer
     
     # FREE RESPONSE
-    def mod7_stack_frames_q2():
+    def mod7_stack_frames_q2() -> str:
         return_value_chosen = random.randint(4, 10)
         answer = str(return_value_chosen + 4)
         
@@ -1457,7 +1473,7 @@ class Question():
         return question, answer
     
     # FREE RESPONSE
-    def mod8_macros_vs_procedures_q9():
+    def mod8_macros_vs_procedures_q9() -> str:
         byte_chosen = random.randint(1000, 9999)
         used_amount_chosen = random.randint(10, 99)
         macro_req_chosen = random.randint(10, 99)
@@ -1480,7 +1496,7 @@ class Question():
         return question, answer
     
     # FREE RESPONSE
-    def mod9_infix_vs_postfix_q3():
+    def mod9_infix_vs_postfix_q3() -> str:
         subquestion_dict = {
             "postfix": "infix",
             "infix": "postfix",
@@ -1618,12 +1634,12 @@ class Question():
         
         question = f"Convert the following {subquestion_dict[subquestion_chosen]} expression to {subquestion_chosen}." \
             f"\n\n{equation_string}" \
-            "\n\nNOTE: Do not include spaces. For example: 1242-*411+^/+"
+            "\n\nNOTE: Do not include spaces or commas. For example: 1242-*411+^/+"
         
         return question, answer
     
     # FREE RESPONSE
-    def mod9_infix_vs_postfix_q4():
+    def mod9_infix_vs_postfix_q4() -> str:
         value_type_list = [
             "(", "operand",
         ]
@@ -1752,12 +1768,12 @@ class Question():
         
         question = f"Find the decimal value of the postfix expression." \
             f"\n\n{equation_string}" \
-            "\n\nNOTE: Round answer to one decimal place. For example: 13.0"
+            "\n\nNOTE: Do not include commas. Round answer to nearest tenth. For example: 13.0"
         
         return question, answer
     
     # FREE RESPONSE
-    def mod9_infix_vs_postfix_q7():
+    def mod9_infix_vs_postfix_q7() -> str:
         value_type_list = [
             "(", "operand",
         ]
@@ -1900,6 +1916,119 @@ class Question():
         question = f"{code_segment}\n\nGiven the above MASM code, " \
             f"what is the expected output?" \
             "\n\nNOTE: Do not include spaces. For example: Z=A+(B-C)/(D*E)"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod10_CISC_vs_RISC_q1() -> str:
+        machine_chosen = random.choice([
+            "CISC", "RISC"
+        ])
+        
+        ghz_clock = round(random.uniform(2.0, 9.9), 1)
+        
+        load_cycle = 0
+        add_cycle_1 = random.randint(1, 9)
+        add_cycle_2 = random.randint(1, 9)
+        loop_cycle = random.randint(1, 9)
+            
+        processed_time = round(random.uniform(2.0, 9.9), 1)
+    
+        # the difference between CISC and RISC are mostly the string format
+        # and wording of the question;
+        # both options will following the same formula
+        if machine_chosen == "CISC":
+            code_timings = f"ADD reg, mem ; {add_cycle_1} clock cycles" \
+                f"\nADD reg, imm ; {add_cycle_2} clock cycles" \
+                f"\nLOOP _LabelName ; {loop_cycle} clock cycles"
+            
+            code_segment = f"MOV BX, {random.randint(0, 9)} ; initialize sum" \
+                "\nMOV ECX, MAX_SIZE ; initialize LOOP counter" \
+                "\nMOV ESI, OFFSET list ; initialize array pointer" \
+                "\n_ProcessArray:" \
+                "\nADD BX, [ESI] ; add current list element" \
+                "\nADD ESI, 2 ; move array pointer to next element" \
+                "\nLOOP _ProcessArray ; auto-decrement ECX, jump to more if ECX ≠ 0"
+                
+            computer_info_str = "MASM-like instructions with the following timings:"
+        elif machine_chosen == "RISC":
+            load_cycle = random.randint(1, 9)
+            
+            code_timings = f"SET reg, imm ; {random.randint(2, 9)} clock cycles" \
+                f"\nLOAD reg, mem ; {load_cycle} clock cycles" \
+                f"\nADD reg, reg ; {add_cycle_1} clock cycles" \
+                f"\nADD reg, imm ; {add_cycle_2} clock cycles" \
+                f"\nLOOP _LabelName ; {loop_cycle} clock cycles"
+            
+            code_segment = f"SET reg1, {random.randint(0, 9)} ; initialize sum" \
+                "\nSET reg2, MAX_SIZE ; initialize LOOP counter" \
+                "\nSET reg3, @list ; initialize array pointer" \
+                "\n_ProcessArray:" \
+                "\nLOAD reg4, [reg3] ; fetch current list element" \
+                "\nADD reg1, reg4 ; add current list element" \
+                "\nADD reg3, 4 ; move array pointer to next element" \
+                "\nLOOP _ProcessArray ; auto-decrement reg2, jump to more if reg2 ≠ 0"
+                
+            computer_info_str = "an instruction cache, a data cache, an operand fetch unit, and an operand store unit. " \
+                "The instruction set includes simple instructions with the following timings:"
+        
+        # convert the GHz clock to a million,
+        # sum the respective cycles together,
+        # divide the GHz clock by the cycle's sum,
+        # and multiply the value by the processed time
+        answer = ((ghz_clock * 1000000) / (load_cycle + add_cycle_1 + add_cycle_2 + loop_cycle)) * processed_time
+        answer = str(round(answer))
+        
+        question = f"Suppose that you are working with a {machine_chosen} machine using a {ghz_clock} GHz clock. " \
+            f"(i.e., the clock ticks {ghz_clock} billion times per second). " \
+            f"This particular computer uses {computer_info_str}" \
+            f"\n\n{code_timings}" \
+            f"\n\n{code_segment}" \
+            "\n\nAssume that memory limitations are non-existent " \
+            "and that there is no limit to the size of the array. " \
+            "After initialization, how many array elements " \
+            f"can be processed in {processed_time} milliseconds?" \
+            "\n\nNOTE: Do not include commas. Round answer to nearest integer. For example: 323529"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod10_pipeline_q1() -> str:
+        nano_sec = round(random.uniform(2.0, 9.9), 1)
+        instruction_amount = random.randint(100, 999)
+        
+        with_pipeline = (nano_sec * instruction_amount) + (nano_sec * 4)
+        without_pipeline = (nano_sec * 5) * instruction_amount
+        
+        answer = str(round(without_pipeline - with_pipeline))
+        
+        question = f"Assume that you are working with a five-stage pipeline " \
+            f"and each stage requires {nano_sec} nanoseconds to complete its task." \
+            f"\n\nHow many nanoseconds would be saved in completing {instruction_amount} " \
+            "instructions with pipelining in comparison to without pipelining?" \
+            "\n\nNOTE: Do not include commas. Round answer to nearest integer. For example: 323529"
+        
+        return question, answer
+    
+    # FREE RESPONSE
+    def mod10_parallelism_q1() -> str:
+        ghz_processor = round(random.uniform(2.0, 9.9), 1)
+        
+        seconds = 3
+        percentage_of_algo = 32
+        processor_amount = 5
+        
+        speedup = processor_amount / (1 + (processor_amount - 1) * (percentage_of_algo / 100))
+        answer = str(round(seconds / speedup, 1))
+        
+        question = f"Assume an algorithm takes {seconds} seconds " \
+            f"to execute on a single {ghz_processor} GHz processor. " \
+            f"{percentage_of_algo}% of the algorithm is sequential. " \
+            "Assume that there is zero latency and " \
+            "that the remaining code exhibits perfect parallelism." \
+            "\n\nHow long (in seconds) should the algorithm take to execute " \
+            f"on a parallel machine made of {processor_amount} {ghz_processor} GHz processors?" \
+            "\n\nNOTE: Do not include commas. Round answer to the nearest tenth. For example: 17.0"
         
         return question, answer
     

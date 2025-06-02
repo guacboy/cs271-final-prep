@@ -1262,16 +1262,18 @@ question_bank = {
             },
             "Q3": {
                 "details": {
-                    "Simple parity checks can detect any odd number of errors in a bit stream.": "True",
-                    "Simple parity checks can detect any even number of errors in a bit stream.": "False",
+                    "odd": "True",
+                    "even": "False",
                 },
+                "variant": "Simple parity checks can detect any _ number of errors in a bit stream.",
                 "format": TRUE_OR_FALSE,
             },
             "Q4": {
                 "details": {
-                    "Simple parity checks can correct any single-bit errors.": "False",
-                    "Simple parity checks can detect any single-bit errors.": "True",
+                    "correct": "False",
+                    "detect": "True",
                 },
+                "variant": "Simple parity checks can _ any single-bit errors.",
                 "format": TRUE_OR_FALSE,
             },
         },
@@ -1566,7 +1568,7 @@ question_bank = {
             },
             "Q6": {
                 "details": {
-                    "how many memory operands does the 0-address FPU instructions have?": "none",
+                    "How many memory operands does the 0-address FPU instructions have?": "none",
                     "rpt1": "0-1",
                     "rpt2": "1-2",
                     "rpt3": "2-3",
@@ -1623,13 +1625,163 @@ question_bank = {
             },
         },
     },
-    # "Module 10": {
-    #     "Jumps": {
-    #         "Q1": {
-    #             "details": None,
-    #             "variant": ...,
-    #             "format": TRUE_OR_FALSE,
-    #         },
-    #     },
-    # },
+    "Module 10": {
+        "CISC vs RISC": {
+            "Q1": {
+                "details": None,
+                "variant": Question.mod10_CISC_vs_RISC_q1,
+                "format": FREE_RESPONSE,
+            },
+            "Q2": {
+                "details": {
+                    "One of CISC's major limitations is that the instructions cannot be broken down into fast micro-instructions.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q3": {
+                "details": {
+                    "In general, RISC instructions execute faster then CISC instructions.": "True",
+                    "In general, CISC instructions execute faster then RISC instructions.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q4": {
+                "details": {
+                    "Backwards compatibility is where new devices continue to support _ operations.": "legacy",
+                    "rpt1": "antique",
+                    "rpt2": "inefficient",
+                    "rpt3": "backwards",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q5": {
+                "details": {
+                    "One of the major limitations of CISC is that its data buses can never be wider than they are now.": "False",
+                    "One of the benefits of CISC is that its data buses can be wider than they are now.": "True",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q6": {
+                "details": {
+                    "RISC architectures generally have fewer, simpler instructions that run faster than CISC instruction.": "True",
+                    "CISC architectures generally have fewer, simpler instructions that run faster than RISC instruction.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q7": {
+                "details": {
+                    "One of the primary design principles of RISC is to have flexible addressing modes.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q8": {
+                "details": {
+                    "single-cycle instruction": "True",
+                    "multi-cycle instructions": "False",
+                },
+                "variant": "One of the primary design principles of RISC is to prioritize _.",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q9": {
+                "details": {
+                    "RISC": "True",
+                    "CISC": "False",
+                },
+                "variant": "One of the primary design principles of _ is to avoid micro-programs and have instructions be directly executed.",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q10": {
+                "details": {
+                    "less": "True",
+                    "more": "False",
+                },
+                "variant": "RISC architectures tend to have _ instructions than CISC.",
+                "format": TRUE_OR_FALSE,
+            },
+        },
+        "Pipeline": {
+            "Q1": {
+                "details": None,
+                "variant": Question.mod10_pipeline_q1,
+                "format": FREE_RESPONSE,
+            },
+        },
+        "Parallelism": {
+            "Q1": {
+                "details": None,
+                "variant": Question.mod10_parallelism_q1,
+                "format": FREE_RESPONSE,
+            },
+            "Q2": {
+                "details": {
+                    "lower": "True",
+                    "higher": "False",
+                },
+                "variant": "Multiprocessor Parallelism usually has _ coordination overhead than Multicomputer Parallelism.",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q3": {
+                "details": {
+                    "Multiprocessor Parallelism": "True",
+                    "Multicomputer Parallelism": "False",
+                },
+                "variant": "In _, all processors access the same (shared) memory and communicate and coordinate through an interconnection network.",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q4": {
+                "details": {
+                    "Cloud computing is an example of _.": "Multicomputer Parallelism",
+                    "rpt1": "Multiprocessor Parallelism",
+                    "rpt2": "Instruction-level Parallelism",
+                    "rpt3": "Non-parallel processing",
+                },
+                "format": MULTIPLE_CHOICE,
+            },
+            "Q5": {
+                "details": {
+                    "less": "True",
+                    "more": "False",
+                },
+                "variant": "Software parallelism is currently much _ developed than hardware parallelism.",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q6": {
+                "details": {
+                    "As the number of parallel processors goes to infinity, the runtime of any algorithm will approach 0.": "False",
+                },
+                "format": TRUE_OR_FALSE,
+            },
+            "Q7": {
+                "details": {
+                    "What are some challenges to software parallelism?": [
+                        [
+                            "Interconnection network overhead may outweigh the benefits of implementing parallelism",
+                            "Algorithms must be analyzed to determine parallelizability",
+                        ],
+                        [
+                            "Hardware parallelism is not well developed",
+                        ]
+                    ]
+                },
+                "format": SELECT_THAT_APPLY,
+            },
+            "Q8": {
+                "details": {
+                    "slower": "True",
+                    "faster": "False",
+                },
+                "variant": "Assuming that all processor clock speeds are identical, executing a given software algorithm on a multicore processor is always _ than executing the same algorithm on a single-core processor.",
+                "format": TRUE_OR_FALSE,
+            },
+            "Q9": {
+                "details": {
+                    "Match the definition to its parallelism.": [
+                        ["Multi-Computer Parallelism", "Each processor have its own memory, takes its own part of the task, completes it, and then communicates with the other processors through some kind of interconnection network"],
+                        ["Multi-Processor Parallelism", "Divides the task into subtasks and distribute these to the discrete processors, which all access the same memory"],
+                    ]
+                },
+                "format": MATCH_TO_ANSWER_RANDOMIZED,
+            },
+        },
+    },
 }
