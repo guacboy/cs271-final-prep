@@ -53,7 +53,7 @@
             "Character Data Type": {
                 "questions": {
                     "Q1": 0,
-                    "Q2": 1
+                    "Q2": 0
                 },
                 "count": 0
             },
@@ -94,15 +94,15 @@
             },
             "Memory Management": {
                 "questions": {
-                    "Q1": 1
+                    "Q1": 0
                 },
-                "count": 1
+                "count": 0
             },
             "Modes of Operation": {
                 "questions": {
-                    "Q1": 1
+                    "Q1": 0
                 },
-                "count": 1
+                "count": 0
             },
             "Registers: Special Purposes": {
                 "questions": {
@@ -119,7 +119,7 @@
             "Status Flags": {
                 "questions": {
                     "Q1": 0,
-                    "Q2": 1,
+                    "Q2": 0,
                     "Q3": 0,
                     "Q4": 0
                 },
@@ -135,7 +135,7 @@
         "Module 2": {
             "Directives": {
                 "questions": {
-                    "Q1": 1,
+                    "Q1": 0,
                     "Q2": 0
                 },
                 "count": 0
@@ -149,7 +149,7 @@
             },
             "Memory Addresses": {
                 "questions": {
-                    "Q1": 1,
+                    "Q1": 0,
                     "Q2": 0
                 },
                 "count": 0
@@ -158,7 +158,7 @@
                 "questions": {
                     "Q1": 0,
                     "Q2": 0,
-                    "Q3": 1,
+                    "Q3": 0,
                     "Q4": 0,
                     "Q5": 0,
                     "Q6": 0,
@@ -171,7 +171,7 @@
                 "questions": {
                     "Q1": 0,
                     "Q2": 0,
-                    "Q3": 1,
+                    "Q3": 0,
                     "Q4": 0,
                     "Q5": 0,
                     "Q6": 0
@@ -180,62 +180,74 @@
             },
             "Irvine Procedures": {
                 "questions": {
-                    "Q1": 1
+                    "Q1": 0
                 },
-                "count": 1
+                "count": 0
             }
         },
         "Module 3": {
+            "Instruction Mnemonics": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
             "Jumps": {
                 "questions": {
                     "Q1": 0,
                     "Q2": 0,
                     "Q3": 0,
-                    "Q4": 1,
-                    "Q5": 1
+                    "Q4": 0,
+                    "Q5": 0
                 },
                 "count": 0
             },
             "Loops": {
                 "questions": {
-                    "Q1": 1,
+                    "Q1": 0,
                     "Q2": 0,
-                    "Q3": 1,
-                    "Q4": 1
+                    "Q3": 0,
+                    "Q4": 0
                 },
                 "count": 0
             }
         },
         "Module 4": {
+            "Directives": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
             "Equals-sign Directive": {
                 "questions": {
                     "Q1": 0,
-                    "Q2": 1
+                    "Q2": 0
                 },
                 "count": 0
             },
             "EQU Directive": {
                 "questions": {
-                    "Q1": 1
+                    "Q1": 0
                 },
-                "count": 1
+                "count": 0
             },
             "TEXTEQU Directive": {
                 "questions": {
-                    "Q1": 1
+                    "Q1": 0
                 },
-                "count": 1
+                "count": 0
             },
             "Endianness": {
                 "questions": {
                     "Q1": 0,
                     "Q2": 0,
-                    "Q3": 1,
+                    "Q3": 0,
                     "Q4": 0,
                     "Q5": 0,
                     "Q6": 0,
                     "Q7": 0,
-                    "Q8": 1,
+                    "Q8": 0,
                     "Q9": 0
                 },
                 "count": 0
@@ -251,15 +263,21 @@
             }
         },
         "Module 5": {
+            "Instruction Mnemonics": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
             "Stack - Data Structure": {
                 "questions": {
-                    "Q1": 1
+                    "Q1": 0
                 },
-                "count": 1
+                "count": 0
             },
             "Runtime Stack": {
                 "questions": {
-                    "Q1": 1,
+                    "Q1": 0,
                     "Q2": 0,
                     "Q3": 0,
                     "Q4": 0,
@@ -274,16 +292,16 @@
                     "Q1": 0,
                     "Q2": 0,
                     "Q3": 0,
-                    "Q4": 1,
+                    "Q4": 0,
                     "Q5": 0,
                     "Q6": 0,
-                    "Q7": 1
+                    "Q7": 0
                 },
                 "count": 0
             },
             "Saving Registers": {
                 "questions": {
-                    "Q1": 1,
+                    "Q1": 0,
                     "Q2": 0
                 },
                 "count": 0
@@ -304,17 +322,138 @@
         "Module 6": {
             "Bit Errors": {
                 "questions": {
-                    "Q1": 1,
-                    "Q2": 1
+                    "Q1": 0,
+                    "Q2": 0
                 },
-                "count": 1
+                "count": 0
             },
             "Parity Bits": {
                 "questions": {
-                    "Q1": 1,
-                    "Q2": 1,
-                    "Q3": 1,
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
                     "Q4": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 7": {
+            "Referencing Stack Parameters": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0,
+                    "Q8": 0
+                },
+                "count": 0
+            },
+            "Operators": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0
+                },
+                "count": 0
+            },
+            "Stack Frames": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 8": {
+            "String Primitives": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0
+                },
+                "count": 0
+            },
+            "Macros vs Procedures": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0,
+                    "Q8": 0,
+                    "Q9": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 9": {
+            "Infix vs Postfix": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0
+                },
+                "count": 0
+            },
+            "Irvine Procedures": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "FPU Instructions": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0
+                },
+                "count": 0
+            }
+        },
+        "Module 10": {
+            "CISC vs RISC": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0,
+                    "Q8": 0,
+                    "Q9": 0,
+                    "Q10": 0
+                },
+                "count": 0
+            },
+            "Pipeline": {
+                "questions": {
+                    "Q1": 0
+                },
+                "count": 0
+            },
+            "Parallelism": {
+                "questions": {
+                    "Q1": 0,
+                    "Q2": 0,
+                    "Q3": 0,
+                    "Q4": 0,
+                    "Q5": 0,
+                    "Q6": 0,
+                    "Q7": 0,
+                    "Q8": 0,
+                    "Q9": 0
                 },
                 "count": 0
             }
@@ -354,10 +493,12 @@
             "Irvine Procedures"
         ],
         "Module 3": [
+            "Instruction Mnemonics",
             "Jumps",
             "Loops"
         ],
         "Module 4": [
+            "Directives",
             "Equals-sign Directive",
             "EQU Directive",
             "TEXTEQU Directive",
@@ -365,6 +506,7 @@
             "IEEE 754 Floating Point"
         ],
         "Module 5": [
+            "Instruction Mnemonics",
             "Stack - Data Structure",
             "Runtime Stack",
             "Procedures",
@@ -372,19 +514,29 @@
             "Passing Parameters to Procedures"
         ],
         "Module 6": [
-            "Bit Errors",
-            "Parity Bits"
+            "Parity Bits",
+            "Bit Errors"
+        ],
+        "Module 7": [
+            "Referencing Stack Parameters",
+            "Operators",
+            "Stack Frames"
+        ],
+        "Module 8": [
+            "String Primitives",
+            "Macros vs Procedures"
+        ],
+        "Module 9": [
+            "Infix vs Postfix",
+            "Irvine Procedures",
+            "FPU Instructions"
+        ],
+        "Module 10": [
+            "CISC vs RISC",
+            "Pipeline",
+            "Parallelism"
         ]
     },
     "redemption_questions": [],
-    "questions_marked_wrong": [
-        [
-            [
-                "Module 1",
-                "Large Value Prefixes",
-                "Q2"
-            ],
-            2
-        ]
-    ]
+    "questions_marked_wrong": []
 }
