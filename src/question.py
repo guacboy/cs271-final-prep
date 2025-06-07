@@ -148,7 +148,7 @@ class Question():
         result_chosen = question_chosen[1]
         
         # include the random selections into the question
-        question = f"Compute the following {arithmetic_chosen}.\n\n{problem_chosen}\n\nNOTE: Do not include commas or spaces. For example: 11001100"
+        question = f"Compute the following {arithmetic_chosen}.\n\n{problem_chosen}\n\nNOTE: Do not include commas or spaces. Do not include 'h' in your answer. For example: 11001100"
         answer = result_chosen
         
         return question, answer
@@ -302,14 +302,13 @@ class Question():
         return question, answer
     
     # FREE RESPONSE
-    # TODO: fix format; create a code segment question type
     def mod2_memory_addresses_q2() -> str:
         name_chosen = faker.name() # creates a random name
         size_chosen = random.randint(10, 25)
         starting_memory_andress = random.randint(1, 9)
         
         code_segment = f"myName BYTE '{name_chosen}',0" \
-            f"\npromptName BYTE {str(size_chosen)} DUP(0)" \
+            f"\npromptName BYTE {size_chosen} DUP(0)" \
             f"\npromptAge DWORD ?" \
             f"\npromptDate DWORD ?" \
             f"\nelaspedTime WORD ?"
@@ -329,8 +328,10 @@ class Question():
         # then converts to hex and uppercase letters
         hex_value = hex((len(name_chosen) + 1) + size_chosen + added_amount).upper()
         
-        question = f"{code_segment}\n\nWhat is the hexadecimal address of {identifier_chosen} if the data segment starts at memory address {starting_memory_andress}000h?"
-        answer = f"{starting_memory_andress}0{hex_value[2:]}h"
+        question = f"{code_segment}\n\nWhat is the hexadecimal address of {identifier_chosen} " \
+            f"if the data segment starts at memory address {starting_memory_andress}000h?" \
+            "\n\nNOTE: Do not include 'h' in your answer. For example: 9025"
+        answer = f"{starting_memory_andress}0{hex_value[2:]}"
         
         return question, answer
     
@@ -920,7 +921,7 @@ class Question():
         question_chosen, answer_chosen, answer = on_randomize_true_false_question(question_dict)
             
         # include the random selection into the question
-        question = f"In the IA32 architecture, ESP is {answer_chosen} each time data is {question_chosen} onto the stack."
+        question = f"In the IA-32 architecture, ESP is {answer_chosen} each time data is {question_chosen} onto the stack."
         
         return question, answer
     
@@ -1013,7 +1014,7 @@ class Question():
         question = f"{code_segment}\n\nAssume ESP = {hex_value}h at Execution Point A. " \
             f"At Execution Point B, what is the decimal value in {register_chosen}, " \
             "the hexadecimal value in ESP, and the decimal value in [ESP]?" \
-            "\n\nNOTE: Type the answer in order separated by a comma (no spaces) and o not include 'h' in your answer. For example: 7,1C2F,99"
+            "\n\nNOTE: Type the answer in order separated by a comma (no spaces) and do not include 'h' in your answer. For example: 7,1C2F,99"
         answer = f"{pop_instruction_dict["POP " + register_chosen]},{final_hex_value},{answer_stack[-1]}"
         
         return question, answer
@@ -1190,7 +1191,7 @@ class Question():
         answer.reverse()
         answer = "".join(answer)
         
-        question = f"{code_segment}\n\nGiven the above data segment, what is the hex value after " \
+        question = f"{code_segment}\n\nGiven the above MASM code, what is the hex value after " \
             f"'MOV {register_type_chosen}, [{register_chosen}+{str(register_offset_chosen)}]' is performed'?" \
             "\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
         
@@ -1248,7 +1249,7 @@ class Question():
         answer.reverse()
         answer = "".join(answer)
         
-        question = f"{code_segment}\n\nGiven the above data segment, " \
+        question = f"{code_segment}\n\nGiven the above MASM code, " \
             "what hexadecimal value does EAX contain at Execution Point A?" \
             "\n\nNOTE: Do not include 'h' in your answer. For example: 00F4"
         
@@ -1303,7 +1304,7 @@ class Question():
             answer = str(var_storage)
             subquestion_string = "idType"
         
-        question = f"{code_segment}\n\nGiven the above data segment, what value does {subquestion_string} contain, in decimal?"
+        question = f"{code_segment}\n\nGiven the above MASM code, what value does {subquestion_string} contain, in decimal?"
         
         return question, answer
     
@@ -1345,7 +1346,7 @@ class Question():
             
         answer = str(array[idx_chosen])
         
-        question = f"{code_segment}\n\nGiven the above data segment, what value does EAX contain at Execution Point A?"
+        question = f"{code_segment}\n\nGiven the above MASM code, what value does EAX contain at Execution Point A?"
         
         return question, answer
     
@@ -1410,7 +1411,7 @@ class Question():
             "\nexit" \
             "\nmain ENDP"
         
-        question = f"{code_segment}\n\nGiven the above data segment, " \
+        question = f"{code_segment}\n\nGiven the above MASM code, " \
             "inside someProcedure, what numerical operand should be used with the RET instruction?" \
             "\n\nNOTE: RET n, what should n be? For example: 10"
         
@@ -1484,7 +1485,7 @@ class Question():
         proc_answer = byte_chosen + proc_req_chosen + (used_amount_chosen * proc_call_req_chosen)
         answer = f"{macro_answer},{proc_answer}"
         
-        question = f"Suppose that a program's data and executable code require {byte_chosen} bytes of memory. " \
+        question = f"Suppose that a program's data and executable code requires {byte_chosen} bytes of memory. " \
             f"A new section of code must be added; it will be used with various values {used_amount_chosen} times " \
             f"during the execution of a program. When implemented as a macro, the macro code requires {macro_req_chosen} " \
             f"bytes of memory. When implemented as a procedure, the procedure code requires {proc_req_chosen} bytes " \
@@ -1760,7 +1761,7 @@ class Question():
                     result = left_value / right_value
                 
                 # reassign the left value in the postfix stack
-                # with the current result
+                # to the result
                 postfix_stack[-1] = result
         
         answer = str(round(float(postfix_stack[0]), 1)) # round to nearest tenth
@@ -1945,7 +1946,7 @@ class Question():
             code_segment = f"MOV BX, {random.randint(0, 9)} ; initialize sum" \
                 "\nMOV ECX, MAX_SIZE ; initialize LOOP counter" \
                 "\nMOV ESI, OFFSET list ; initialize array pointer" \
-                "\n_ProcessArray:" \
+                "\n\n_ProcessArray:" \
                 "\nADD BX, [ESI] ; add current list element" \
                 "\nADD ESI, 2 ; move array pointer to next element" \
                 "\nLOOP _ProcessArray ; auto-decrement ECX, jump to more if ECX ≠ 0"
@@ -1963,7 +1964,7 @@ class Question():
             code_segment = f"SET reg1, {random.randint(0, 9)} ; initialize sum" \
                 "\nSET reg2, MAX_SIZE ; initialize LOOP counter" \
                 "\nSET reg3, @list ; initialize array pointer" \
-                "\n_ProcessArray:" \
+                "\n\n_ProcessArray:" \
                 "\nLOAD reg4, [reg3] ; fetch current list element" \
                 "\nADD reg1, reg4 ; add current list element" \
                 "\nADD reg3, 4 ; move array pointer to next element" \

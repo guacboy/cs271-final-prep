@@ -163,7 +163,7 @@ question_bank = {
                     "OWORD": "0 to 2^(128)-1",
                     "SOWORD": "-2^(127) to 2^(127)-1",
                 },
-                "variant": "What are the smallest and largest values which can be represented with a _",
+                "variant": "What are the smallest and largest values which can be represented with a _?",
                 "format": MULTIPLE_CHOICE,
             },
             "Q2": {
@@ -227,7 +227,7 @@ question_bank = {
                     "zetta (Zi)": "2^70",
                     "yotta (Yi)": "2^80",
                 },
-                "variant": "What is the multiplier for _?\n\nNOTE: Use caret (^) to represent as power. For example: 2^5 will be read as '2 to the power of 5'.",
+                "variant": "What is the multiplier for _?\n\nNOTE: Use caret (^) to represent as power. For example: 2^5",
                 "format": FREE_RESPONSE,
             },
             "Q2": {
@@ -353,7 +353,7 @@ question_bank = {
             },
             "Q2": {
                 "details": {
-                    "One major bottleneck is the data bus, because both the program instructions and the data must be retrieved from the same memory to be executed or used. A way to resolve this issue is _.": "Caching",
+                    "One major bottleneck is the data bus because both the program instructions and the data must be retrieved from the same memory to be executed or used. A way to resolve this issue is _.": "Caching",
                     "rpt1": "Reloading",
                     "rpt2": "Stablizing",
                     "rpt3": "Terminating",
@@ -601,7 +601,7 @@ question_bank = {
             },
             "Q4": {
                 "details": {
-                    "In MASM all text following a semicolon (on the same line) is treated as a comment and ignored when the program is converted to machine code.": "True"
+                    "In MASM, all text following a semicolon (on the same line) is treated as a comment and ignored when the program is converted to machine code.": "True"
                 },
                 "format": TRUE_OR_FALSE,
             },
@@ -615,7 +615,7 @@ question_bank = {
                     "ADD": "True",
                     "MUL": "False",
                 },
-                "variant": "The _ instruction must have an explicit destination operand",
+                "variant": "The _ instruction must have an explicit destination operand.",
                 "format": TRUE_OR_FALSE,
             },
             "Q7": {
@@ -719,7 +719,7 @@ question_bank = {
                         ["ReadInt", "Reads a signed integer from keyboard"],
                         ["ReadDec", "Reads an unsigned integer from keyboard"],
                         ["ReadString", "Reads a string from keyboard"],
-                        ["ReadChar", "Reads a single character from keyboard"],
+                        ["ReadChar", "Reads a single ASCII character from keyboard"],
                         ["WriteInt", "Writes a signed integer to the console window"],
                         ["WriteDec", "Writes an unsigned integer to the console window"],
                         ["WriteString", "Writes a string to the console window"],
@@ -774,8 +774,8 @@ question_bank = {
                         ["JA", "jumps if op1 is above op2"],
                         ["JBE", "jumps if op1 is below or equal to op2"],
                         ["JB", "jumps if op1 is below op2"],
-                        ["JE", "jumps if op1 equals to op2"],
-                        ["JNE", "jumps if op1 is not equal to op2"],
+                        ["JE", "jumps if op1 = op2"],
+                        ["JNE", "jumps if op1 != op2"],
                     ]
                 },
                 "format": MATCH_TO_ANSWER_RANDOMIZED,
@@ -924,7 +924,7 @@ question_bank = {
             },
             "Q4": {
                 "details": {
-                    "The byte-ordering scheme which stores integers in memory with the most significant byte at the lowest address is called _": "big endian",
+                    "The byte-ordering scheme which stores integers in memory with the most significant byte at the lowest address is called _.": "big endian",
                     "rpt1": "little endian ",
                     "rpt2": "byte-major",
                     "rpt3": "byte-minor",
@@ -933,7 +933,7 @@ question_bank = {
             },
             "Q5": {
                 "details": {
-                    "The byte-ordering scheme which stores integers in memory with the least significant byte at the lowest address is called _": "little endian",
+                    "The byte-ordering scheme which stores integers in memory with the least significant byte at the lowest address is called _.": "little endian",
                     "rpt1": "big endian ",
                     "rpt2": "byte-major",
                     "rpt3": "byte-minor",
@@ -965,7 +965,7 @@ question_bank = {
         "IEEE 754 Floating Point": {
             "Q1": {
                 "details": {
-                    "Identify the sizes of the sign, biased exponent, and normalized mantissa for a Single Precision x86 floating point value.": "1,8,23",
+                    "Identify the sizes of the sign, biased exponent, and normalized mantissa for a Single Precision x86 floating point value.\n\nNOTE: Type the answer in order separated by a comma (no spaces). For example: 3,5,24": "1,8,23",
                 },
                 "format": FREE_RESPONSE,
             },
@@ -1058,7 +1058,7 @@ question_bank = {
                     "Which of the following is true about the PUSH instruction?": "It decrements the stack pointer (by 2 or 4), and then copies the operand into the stack at the location pointed to by the stack pointer",
                     "rpt1": "It copies the operand into the stack at the location pointed to by the stack pointer, and then decrements the stack pointer (by 2 or 4)",
                     "rpt2": "It increments the stack pointer (by 2 or 4) and copies the operand into the stack at the location pointed to by the stack pointer",
-                    "rpt3": "It increments the stack pointer by 1 and copies the operand into the stack at the location pointed to by the stack pointer",
+                    "rpt3": "It copies the operand into the stack at the location pointed to by the stack pointer, and then increments the stack pointer (by 2 or 4)",
                 },
                 "format": MULTIPLE_CHOICE,
             },
@@ -1067,7 +1067,7 @@ question_bank = {
                     "Which of the following is true about the POP instruction?": "It copies the data pointed to by the stack pointer into the operand, and then increments the stack pointer (by 2 or 4)",
                     "rpt1": "It copies the data pointed to by the stack pointer into the operand, and then decrements the stack pointer (by 2 or 4)",
                     "rpt2": "It increments the stack pointer (by 2 or 4), and then copies the data pointed to by the stack pointer into the operand",
-                    "rpt3": "It copies the data pointed to by the stack pointer into the operand, and then increments the stack pointer by 1",
+                    "rpt3": "It decrements the stack pointer (by 2 or 4), and then copies the data pointed to by the stack pointer into the operand",
                 },
                 "format": MULTIPLE_CHOICE,
             },
@@ -1307,7 +1307,7 @@ question_bank = {
             },
             "Q4": {
                 "details": {
-                    "Match the following components of the stack frame in the order in which they should be pushed on the stack.": [
+                    "Match the following components of the stack frame in the order in which they should be pushed on the stack.\n\nNOTE: '1.' represents the top of the stack": [
                         ["1.", "Passed Parameters"],
                         ["2.", "Procedure Return Address"],
                         ["3.", "Old EBP Value"],
@@ -1324,7 +1324,7 @@ question_bank = {
                     "Base+Offset": "MOV EAX, [EDX+EBX]",
                     "Register Direct": "MOV EAX, list[ESI]",
                 },
-                "variant": "Given the following register states, and using _ addressing, which of the following lines of code will move the 11th element of the list array (of DWORDs) to the EAX register?\nEDX register contains the address (OFFSET) of the first element of list.\nESI register contains the address (OFFSET) of the eleventh element of list.\nEBX register contains the value 40.",
+                "variant": "Given the following register states, and using _ addressing, which of the following lines of code will move the 11th element of the list array (of DWORDs) to the EAX register?\n\nEDX register contains the address (OFFSET) of the first element of list.\nESI register contains the address (OFFSET) of the eleventh element of list.\nEBX register contains the value 40.",
                 "format": MULTIPLE_CHOICE,
             },
             "Q6": {
@@ -1717,21 +1717,21 @@ question_bank = {
                     "lower": "True",
                     "higher": "False",
                 },
-                "variant": "Multiprocessor Parallelism usually has _ coordination overhead than Multicomputer Parallelism.",
+                "variant": "Multi-processor Parallelism usually has _ coordination overhead than Multicomputer Parallelism.",
                 "format": TRUE_OR_FALSE,
             },
             "Q3": {
                 "details": {
-                    "Multiprocessor Parallelism": "True",
-                    "Multicomputer Parallelism": "False",
+                    "Multi-processor Parallelism": "True",
+                    "Multi-computer Parallelism": "False",
                 },
                 "variant": "In _, all processors access the same (shared) memory and communicate and coordinate through an interconnection network.",
                 "format": TRUE_OR_FALSE,
             },
             "Q4": {
                 "details": {
-                    "Cloud computing is an example of _.": "Multicomputer Parallelism",
-                    "rpt1": "Multiprocessor Parallelism",
+                    "Cloud computing is an example of _.": "Multi-computer Parallelism",
+                    "rpt1": "Multi-processor Parallelism",
                     "rpt2": "Instruction-level Parallelism",
                     "rpt3": "Non-parallel processing",
                 },
